@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<project name="DOM Menu" default="package" basedir=".">
+	<description>Dynamic, hierarchical, "popout" menus for Javascript using the DOM</description>
+	<property name="project.shortname" value="dommenu" />
+	<property name="project.version" value="0.3.5" />
+	<property name="dist.dir" location=".." />
+	<property name="jsmin.bin" location="jsmin" />
+	
+	<target name="package" depends="clean, pack" description="Package a release">
+		<tar destfile="${dist.dir}/${project.shortname}-${project.version}.tar.gz"
+			compression="gzip">
+			<tarfileset dir="." prefix="${project.shortname}-${project.version}">
+				<exclude name="jsmin*" />
+			</tarfileset>
+		</tar>
+		<!--
+		<delete file="${dist.dir}/${project.shortname}-${project.version}.zip"/>
+		<zip zipfile="${dist.dir}/${project.shortname}-${project.version}.zip">
+			<zipfileset dir="." prefix="${project.shortname}-${project.version}"/>
+		</zip>
+		-->
+	</target>
+
+	<target name="pack" description="Pack the libraries to a jsmin file">
+		<exec dir="." executable="echo" output="domMenu_min.js">
+			<arg value="// Compressed version of the DOM Menu Library //" />
+		</exec>
+		<exec dir="." executable="${jsmin.bin}"
+			input="domLib.js" output="domMenu_min.js" append="true" />
+		<exec dir="." executable="${jsmin.bin}"
+			input="domMenu.js" output="domMenu_min.js" append="true" />
+	</target>
+
+	<target name="clean" description="Clean old packages and build resources">
+		<delete file="${dist.dir}/${project.shortname}-${project.version}.tar.gz"/>
+		<delete file="domMenu_min.js"/>
+	</target>
+</project>

@@ -1,0 +1,25 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN"
+            "http://www.w3.org/TR/REC-html40/strict.dtd">
+<html>
+  <head>
+    <title>[DOM Menu] :: Example 5 :: Two Menus</title>
+    <style>
+@import url(example.css);
+    </style>
+    <script language="javascript" src="../domLib.js"></script>
+    <script language="javascript" src="../domMenu.js"></script>
+    <script language="javascript" src="domMenu_items.js"></script>
+  </head>
+  <body>
+    <div class="title">Example 5: Two Menus</div>
+    <div class="main">
+      <div class="p" id="domMenu_main" style="height: 20px;"></div>
+      <div class="p"><table style="border-collapse: collapse; border: 0;"><tr><td id="domMenu_vertical" style="width: 100px; height: 20px; padding: 0;"></td><td style="padding: 0; vertical-align: top; padding-left: 10px;">The fifth example demonstrates how two menus can coexist on the same page, each menu seperately handling the events, active element and settings.  The menus from Example 1 and Example 4 are combined on this page.</td></tr></table></div>
+      <script language="javascript">
+domMenu_activate('domMenu_main');
+domMenu_activate('domMenu_vertical');
+      </script>
+    </div>
+    <div style="float: left;"><a href="example4.html">&#171;Example 4</a></div><div style="float: right;"><a href="example6.html">Example 6&#187;</a></div>
+  </body>
+</html>

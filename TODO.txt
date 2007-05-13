@@ -1,0 +1,449 @@
+- Småting:
+ - "BM-korpus: Hvorfor kan vi ikke søke på sammensetninger lenger?"
+ - bokmål: ikke "detaljer", men heller: "titler, større verk" vs. "titler, mindre verk"
+ - søke på tegnsetting fra meny
+ - bør "|" escapes?
+
+
+- format
+  - format.cgi <tabfile> <format> <isheader>
+  - sort
+  - hvilken kolonne er "tallet"?
+  - rounding
+  - double newline = new file / new sheet / new graph?
+    - or: should they be new files at creation?
+  - html, excel, csv, tab, histogram, pie, hist-vert, graph (gnuplot), , pdf/png (via latex)
+  - stats2, cooc, coll, metadist, count, metadata, download
+
+- "case" er blitt et keyword i mysql; vi må forandre
+- download.cgi -> gammel databasestruktur
+- norsk vs. engelsk
+  - php,cgi,javascript (kan de forenes i en xml-fil?)
+- innlesning av datafiler burde være i Glossa.pm (og mye mer)
+
+- gror LOGG-filen til helvete??
+- hvilke foldere skal httpd kunne skrive til?
+
+- tips-seksjon
+
+- legge inn "annotations"-tabell i standard-DB
+- kontakte Frans Gregersen, DGCSS: fg@hum.ku.dk
+- xml2db fra conf-fil:
+  - text:title -> text|biblStr|title
+  - text:wordcount -> text|misc|wc
+  - children vs. first_child
+
+- menyer må oppdateres med ADDSTRING (etter nota.js)
+
+
+RELATED PROJECTS
+- finish cardea
+- Opprydding av diverse korpus-skript:
+ - Konvertering av tagger
+ - Fra XML til CWB-input
+   - Tekster
+   - Alignment
+ - Fra SGML til XML
+ - Koding av binære filer for CWB
+ - Fra XML til database
+   - Metadata
+   - Leksikalsk statistikk
+   - Start/stopp-punkter
+ - Tagging
+ - Konvertering av tegnsett
+ - N-gram-statistikk
+
+
+FEATURES
+- Resultathåndtering:
+  - lagre søk, slette enkeltresultater
+  - når man lagrer: mulighet for "append"
+  - kode enkeltresultater
+  - statistikk basert på koding av enkeltresultater
+  - fellesannoteringer (fx. taggerfeil) vs. brukerspesifikke annoteringer
+
+
+- "my page" / "preferences" etc.
+  - delete, join result sets
+  - delete subcorpora
+  - preferences
+    - open in new window
+    - form defaults: regexp, max, per page etc.
+
+- (fra øystein) få oppgitt hvor mange informanter (el.lign.) det aktuelle søket fordeler seg på
+  - oppdater metadatadistribusjon
+    - antall i treff + totalt antall (mulige)
+
+
+
+
+- hva skal intervallet *ikke* inneholde (fx. ".|,|:")
+
+- Side for regulære uttrykk
+  - html
+  - cgi
+  - spørsmål: hva skal fortsatt være gui?
+    - meta
+    - valg (hits per page etc)
+    - alignment
+
+- Vis strukturell informasjon ved konkordanse
+
+
+- flertydighet
+
+- kolonne+attributt -> farge
+
+
+
+* søk i søk
+  - bruk dump/undump-kommando for å få "subkorpus"
+    - gjelder bare *treff* ikke høyre/venstre-kontekst
+    - men, bør gjelde hele alignment, og det vil det gjøre, i og med at
+      dump/undump-funksjonen for base-corpus begrenser resten
+  -
+   - cqp> dump A > 'a.dmp'; 
+   - legg til antall linjer i a.dmp
+   - cqp>undump C with target keyword < "a.dmp";
+  - i grensesnitt: velg *enten* subkorpus eller søk-i-søk
+    - søk-i-søk-meny: *enten* "forrige søk" eller "navngitt søk"
+      - for navngitt: åpne nytt "vindu", cgi som leter opp navnene på alle
+        lagrede søk 
+  - dmp-filer lages for alle søk
+
+* koding av enkeltresultater
+  - hver annotering: 
+	- id i korpus
+	- annoteringssett
+	- annoteringsverdi
+  - hva om korpuset endrer seg
+       - kan vi forutsette at s-id er konstant?
+	- lagre setning/tagget-setning under annotering?
+	- lagre ord/uttrykk annoteringen gjelder
+   - integrasjon med 'cura'
+   - hva er forholdet til lagrede søk
+     - de som er med i lagret søk, er de automatisk med i annoteringssett?
+     - hvis man sletter fra lagret søk?
+   - vis alle fra annoteringssett
+   - ekskluder fra annoteringssett (verdi: N/A)
+   - gjør annoteringssett spesifikt til brukeren
+   - gjøre flere annotering på en gang (à la LOGON-cura)
+   - hvordan vise at db er oppdatert? farge?
+   - annoteringssett (+ evt. verdi) som søkekriterium
+	- s-id -> start/stopp-verdier
+   -  annotations should refer to tokens:
+        - ref = s_id+positionon+content
+        - check for right content on corpus update
+
+
+* statistikk for enkelt-koding
+  - eksportere annotering som tab/excel-fil
+  - for alle som har en verdi i ett sett
+  - kontrast
+	- alle andre tokens/setninger (i korpus)
+	- andre verdier
+   - hva skal telles?
+	- hvor mange annotert x, hvor mange y
+	- egenskapene til ord/setninger med en type annotering
+  
+
+* faktisk bruke språkkoder fra <corpusname>.conf.js
+
+
+
+
+
+LONG TERM
+
+* port to dommenu-0.3.7 
+  - reapply javascript-patch
+
+* use GrayBox for pop-ups: http://orangoo.com/labs/GreyBox/
+
+
+
+* word-align-highlight:
+ - encode as attribute of token (optionally as range/list)
+ - highlight when moving cursor
+ - use token-id to highlight
+
+* search-highlight
+  (- turned off since it only referred to lemma; feature request to do it properly sendt to cwb-list)
+  - new idea:
+   - use token-id to highlight
+   - db-lookup -> subcorpus
+   - search in subcorpus -> highlight-range: list of sentence-id + token range
+     - print per page
+   - javascript-ajax-call to get highlight-range
+     - javascript-function to apply to display page
+
+* utterance/sentence statistics
+* global collocations statistics
+* global lexical statistics for trigrams
+* filters on coll/cooc/lex-stat
+* sentence limits
+
+
+* port to Manatee and Xara
+
+* additional full "tokens". I.e. generate 
+ (("lemma='x' AND pos='y') OR ("lemma='w' AND pos='v') NOT ("lemma='m' AND pos='n'))
+
+
+- Vis word alignment
+	- word-alignment -> farge
+- Dependens
+  - vis
+  - query
+  - statistikk (word sketch)
+
+
+BUGS:
+- OMC-bugs (from Joel)
+
+
+DOCUMENTATION
+  - av kildekode
+	  document keywords:
+	- _ as delimiter
+	- ADDSTRING
+	- tid
+
+  - pop-up hjelp
+
+  - Installasjonsveiledning
+  - Brukerveiledning
+  - Veiledning for drifting av korpora
+	- OBS OBS: cron-jobb for å slette midlertidige filer!!
+  - bruker-tutorial
+	- og/eller koblinger
+	- dobbeltklikk
+	- resultater er midlertidige til de lagres
+	- "!" betyr negering
+	- søk-i-søk betyr *match*, ikke *context*
+- dokumentasjon
+  - lexstat-tabell
+  - stats/*.gz
+
+- påminnelser, når dok er OK:
+  - NOTA: for å få meta-dist:
+    - add wordcount
+    - change cgi.conf (meta_text ...)
+
+
+ 
+
+
+ADAPTAIONT: 
+- NOTA, Big Brother, TAUS
+- BNC
+- Europarl
+- Bosnisk, makedonsk
+- big brother, taus, nota, bosnisk, sidaama, makedonsk, samisk, turistkorpus, upus
+
+
+
+
+
+BUGS:
+
+* show_context.cgi
+  - "author" is missing
+  - check for applicability of class and author query before executing SQL
+
+
+
+MISC:
+- testing
+- Installasjon av utviklingsversjon på foni
+- Nedlastbar versjon
+
+
+---
+
+DOCUMENTATION:
+
+
+hacker's manual:
+ - code comments
+ - what goes where (result files, db, cwb)
+ - anatomy of a search
+ - common functions:
+   - db
+   - format
+ - interface (html,js,php) vs. cgi 
+ - names (base corpus, subcorpus etc.) 
+
+- admin-manual
+  - naming
+
+
+who need access to what?
+* apache
+  - read
+  - write
+
+* mysql-reader
+  - read
+  - write: annotation tables
+    OBS: må inn som en del av "opprette et korpus"-dokumentasjonen
+
+
+-
+
+Både author og class kan brukes. Det kommer an på hva slags data du har, hva som er hensiktsmessig. Author/class er laget for situasjoner der man har et en-til-mange-forhold, for eksempel der man har flere forfattere for en tekst, eller der en tekst kan være medlem av flere "klasser" (for eksempel genre, emne ...).
+
+Hvis man vil bruke author/class-tabellene, må man passe på at den første kolonnen heter "tid" og er en lenke til "tid" i tabellen "text". Så er det bare å bruke meta.conf og "corpus".inc til å spesifisere innholdet.
+
+
+---
+
+Jeg tror kilden til din forvirring er at når du kaller et Glossa-korpus, for eksempel
+
+http://mail.cst.dk/mulinco/glossa//html/index_dev.php?corpus=hcap
+
+må man ha definert et korpus som heter "hcap" i konfigurasjonsfilene for Glossa. Dette er *helt uavhengig* av hva korpuset heter for CQP. Tilfeldigvis het testkorpuset "test" både i Glossa og CQP, men det trenger det ikke fortsette å gjøre. 
+
+> Tabelnavnene i mysql skal navngives med samme "for"-navne som CQP-korpusserne, ikke sandt?
+Nei, text,author og class skal ha "Glossa-navnet" (men med store bokstaver) foran seg. (Men seinere, når du skal til med tabeller for ord-statistikk, må du ha med CQP-navnet også, men det trenger du ikke tenke på ennå).
+
+--
+
+
+
+Lene Offergaard wrote:
+
+>> A)
+>> Når jeg åbner interfacet til
+>> http://mail.cst.dk/mulinco/glossa/html/index_cst.php?corpus=poe
+>> får jeg mulighed for at vælge mellem Danish og English som ønsket, så 
+>> det er godt!
+>> Men jeg får også besked i et vindue "domMenu: Menu failed to load." 
+>> Klikker jeg ok til den, så får jeg resten af grænsefladen undtagen 
+>> "valg"-knappen under textvinduet.
+
+Ja, dette er litt komplisert. For å få frem en meny er det flere ting som må passe sammen:
+
+* For det første må man ha en meny, som oftest vil det være en egen js-fil. Foreløpig kan du jo fortsette å bruke test.js
+
+* I index_dev.php, må man ha lastet inn denne js-filen. Flere steder i inde_dev.php finner man linjer som dette: 
+
+if ( $_GET['corpus'] == 'test' ) {
+  echo "<script language='javascript' src='" . $htmlRoot . "/js/test.js'></script>";
+}
+
+Disse linjene er laget for at man skal kunne holde styr på mange ulike korpora fra den samme søkesiden. Når man lager et nytt korpus, må man passe på at dette blir oppdatert, så når man bruker http://mail.cst.dk/mulinco/glossa/html/index_cst.php?corpus=poe
+
+bør man ha en seksjon som for eksempel:
+
+if ( $_GET['corpus'] == 'poe' ) {
+  echo "<script language='javascript' src='" . $htmlRoot . "/js/test.js'></script>";
+}
+
+Det er også to andre steder i samme fila man kan oppdatere dette:
+
+if ( $_GET['corpus'] == 'test' ) {
+  include("test.inc");
+}
+
+og 
+
+if ( $_GET['corpus'] == 'test' ) {
+  include("test_cred.inc");
+}
+
+Disse to siste gjelder seksjonen av søkesiden som gjelder henholdsvis meta-søk og informasjon og korpuset. Foreløpig kan du sette dem til:
+
+if ( $_GET['corpus'] == 'poe' ) {
+  include("test.inc");
+}
+
+og 
+
+if ( $_GET['corpus'] == 'poe' ) {
+  include("test_cred.inc");
+}
+
+
+* Til slutt må man før eller seinere (men for ditt vedkommende ikke ennå) til med å gjøre noen endringer i js/dynamic_form_dev.js. Men det kan vi ta en annen gang ....
+
+>> B)
+>> Jeg havde først oprettet tabellen POEtext-sådan som jeg forstod din 
+>> mail, men når jeg får startet grænsefladen så får jeg en fejl fordi 
+>> DAPOEtext ikke eksisterer. Så har jeg oprettet den tabel med en 
+>> indgang som beskriver min text:
+>> INSERT INTO `DAPOEtext` VALUES 
+>> ('50842',1,7813,'Novelle','USA','Poe',NULL,'2004-04-01 11:53:00',7813)
+>> Når jeg søger får jeg en resultatside, som ligner den jeg fik for det 
+>> monolingvalekorpus, men hvordan får jeg mulighed for at se mine 
+>> alignede sætninger?
+
+Jeg gjetter på at det er filen meta.conf som ikke er oppdatert. En av kolonnene spesifiserer databasetabellen. Si ifra hvis det ikke er det, så finner jeg nok ut av det.
+
+>> C)
+>> Og endelig, hvis de øvrige ting kan løses:
+>> Hvordan fylder jeg al den information ind i databasen som den ønsker?
+
+Det kommer an på hvordan du har lagret korpuset. Det er bare å finne en måte å få lagt inn flere slike: 
+
+>> INSERT INTO `DAPOEtext` VALUES 
+>> ('50842',1,7813,'Novelle','USA','Poe',NULL,'2004-04-01 
+>> 11:53:00',7813)
+
+--
+
+Har du fått til å gjøre multilingvale søk fra kommandolinjeklienten cqp? I så fall må du  redigere js/KORPUSNAVN.conf.js. Her er et eksempel fra et flerspråklig korpus:
+
+var languageOpts = new Array;
+languageOpts = [['SAMNO_SAMISK', 'Sami', 'sa'], ['SAMNO_NORSK', 'Norwegian', 'no']];
+var conf = new Array;
+conf['type'] = 'multilingual';
+conf['title'] = 'Search Sami-Norwegian corpus';
+conf['corpus_name'] = 'Sami-Norwegian Corpus';
+var language='en';
+var cgiRoot = 'http://omilia.uio.no/cgi-bin/glossa/';
+
+Array-en "languageOpts" inneholder ett element per cqp-korpus, hvert element består igjen av en liste med tre elementer (cqp's navn på korpuset, språknavn og språkkode).
+
+
+--
+
+> K, I see. So how do you bind the web queries to the correct database column? Are the columns hardcoded into the Perl scripts, or is there some sort of API whereby you can just change the php of the user interface? For example, is Glossa able to look for information in an arbitrary table column (say, "genre") by checking whether that column exists or not? That would be cool, but perhaps not efficient.
+The columns are specified in the configuration file meta.conf; the values are fetched from the database itself or, optinally, from other configuration files. You can have a look at dat/test/meta.conf. There should also be some mention of this in the (unfortunately still incomplete) documentation. 
+
+--
+
+CWB only supports (at least efficiently enough)
+queries on attributes on tokens. So, if we want to restrict the search
+on other criteriea, such as author, text type, register etc., Glossa
+looks up those attributes in the database table, and writes a file
+creating an on-the-fly subcorpus for CWB to use. 
+
+--
+
+There are one main table, called <CORPUSNAME>text (if the corpus is
+called "TEST", the table is called "TESTtext". The first column is an
+integer called "tid" (for "text id"). There must be an integer colum
+called "startpos" and one called "endpos". Apart from that, you can fill
+it with whatever columns you prefer (for example "title", "genre",
+"register" etc.)
+
+In addition, for one-to-many-relationships, you may (or may not) want to
+have two additional tables: <CORPUSNAME>author and <CORPUSNAME>class
+
+Again, the first column must be an integer called "tid", but the other
+columns are "free".
+
+In addition, there are tables for lexical statistics, and an alignment
+table for parallelll corpora. But they are not as important.
+
+> Since the big question Annelie has is how much work it would take to go from the TEI XML format the data are currently in to the MySQL tables, that's what I'm most keen to figure out.
+
+Well, if the data in is TEI XML, you're in luck. You should be able to
+use some of my scripts. If you could you send me a sample file, I could
+tell you any modifications that would be needed.
+
+
+-------------------------------------------
+
+

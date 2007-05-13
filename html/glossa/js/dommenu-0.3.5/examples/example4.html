@@ -1,0 +1,23 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN"
+            "http://www.w3.org/TR/REC-html40/strict.dtd">
+<html>
+  <head>
+    <title>[DOM Menu] Example 4: Vertical Menu</title>
+    <style>
+@import url(example.css);
+    </style>
+    <script language="javascript" src="../domLib.js"></script>
+    <script language="javascript" src="../domMenu.js"></script>
+    <script language="javascript" src="domMenu_items.js"></script>
+  </head>
+  <body>
+    <div class="title">Example 4: Vertical Menu</div>
+    <div class="main">
+      <div class="p"><table style="border-collapse: collapse; border: 0;"><tr><td id="domMenu_vertical" style="width: 100px; height: 20px; padding: 0;"></td><td style="padding: 0; vertical-align: top; padding-left: 10px;">The fourth example demonstrates a vertical menu which is just like the first example except that the top level elements are stacked on top of one another.  Placement of the submenu can be adjusted relative to the parent element.  A small gap is set to distinguish the submenu from the top level menu.  One other small tweak is the 300ms delay before the submenu is opened.</td></tr></table></div>
+      <script language="javascript">
+domMenu_activate('domMenu_vertical');
+      </script>
+    </div>
+    <div style="float: left;"><a href="example3.html">&#171;Example 3</a></div><div style="float: right;"><a href="example5.html">Example 5&#187;</a></div>
+  </body>
+</html>

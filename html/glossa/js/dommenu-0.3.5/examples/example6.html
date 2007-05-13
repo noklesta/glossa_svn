@@ -1,0 +1,48 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN"
+            "http://www.w3.org/TR/REC-html40/strict.dtd">
+<html>
+  <head>
+    <title>[DOM Menu] :: Example 6 :: Flash Hiding</title>
+    <style>
+@import url(example.css);
+    </style>
+    <script language="javascript" src="../domLib.js"></script>
+    <script language="javascript" src="../domMenu.js"></script>
+    <script language="javascript" src="domMenu_items.js"></script>
+    <script language="javascript">
+function showFlash(obj) {
+	obj.style.visibility = 'visible';
+}
+
+function hideFlash(obj) {
+	obj.style.visibility = 'hidden';
+}
+    </script>
+  </head>
+  <body>
+    <div class="title">Example 6: Flash Hiding</div>
+    <div class="main">
+        <div class="p">
+        <div id="domMenu_main"></div>
+        <script language="javascript">
+domMenu_activate('domMenu_main');
+        </script>
+        </div>
+        <div class="p">
+        <div style="width: 450px; height: 150px; background: url(banner.jpg) no-repeat;">
+        <object id="flash" type="application/x-shockwave-flash" data="banner.swf" width="450px" height="150px" pluginspage="http://www.macromedia.com/go/getflashplayer">
+          <param name="movie" value="banner.swf" />
+          <param name="wmode" value="opaque" />
+          <img src="banner.jpg" alt="Banner" width="450" height="150" />
+        </object>
+        </div>
+        </div>
+        <div class="p">
+        <input type="button" value="Hide" onclick="hideFlash(document.getElementById('flash'));" />
+        <input type="button" value="Show" onclick="showFlash(document.getElementById('flash'));" />
+        </div>
+        <div class="p">The <em>Hide</em> and <em>Show</em> buttons demonstrate what will happen when the flash animation has been determined to be in the way of the menu.  Since the flash object is wrapped in a div of equal size with a washed out background image, so it should show through when the flash is being hidden.</div>
+    </div>
+    <div style="float: left;"><a href="example5.html">&#171;Example 5</a></div><div style="float: right;"><a href="index.html">Index&#187;</a></div>
+  </body>
+</html>

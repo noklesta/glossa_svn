@@ -1,0 +1,139 @@
+$Id: TODO 1850 2005-05-20 05:03:20Z dallen $
+
+TODO:
+----
+[+] IE6 with no DTD, vertical doesn't work (I think this is fixed in latest version)
+[+] parent with child elements open stays highlighted in IE50 after leaving parent
+
+[+] when swap images by toggling hidden, we loose the object (maybe better just to toggle src?)
+[+] document the many nested tags used to create a menu element
+[+] instead of innerHTML for mozilla use the documentFragment
+[+] think about rescheduling a close which was already pending
+[+] try to combine activate and activeSubMenu
+[+] konqueror has incorrect width for submenu table (or div)
+[+] preference for no delay in top menu activate/deactivate once active
+[+] try to get rid of objects stored in the elements
+
+NOTES:
+-----
+
+FIXED:
+-----
+[@] going to parent from child does not unhighlight child
+[@] going across top level and then decending into submenu causes menu to close
+[@] document the logic of the active path and canceling events
+[@] hover class being used on parent when active class should be used
+[@] fix the brainjar menu systems/timings
+[@] line height a bit off in keramik for IE/konq
+[@] two menus at once is screwing up
+[@] fix up demos for release
+[@] when moving amoung top level elements, try to do select detection on opening element before undoing select detection on closing element (so no blink)
+[@] moving to sibling not highlight in konqueror/opera
+[@] submenus not closing
+[@] in closeEvent, case where we should be using changeActivePath()
+[@] add class for links vs. no links in element definitions (so we can make categories bold or something)
+[@] cross over menu really fast sets window.status and doesn't clear
+[@] work on logistics of where links are allows and when the cursor is a hand
+[@] be able to specify target="_blank" for links
+[@] change window.status back to normal
+[@] make function for positioning submenu
+[@] when parent resizes or moves, reposition submenu
+[@] if scrollbar shows up on horizontal menu and minwidth is inherit, recheck width of parent
+[@] handle screen edge bleed
+[@] top level not canceling create timeout when mouseout
+[@] timeouts for konqueror
+[@] click on menu when open needs to close the menu system
+[@] clean up the domMenu_toggleChildMenu function
+[@] moving to parent needs to unhighlight child if child has no open submenu
+[@] submenu not working in konqueror
+[@] mouseout of menu system not work in konqueror
+[@] going to sibling not working in konqueror
+[@] style doesn't change in konqueror
+[@] in the domMenu_changeActivePath...build both the new and old active path immediately
+[@] better variable names for settings
+[@] make domMenu_quote()
+[@] activeElement needs to be a hash with basename as key (put in settings array)?
+[@] change embedded hash for menu delays to key variables in settings array
+[@] preference for the '+' or arrow
+[@] preference for offset corrections (assume no border/margin in default use)
+[@] cancel selection range for mozilla in open event function
+[@] make active class work everywhere
+[@] have class augment rather than replace for active/hover
+[@] make function for domMenu_deactivate();
+[@] make a setting for min-width to be inherit or manual value
+[@] going from element to sibling and back to element should cancel destroy of submenus all the way down the path
+[@] some cases, moving to parent causes menu to close
+[@] use <div> for submenu rather than tables
+[@] make brainjar.com looking menu (bride of windows)
+[@] implement open opposite
+[@] going to parent from child that has a child closes the child and submenu of child
+[@] settings should be in root of domMenu hash
+[@] multiple menus on same page
+[@] instead of opposite unfold and direction
+    domMenu_axis = 'horizontal|vertical'
+    domMenu_verticalExpand = 'north|south'
+    domMenu_horizontalExpand = 'east|west'
+[@] handle vertical menu
+[@] click on top level should close children if already open
+[@] if a submenu is still closing from an old active path and we hit the top level...that menu delays closing where all the rest close immediately...
+[@] in the changeActivePath function, clear a timeout for the same event if it exists at the bottom of the function (we don't want to schedule the close twice)
+[@] going to top level element can leave behind children (and I know why, we kill all close timeouts but we are leaving behind some)
+[@] add detect collisions to the activateMenu function
+[@] problems in IE playing with activate/deactive top level menu
+[@] problem if we go from any submenu to a different top level
+[@] change breakElement to newActiveElement and activeElement to oldActiveElement
+[@] problem if we go from sibling of parent to child and sibling of parent had child menu open
+[@] problem if we go from parent out of menu into child
+[@] pass in info on the event from the function
+[@] sibling of parent to child...handle highlight of parent
+[@] domMenu callTimeout will just ignore if -1
+[@] perhaps we can determine if the menu is active based on domMenu_activeElement...for the top level, we won't set activeElement until the child appears
+[@] take out the logic from closeEvent when we know we are staying in the menu and let domMenu_closeActivePath() do the work
+[@] preference for mousing over element in active path, do we keep path like KDE
+[@] active element routine is messy
+[@] if go to parent and leave open the child menu of child, then going to sibling leaves open that child menu
+[@] if go to parent element, and currentTarget had children open...leave them open
+[@] make method for getting the container menu of an element
+[@] maybe not use domMenu_isDescendantOf, but just figure out what the domMenu element is from the target and then work with that
+[@] make method .domMenu_toggleChildMenu()
+[@] going from child to sibling of the parent top level delay on close
+[@] bugs with click version of system
+[@] click should open menu right away
+[@] think about how to make the delay settings prettier
+[@] distinguish submenu delay from top level delay
+[@] method for domMenu_highlight on zero level element
+[@] mouseover element should highlight parent element just in case we mouseout of element with children and then mouseover the child from a sibling of the parent while it is still lingering
+[@] when hide a select, assign the reason attribute, then when we unhide them, find ones with only the reason of the current id set
+[@] how about highlight top level when flyover, but delay submenu creation?
+[@] when mouseout of element on one level and mouseover another level, keep menu open
+[@] each element should have a hash of its children, so that we can access them
+[@] kill submenu create timeout when move away from parent !important
+[@] create delay on child element?
+[@] window status not working for catagory
+[@] add a + for subMenu elements that have submenus
+[@] submenus
+[@] work the tree more to avoid unnecessary open/close events
+[@] some cases not unhiding selects
+[@] use the toElement (or relatedTarget) to prevent menu close
+[@] different style class for submenu links than top level
+[@] when fly over top level off of submenu, deactivate is fired, but menu stays
+[@] hiding of selects
+[@] change variables/functions to domMenu_*
+[@] rename styles
+[@] submenu width in mozilla for center, smaller menu is wrong
+[@] when mouseover a menu title with no children, just highlight right away
+[@] when click on menu, show menu right away if it is flyover open
+[@] the stretch code I have in there is blocking the width setting..we should be muliplying that
+    by our width request
+[@] fix alignment in IE
+[@] prefix method names with doMenu*
+[@] fix NoOffFirstLineMenus to NumTopLevelMenus
+[@] fix window.status to work for menu items
+[@] remember status get rid of this
+[@] fix netscape4 to work with new settings
+
+NOTES:
+-----
+remember, you can style each submenu using the ids of the elements
+when reusing a DOM object that was created, you must clone it to make adjustments to it (seems like a bug), for now I just hide it, probably better anyway
+- if necessary, remember to make use of relatedTarget when deciding whether to close a menu item instead of the settimeout when go over the text of an menu

@@ -1,0 +1,93 @@
+body { 
+	margin: 0; 
+       font-family: verdana, helvetica, arial, sans-serif;
+	font-size: 12px;
+
+}
+
+
+A {
+	text-decoration:none;
+}
+
+A:hover {
+	color:red;
+}
+
+
+
+.small {
+        letter-spacing: -0.2em;
+	font-size:7px;
+}
+
+.box {
+        display:block;
+	behavior:url(#default#savehistory);
+}
+
+.txt {
+
+       font-family: verdana, helvetica, arial, sans-serif;
+	font-size: 12px;
+	font-weight: 600;
+
+}
+
+.txt_top {
+
+        margin: 10px;
+}
+
+.txt2 {
+
+        font-family: verdana, helvetica, arial, sans-serif;
+        font-size: 12px;
+	
+
+}
+
+
+
+table.m { border-collapse: collapse;border:1px solid #e5e3e3 }
+
+
+
+div.domMenu_menuBar {
+    border: solid #000000;  
+    border-width: 1px 0 0 1px;
+}
+div.domMenu_menuElement {
+    font-family: Arial, sans-serif; 
+    font-size: 11px;
+    border: solid #000000;  
+    border-width: 0 1px 1px 0;
+    background-color: #FFFFFF; 
+    color: #000000;
+    text-align: center;
+    padding-left: 2px;
+}
+div.domMenu_menuElementHover {
+}
+div.domMenu_subMenuBar {
+    border: solid #000000;  
+    border-width: 1px 1px 2px 1px;
+    opacity: .95;
+    filter: alpha(opacity=70);
+}
+div.domMenu_subMenuElement {
+    font-family: Arial, sans-serif; 
+    font-size: 11px;
+    border: solid #000000;  
+    border-width: 1px 1px 0 1px;
+    background-color: #000000; 
+    color: #FFFFFF;
+    padding-left: 2px;
+}
+div.domMenu_subMenuElementHeading {
+    font-weight: bold;
+}
+div.domMenu_subMenuElementHover {
+    background-color: #FFFFFF;
+    color: #660000;
+}

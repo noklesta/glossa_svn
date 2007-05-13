@@ -1,0 +1,1047 @@
+#LyX 1.4.1 created this file. For more info see http://www.lyx.org/
+\lyxformat 245
+\begin_document
+\begin_header
+\textclass book
+\language english
+\inputencoding auto
+\fontscheme default
+\graphics default
+\paperfontsize default
+\spacing single
+\papersize default
+\use_geometry false
+\use_amsmath 1
+\cite_engine basic
+\use_bibtopic false
+\paperorientation portrait
+\secnumdepth 2
+\tocdepth 2
+\paragraph_separation indent
+\defskip medskip
+\quotes_language english
+\papercolumns 1
+\papersides 2
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+
+\noun on
+Glossa
+\noun default
+: Administrators manual
+\end_layout
+
+\begin_layout Author
+Lars Nygaard
+\end_layout
+
+\begin_layout Standard
+Related documentation:
+\end_layout
+
+\begin_layout Itemize
+
+\noun on
+Glossa
+\noun default
+ User's Manual (doc/GLOSSA_manual.pdf)
+\end_layout
+
+\begin_layout Itemize
+
+\noun on
+Glossa
+\noun default
+ installation guide (INSTALL.txt)
+\end_layout
+
+\begin_layout Chapter
+Introduction
+\end_layout
+
+\begin_layout Standard
+Technically, 
+\noun on
+Glossa 
+\noun default
+it is a front end for the CQP program, part of the IMS Corpus Workbench
+\begin_inset Foot
+status collapsed
+
+\begin_layout Standard
+\begin_inset LatexCommand \htmlurl{http://www.ims.uni-stuttgart.de/projekte/CorpusWorkbench}
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+, the MySQL relational database
+\begin_inset Foot
+status collapsed
+
+\begin_layout Standard
+\begin_inset LatexCommand \htmlurl{http://mysql.com}
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+, tgrep2
+\begin_inset Foot
+status collapsed
+
+\begin_layout Standard
+http://tedlab.mit.edu/~dr/Tgrep2/
+\end_layout
+
+\end_inset
+
+ and Ted Pedersen's Ngrams Statistics Package
+\begin_inset Foot
+status collapsed
+
+\begin_layout Standard
+\begin_inset LatexCommand \htmlurl{http://www.d.umn.edu/~tpederse/nsp.html}
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+A corpus instance:
+\end_layout
+
+\begin_layout Itemize
+A html/php start page
+\end_layout
+
+\begin_layout Itemize
+Configuration files
+\end_layout
+
+\begin_layout Itemize
+CWB files
+\end_layout
+
+\begin_layout Itemize
+Database tables:
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+bibliografic
+\end_layout
+
+\begin_layout Itemize
+sentences
+\end_layout
+
+\begin_layout Itemize
+lexical statistics
+\end_layout
+
+\end_deeper
+\begin_layout Chapter
+Configuration
+\end_layout
+
+\begin_layout Section
+PHP/html
+\end_layout
+
+\begin_layout Standard
+If you are using the standard PHP query page, you must edit the following
+ regions:
+\end_layout
+
+\begin_layout LyX-Code
+if ( $_GET['corpus'] == 'test' ) {
+\end_layout
+
+\begin_layout LyX-Code
+echo "<script language='javascript' src='" .
+ $htmlRoot .
+ "/js/test.js'></script>";
+\end_layout
+
+\begin_layout LyX-Code
+}
+\end_layout
+
+\begin_layout LyX-Code
+--
+\end_layout
+
+\begin_layout LyX-Code
+if ( $_GET['corpus'] == 'test' ) {
+\end_layout
+
+\begin_layout LyX-Code
+include("test.inc");
+\end_layout
+
+\begin_layout LyX-Code
+}
+\end_layout
+
+\begin_layout LyX-Code
+--
+\end_layout
+
+\begin_layout LyX-Code
+if ( $_GET['corpus'] == 'test' ) {
+\end_layout
+
+\begin_layout LyX-Code
+include("test_cred.inc");
+\end_layout
+
+\begin_layout LyX-Code
+}
+\end_layout
+
+\begin_layout Section
+JavaScript 
+\end_layout
+
+\begin_layout Standard
+You need to create a javacript files called js/<corpusname>.conf.js.
+ So, for the monolingual corpus "nota", the following files is created:
+\end_layout
+
+\begin_layout LyX-Code
+var conf = new Array;
+\end_layout
+
+\begin_layout LyX-Code
+var languageOpts = new Array;
+\end_layout
+
+\begin_layout LyX-Code
+languageOpts = [['NOTA2', 'Norsk', 'no']];
+\end_layout
+
+\begin_layout LyX-Code
+var htmlRoot = 'http://omilia.uio.no/glossa/';
+\end_layout
+
+\begin_layout LyX-Code
+var cgiRoot = 'http://omilia.uio.no/cgi-bin/glossa/';
+\end_layout
+
+\begin_layout LyX-Code
+conf['type'] = 'monolingual';
+\end_layout
+
+\begin_layout LyX-Code
+conf['title'] = 'Søk i Bokmålskorpuset';
+\end_layout
+
+\begin_layout LyX-Code
+conf['corpus_name'] = 'Korpus for moderne bokmål';
+\end_layout
+
+\begin_layout LyX-Code
+var language='no';
+\end_layout
+
+\begin_layout Standard
+For the multilingual "samno" corpus, we get:
+\end_layout
+
+\begin_layout LyX-Code
+var languageOpts = new Array;
+\end_layout
+
+\begin_layout LyX-Code
+languageOpts = [['SAMNO_SAMISK', 'Sami', 'sa'], ['SAMNO_NORSK', 'Norwegian',
+ 'no']];
+\end_layout
+
+\begin_layout LyX-Code
+var conf = new Array;
+\end_layout
+
+\begin_layout LyX-Code
+conf['type'] = 'multilingual';
+\end_layout
+
+\begin_layout LyX-Code
+conf['title'] = 'Search Sami-Norwegian corpus';
+\end_layout
+
+\begin_layout LyX-Code
+conf['corpus_name'] = 'Sami-Norwegian Corpus';
+\end_layout
+
+\begin_layout LyX-Code
+var language='en';
+\end_layout
+
+\begin_layout LyX-Code
+var cgiRoot = 'http://omilia.uio.no/cgi-bin/glossa/';
+\end_layout
+
+\begin_layout Standard
+Also, you might need to change the file js/dynamic_form_dev.js, around:
+\end_layout
+
+\begin_layout LyX-Code
+if (language == 'TEST') {
+\end_layout
+
+\begin_layout LyX-Code
+   reloadMenuTest();
+\end_layout
+
+\begin_layout LyX-Code
+}
+\end_layout
+
+\begin_layout Section
+Configuration files
+\end_layout
+
+\begin_layout Subsection
+Main configuration
+\end_layout
+
+\begin_layout Standard
+Below is an example of a corpus configuration file ("cgi.conf"):
+\end_layout
+
+\begin_layout LyX-Code
+db_pwd  = 
+\end_layout
+
+\begin_layout LyX-Code
+db_name = 
+\end_layout
+
+\begin_layout LyX-Code
+db_uname = 
+\end_layout
+
+\begin_layout LyX-Code
+db_host = localhost
+\end_layout
+
+\begin_layout LyX-Code
+type = multilingual
+\end_layout
+
+\begin_layout LyX-Code
+logfile = /var/www/cgi-data/omclog
+\end_layout
+
+\begin_layout LyX-Code
+cwb_registry = /hf/omilia/site/corpora/cwb_reg
+\end_layout
+
+\begin_layout LyX-Code
+corpus_attributes = word lemma pos type degr_dia tense_defin mood_case 
+\backslash
+ 
+\end_layout
+
+\begin_layout LyX-Code
+     person_type2 number gender
+\end_layout
+
+\begin_layout LyX-Code
+corpus_structures = s_id text_id
+\end_layout
+
+\begin_layout LyX-Code
+link_structure = text_id
+\end_layout
+
+\begin_layout LyX-Code
+diacr_table = /var/www/html/omc/diacr.dat
+\end_layout
+
+\begin_layout LyX-Code
+tmp_dir = /var/www/cgi-data/tmp
+\end_layout
+
+\begin_layout LyX-Code
+dat_files = /var/www/html/CE2/dat
+\end_layout
+
+\begin_layout LyX-Code
+lang = en
+\end_layout
+
+\begin_layout LyX-Code
+meta_text = tid title publisher pubdate pubplace translation lang origlang
+ 
+\end_layout
+
+\begin_layout LyX-Code
+     tagger langvariety author translator classcode istrans
+\end_layout
+
+\begin_layout LyX-Code
+meta_class = class
+\end_layout
+
+\begin_layout Standard
+The file format is simple: One entry per line; a keyword, a "="-sign, and
+ a space separated list of values.
+\end_layout
+
+\begin_layout Description
+db_pwd,db_name,db_uname Login information for the metadata database
+\end_layout
+
+\begin_layout Description
+type monolingual or multilingual
+\end_layout
+
+\begin_layout Description
+logfile full path to the query logfile
+\end_layout
+
+\begin_layout Description
+cwb_registry full path to the directory containing the registry file for
+ the corpus
+\end_layout
+
+\begin_layout Description
+corpus_attributes the cwb attributes to be displayed (note that this is
+ not necessarily the same as the attributes that are searched in).
+\end_layout
+
+\begin_layout Description
+corpus_structures the cwb structural tags to be displayed
+\end_layout
+
+\begin_layout Description
+link_structure (currently not used)
+\end_layout
+
+\begin_layout Description
+diacr_table conversion table for diacritics
+\end_layout
+
+\begin_layout Description
+tmp_dir directory where temporary search data is stored
+\end_layout
+
+\begin_layout Description
+dat_files where the other configuration files are stored
+\end_layout
+
+\begin_layout Description
+meta_text the columns in the main metadata column ("text")
+\end_layout
+
+\begin_layout Description
+meta_class,meta_author the columns in the auxilliary metadata columns ("class"
+ and "author")
+\end_layout
+
+\begin_layout LyX-Code
+
+\end_layout
+
+\begin_layout Subsection
+Metadata configuration
+\end_layout
+
+\begin_layout Standard
+The matadata interface is controlled by several configuration files.
+ The main file, "meta.conf", is illustrated below:
+\end_layout
+
+\begin_layout LyX-Code
+collection      db      text    collection
+\end_layout
+
+\begin_layout LyX-Code
+title           db      text    title   where collection = ""
+\end_layout
+
+\begin_layout LyX-Code
+title-alle      db      text    title   where collection != ""
+\end_layout
+
+\begin_layout LyX-Code
+issnisbn        db      text    issnisbn
+\end_layout
+
+\begin_layout LyX-Code
+publisher       db      text    publisher
+\end_layout
+
+\begin_layout LyX-Code
+pubplace        db      text    pubplace
+\end_layout
+
+\begin_layout LyX-Code
+tid             db      text    tid
+\end_layout
+
+\begin_layout LyX-Code
+name            db      author  name    where in_collection = 1
+\end_layout
+
+\begin_layout LyX-Code
+name-alle       db      author  name    where in_collection = 0
+\end_layout
+
+\begin_layout LyX-Code
+geogr           file    author  geogr
+\end_layout
+
+\begin_layout LyX-Code
+geogr-alle      file    author  geogr
+\end_layout
+
+\begin_layout LyX-Code
+kategori        file    text    category
+\end_layout
+
+\begin_layout LyX-Code
+kategori-alle   file    text    category
+\end_layout
+
+\begin_layout LyX-Code
+emne            file    class   class
+\end_layout
+
+\begin_layout LyX-Code
+emne-alle       file    class   class
+\end_layout
+
+\begin_layout LyX-Code
+auth-type       file    author  type
+\end_layout
+
+\begin_layout LyX-Code
+auth-gender     file    author  sex
+\end_layout
+
+\begin_layout LyX-Code
+translated      file    text    istrans
+\end_layout
+
+\begin_layout Standard
+It is a tab-separated file, where each line describes the content of a metadata
+ widget.
+ Each line has four mandatory columns and one optional column:
+\end_layout
+
+\begin_layout Description
+identifier the string used in HTML/PHP to create the widget.
+\begin_inset Foot
+status open
+
+\begin_layout Standard
+All identifiers ending with "-alle" will be created as sub-menues if there
+ exisists identifiers that is identical without this suffix.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Description
+type "db" or "file": where the program should fetch the content of the widget.
+ 
+\end_layout
+
+\begin_layout Description
+tablename which of the three tables ("text", "class", "author") the widget
+ applies to.
+\end_layout
+
+\begin_layout Description
+column\InsetSpace ~
+name which column the widget applies to.
+\end_layout
+
+\begin_layout Description
+constraint if only some of the (only applicable for "db"-type widgets).
+\end_layout
+
+\begin_layout Standard
+If "db" is selected as type, the program extracts all possible values from
+ the appropriate table and column (modulu the optional constrint) and populates
+ the widget.
+ For example, in the second line, the widget called "title" is populated
+ with all the values from the column "title", in the table "text", for all
+ entries where the "collection"-column is empty (in this case, removing
+ newspaper articles etc).
+\end_layout
+
+\begin_layout Standard
+If "file" is selected, the program reads the contents of the widget from
+ the file named "<identifier>.dat":
+\end_layout
+
+\begin_layout LyX-Code
+original        n
+\end_layout
+
+\begin_layout LyX-Code
+translation     y
+\end_layout
+
+\begin_layout Standard
+This is also a tab-separated file, where the displayed name of each entry
+ is found in the first column, and the actual content (of the query to the
+ database) is in the second column.
+\end_layout
+
+\begin_layout Standard
+When the widgets are populated, they can be created in the HTML/PHP file
+ of the corpus interface like this:
+\end_layout
+
+\begin_layout LyX-Code
+<script language="javascript">
+\end_layout
+
+\begin_layout LyX-Code
+  writeWidgetDoubleTable('title','tittel','hidden')
+\end_layout
+
+\begin_layout LyX-Code
+</script>
+\end_layout
+
+\begin_layout LyX-Code
+<br />
+\end_layout
+
+\begin_layout LyX-Code
+
+\end_layout
+
+\begin_layout LyX-Code
+<script language="javascript">
+\end_layout
+
+\begin_layout LyX-Code
+   writeWidgetFromTo('pubdate','utgivelsesår', 'hidden')
+\end_layout
+
+\begin_layout LyX-Code
+</script>
+\end_layout
+
+\begin_layout LyX-Code
+<br />
+\end_layout
+
+\begin_layout LyX-Code
+ 
+\end_layout
+
+\begin_layout LyX-Code
+<script language="javascript">
+\end_layout
+
+\begin_layout LyX-Code
+   writeWidgetCheck('translated','translated', 'open')
+\end_layout
+
+\begin_layout LyX-Code
+</script>
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Standard
+innhold i db-tabell for at check-typen skal virke?
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Menu generation
+\end_layout
+
+\begin_layout Standard
+To generate a menu, you have to create a menu file, and run the create_menu_item.
+pl command.
+ The menu file uses a sligthly idiosyncatic file format based on tab separated
+ fields:
+\begin_inset Foot
+status collapsed
+
+\begin_layout Standard
+The format is likely to change in the future, when a standard format for
+ all Glossa configuration files are established.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout LyX-Code
+lemma   lemma form
+\end_layout
+
+\begin_layout LyX-Code
+case    case sensitive
+\end_layout
+
+\begin_layout LyX-Code
+start   start of word
+\end_layout
+
+\begin_layout LyX-Code
+end     end of word
+\end_layout
+
+\begin_layout LyX-Code
+middle  middle of word
+\end_layout
+
+\begin_layout LyX-Code
+neg     exclude
+\end_layout
+
+\begin_layout LyX-Code
+# w     word
+\end_layout
+
+\begin_layout LyX-Code
+
+\end_layout
+
+\begin_layout LyX-Code
+*       zero or more
+\end_layout
+
+\begin_layout LyX-Code
++       one or more
+\end_layout
+
+\begin_layout LyX-Code
+?       zero or one
+\end_layout
+
+\begin_layout LyX-Code
+# occ   occurences
+\end_layout
+
+\begin_layout LyX-Code
+
+\end_layout
+
+\begin_layout LyX-Code
+<break>
+\end_layout
+
+\begin_layout LyX-Code
+
+\end_layout
+
+\begin_layout LyX-Code
+A       adjective
+\end_layout
+
+\begin_layout LyX-Code
+CC      CC
+\end_layout
+
+\begin_layout LyX-Code
+Pr      preposition
+\end_layout
+
+\begin_layout LyX-Code
+N       noun
+\end_layout
+
+\begin_layout LyX-Code
+Pron    pronoun
+\end_layout
+
+\begin_layout LyX-Code
+Po      postposition
+\end_layout
+
+\begin_layout LyX-Code
+V       verb
+\end_layout
+
+\begin_layout LyX-Code
+CS      CS
+\end_layout
+
+\begin_layout LyX-Code
+Adv     adverb
+\end_layout
+
+\begin_layout LyX-Code
+Interj  interjection
+\end_layout
+
+\begin_layout LyX-Code
+Num     numeral
+\end_layout
+
+\begin_layout LyX-Code
+Pcle    particle
+\end_layout
+
+\begin_layout LyX-Code
+# pos   Part of Speech
+\end_layout
+
+\begin_layout Standard
+In the left column are the names as they are stored internally in the corpus,
+ to the right are the names as displayed in the menu.
+ Lines starting with a "#"-character designate categories; so when a user
+ selects 
+\emph on
+"Part of Speech" \SpecialChar \menuseparator
+adjective
+\emph default
+, the internal query will be "[pos='adj']".
+ A single line containing the string "<break>" will create a line break
+ in the menu.
+ A single line containing other words in angle brackets will create a heading
+ in the menu.
+ 
+\end_layout
+
+\begin_layout Standard
+The generation script is applied to this file to create a javascript file.
+ This script takes three arguments, the corpus name, the nane of the javascript
+ function, and the language in the menu (Norwegian or English).
+ Typically, the last two parameters will be stored inside the program, so
+ only the first one is needed:
+\end_layout
+
+\begin_layout LyX-Code
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+create_menu_item.pl <corpusname> <javascript_function> <language:en|no> <
+ menu-file > javascript-file
+\end_layout
+
+\begin_layout LyX-Code
+create_menu_item.pl SAMI < sami_menu.txt > sami.js
+\end_layout
+
+\begin_layout Standard
+The Javascript file will typically be located in the Glossa directory, under
+ /js.
+\end_layout
+
+\begin_layout Standard
+
+\emph on
+Rule of Thumb: 
+\emph default
+For maximum usability, try to find a balance between depth and breadth of
+ the menu.
+ In other words, neither the main menu or any of the submenues should contain
+ more than seven items.
+ If long menues cannot be avoided, try to use line breaks or headings.
+\end_layout
+
+\begin_layout Section
+Tagset conversion
+\end_layout
+
+\begin_layout Standard
+From tagger.
+\end_layout
+
+\begin_layout Standard
+Categories (for display): "multitags.dat".
+\end_layout
+
+\begin_layout Section
+Files created by Glossa
+\end_layout
+
+\begin_layout Standard
+Files created by users.
+\end_layout
+
+\begin_layout Standard
+Log files.
+\end_layout
+
+\begin_layout Standard
+Temporary search data.
+\end_layout
+
+\begin_layout Chapter
+Data used by Glossa
+\end_layout
+
+\begin_layout Section
+CWB files
+\end_layout
+
+\begin_layout Standard
+Reg 
+\end_layout
+
+\begin_layout Standard
+cwb_data
+\end_layout
+
+\begin_layout Standard
+s_id should be unique over entire corpus
+\end_layout
+
+\begin_layout Section
+Metadata database
+\end_layout
+
+\begin_layout Standard
+Tables
+\end_layout
+
+\begin_layout Standard
+Content
+\end_layout
+
+\begin_layout Section
+Lexical statistics
+\end_layout
+
+\begin_layout Standard
+Tables
+\end_layout
+
+\begin_layout Standard
+Content
+\end_layout
+
+\begin_layout Standard
+stats/*.gs files
+\end_layout
+
+\begin_layout Chapter
+Scripts for encoding data
+\end_layout
+
+\begin_layout Standard
+The 
+\noun on
+Glossa
+\noun default
+ system does not care how you generate your data.
+ But there are some utility scripts in the package that might come in handy.
+\end_layout
+
+\begin_layout Section
+Cwb data
+\end_layout
+
+\begin_layout Standard
+TEI
+\end_layout
+
+\begin_layout Standard
+Simple text
+\end_layout
+
+\begin_layout Standard
+Tagged text
+\end_layout
+
+\begin_layout Standard
+Tagset conversion
+\end_layout
+
+\begin_layout Subsection
+Alignment
+\end_layout
+
+\begin_layout Section
+Metadata
+\end_layout
+
+\begin_layout Chapter
+\start_of_appendix
+Terminology
+\end_layout
+
+\begin_layout Standard
+"corpus": project name (bokmal, nota, test, omc, sami)
+\end_layout
+
+\begin_layout Standard
+"base_corpus":
+\end_layout
+
+\begin_layout Standard
+for monolingual: 
+\end_layout
+
+\begin_layout Standard
+- name of acutal files (ILN_LEKS, TEST, NOTA3)
+\end_layout
+
+\begin_layout Standard
+- useful for versioning etc.
+\end_layout
+
+\begin_layout Standard
+for multilingual: 
+\end_layout
+
+\begin_layout Standard
+- the corpus searched "first"
+\end_layout
+
+\begin_layout Standard
+- the other corpora are aligned to it
+\end_layout
+
+\begin_layout Standard
+- changes from query to query
+\end_layout
+
+\begin_layout Standard
+"subcorpus":
+\end_layout
+
+\begin_layout Standard
+- selection of texts (in the base corpus)
+\end_layout
+
+\end_body
+\end_document

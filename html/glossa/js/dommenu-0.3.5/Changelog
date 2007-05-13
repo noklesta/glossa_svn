@@ -1,0 +1,71 @@
+$Id: Changelog 1887 2005-05-24 05:12:16Z dallen $
+DOM Menu: Dynamic Javascript 'Popup' Menu
+
+version 0.3.5 (2005/05/24):
+        * improved flash hiding code (only search for object)
+        * changed default style in examples to something sexy ;)
+        * added an example for flash animation hiding
+        * fixed some hiding cases with Konqueror
+
+version 0.3.4 (2005/05/22):
+        * unhighlight sibling menu on switch, regardless of open submenus
+        * disable submenus in MacIE 5.2 (top level still works)
+        * fix offset problem in submenu when opera/safari using margin on body
+        * improve comments
+
+version 0.3.3 (2005/05/20):
+        * added support for hiding flash animations
+        * change id naming scheme to use - rather than [ and ]
+        * updates of some demo look&feel
+        * resync with the domLib.js library
+        * Mac IE is support in spirit, as submenus are disabled
+        * Opera 8 enabled
+        * Menu no longer loads if data Hash is empty
+        * Added info in README about how to make the program smaller using jsmin
+        * Fixed memory leaks in IE caused by using inner functions and
+          circular references.
+        * domTT and domMenu can now be used on the same page
+        * Mac IE and Safari are now supported
+        * domMenu has been converted to be fully domLib compliant.  This
+          improves functionality and cuts down on the code needed when using
+          both domTT and domMenu. 
+        * The url for the arrow picture used when expanding the menu can now
+          be changed using the expandMenuArrowUrl parameter.
+
+version 0.3.2 (2003/02/09):
+        * added support for IE 5.0
+        * fixed problem when submenu was deactivated and parent would highlight
+        * added a converter from phplayersmenu
+
+version 0.3.1 (2003/01/04):
+        * added 'contentsHover' if you want to swap images on hover/active
+        * simplified changeActivePath() some regarding the new active path
+        * fixed a bug which would cause the menu to deactivate on mouseover in some cases
+
+version 0.3.0 (2003/01/02):
+        * tremendous code cleanup and redesign
+        * compatibility with Konqueror, Opera
+        * many IE bug fixes
+        * screen edge detection
+        * better offset settings
+        * improved data structure design for settings
+        * multiple menus can coexist
+        * many demo improvements
+
+version 0.2.2 (2002/12/21):
+        * added initial code for doing screen edge detection
+
+version 0.2.1 (2002/12/18):
+        * fixed a bug where timeouts were not cleared because of typo
+
+version 0.2.0 (2002/12/17):
+        * complete overhaul of code...a second initial release
+
+version 0.1.1 (2002/12/08):
+        * renamed functions and variables to have domMenu_* prefix
+        * detect related target when doing mouseout to prevent excessive code execution
+        * added select detection
+        * eliminated unessary code in domMenu_close()
+
+version 0.1.0 (2002/10/30):
+        * Initial release

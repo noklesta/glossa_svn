@@ -1,0 +1,30 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN"
+            "http://www.w3.org/TR/REC-html40/strict.dtd">
+<html>
+  <head>
+    <title>[DOM Menu] :: Example 3: Brainjar.com "Revenge of the Menubar" Style Menu</title>
+    <style>
+@import url(example.css);
+    </style>
+    <script language="javascript" src="../domLib.js"></script>
+    <script language="javascript" src="../domMenu.js"></script>
+    <script language="javascript" src="domMenu_items.js"></script>
+    <script>
+document.onmouseup = function() 
+{
+    domMenu_deactivate('domMenu_BJ');
+}
+    </script>
+  </head>
+  <body>
+    <div class="title">Example 3: Brainjar.com "Revenge of the Menubar" Style Menu</div>
+    <div class="main">
+      <div class="p">To prove the flexibility of this menu system, the third example emulates yet another popular menu system, <a href="http://brainjar.com" target="_blank">brainjar.com</a>'s "Revenge of the Menubar."  The responsivness of this menu is very similar to the KDE style menu, except that now a "hovered" element is given a distinct style from an "active" element, which has an open submenu.</div>
+      <div class="p" id="domMenu_BJ" style="height: 10px; margin-bottom: 10px;"></div>
+      <script language="javascript">
+domMenu_activate('domMenu_BJ');
+      </script>
+    </div>
+    <div style="float: left;"><a href="example2.html">&#171;Example 2</a></div><div style="float: right;"><a href="example4.html">Example 4&#187;</a></div>
+  </body>
+</html>

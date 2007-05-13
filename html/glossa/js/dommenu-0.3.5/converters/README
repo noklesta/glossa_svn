@@ -1,0 +1,7 @@
+Just drop a phplayersmenu file in this directory, adjust the filename at the
+bottom of phplayersmenu.php and run phplayersmenu.php.  The resulting output
+will be a valid definition for a domMenu_items.js file.
+
+I still need to think about this images issue...how do I know if the content
+should be assumed to be an image so that image swapping is smooth...a flag
+might suffice 'imageSwap', true

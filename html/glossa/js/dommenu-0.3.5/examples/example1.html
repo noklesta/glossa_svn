@@ -1,0 +1,28 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN"
+            "http://www.w3.org/TR/REC-html40/strict.dtd">
+<html>
+  <head>
+    <title>[DOM Menu] :: Example 1 :: Horizontal Menu</title>
+    <style>
+@import url(example.css);
+    </style>
+    <script language="javascript" src="../domLib.js"></script>
+    <script language="javascript" src="../domMenu.js"></script>
+    <script language="javascript" src="domMenu_items.js"></script>
+  </head>
+  <body>
+    <div class="title">Example 1: Horizontal Menu</div>
+    <div class="main">
+      <div class="p">The first example demonstrates a horizontal menu similar to the various "popout" menus that have been cropping up all over the web the last few years.  Many of these menu systems seen are powered by HierMenus from <a href="http://dhtmlab.com" target="_blank">dhtmlab.com</a>.  These javascript menu systems behave similarily to desktop menu systems except that they typically activate with a mouseover event on a top level menu element and close when the mouse is moved away from the menu, often after a short delay.</div>
+      <div class="p">The core of the DOM Menu configuration is the hierarchial associative array (Hash) data structure, which lays out the menu precisely how it will appear when rendered.  Each element can have 'contents,', 'statusText,' 'uri,' 'target,' and other child elements.  DOM Menu uses this data structure to build the menu and its submens on demand.  The top level menu is created inside the element whose ID attribute has the same value as the name of the menu that is initialized in the domMenu_activate() function call.</div>
+      <div class="p">The look of the menu is controlled almost exclusively through the style class definitions, with some additional tweaks specified in javascript variables.  The menu system provides extensive customization which includes, but is not limited to, timings, offsets, width distribution and styles.</div>
+      <div class="p">
+        <div id="domMenu_main"></div>
+        <script language="javascript">
+  domMenu_activate('domMenu_main');
+        </script>
+      </div>
+    </div>
+    <div style="float: left;"><a href="index.html">&#171;Index</a></div><div style="float: right;"><a href="example2.html">Example 2&#187;</a></div>
+  </body>
+</html>

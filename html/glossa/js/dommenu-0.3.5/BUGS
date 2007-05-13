@@ -1,0 +1,11 @@
+$Id: BUGS 1879 2005-05-24 05:02:10Z dallen $
+
+[+] Mozilla is blinking the element in the upper left corner during create,
+    before positioning it
+
+[+] Two menus at the same time doesn't work in IE Mac (who cares?)
+
+[+] Mostly just display and positioning bugs.  The functionality of the menu is
+    definitely close to 100%.  It is certainly less buggy than the mozilla menu and
+    the windows toolkit menu.  Turns out KDE actually has one of the least buggiest
+    menu systems.

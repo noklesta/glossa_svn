@@ -1,0 +1,56 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN"
+            "http://www.w3.org/TR/REC-html40/strict.dtd">
+<html>
+  <head>
+    <title>[DOM Menu] :: Example 2 :: KDE Keramik Style Menu</title>
+    <style>
+@import url(example.css);
+    </style>
+    <script language="javascript" src="../domLib.js"></script>
+    <script language="javascript" src="../domMenu.js"></script>
+    <script language="javascript" src="domMenu_items.js"></script>
+    <script language="javascript">
+document.onmouseup = function() 
+{
+    domMenu_deactivate('domMenu_keramik');
+}
+
+var images = new Array();
+images[0] = new Image();
+images[0].src = 'keramik_title.gif';
+images[1] = new Image();
+images[1].src = 'keramik_bubble.gif';
+images[2] = new Image();
+images[2].src = 'keramik_gradient_h.gif';
+images[3] = new Image();
+images[3].src = 'keramik_gradient_v.gif';
+    </script>
+  </head>
+  <body>
+    <div class="title">Example 2: KDE Keramik Style Menu</div>
+    <div class="main">
+      <div class="p">The second example demonstrates the flexibility of the style configuration.  By modifying the class definitions and a few configuration settings, this horizontal menu uses a style which emulates the KDE Keramik Style (Linux Desktop).  The reponsiveness of the menu has also been tweaked so that it requires a click to activate and a mouse click event outside of the menu to deactivate.</div>
+      <div class="p">Several other additions over the first example include submenus, heading menu elements (rather than links) and collision element detection (for hiding widgets which lay above the html layer).</div>
+      <div style="margin: 10px; width: 555px;">
+        <div><img src="keramik_title.gif" style="vertical-align: bottom;" /></div>
+        <div style="margin: 0 1px; border: 0px #F1F8FE solid; border-width: 0 1px; background: url(keramik_gradient_v.gif) repeat-x;">
+          <div id="domMenu_keramik"></div>
+        </div>
+      </div>
+      <script language="javascript">
+domMenu_activate('domMenu_keramik');
+      </script>
+      <div class="p">
+        <select size="3">
+          <option value="0">I'm in the way</option>
+          <option value="1">I'm in the way</option>
+          <option value="2">I'm in the way</option>
+          <option value="2">I'm in the way</option>
+          <option value="2">I'm in the way</option>
+          <option value="2">I'm in the way</option>
+        </select>
+      </div>
+    </div>
+    <div style="float: left;"><a href="example1.html">&#171;Example 1</a></div><div style="float: right;"><a href="example3.html">Example 3&#187;</a></div>
+  </body>
+</html>

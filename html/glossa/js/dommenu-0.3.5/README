@@ -1,0 +1,108 @@
+DOM Menu README File - A quick look into configuration, design and logic.
+
+Preparing Your Page for a Menu:
+-------------------------------
+In order to create a menu, you must first create a container element on your
+web page.  This container element becomes the bounding box for the menu.  You
+set the xhtml ID attribute of this bounding box to have a value equivalent to
+the name of the menu which is set in the menu item data structure.  The menu
+consists of a <div> element for the menubar and a <div> element for each menu
+item.  Behind the scenes, there is actually a table inside the menubar div and
+each item is inside of a cell of that table.  This table, however, is invisible
+and used merely for width distribution across the page and consistent style
+rendering.  The look of the menu is controlled by the style definitions for
+each of these <div> elements and can be mapped in the settings data structure
+for the menu.  In order for the menu to work correctly you'll want to follow
+the example stylesheet pretty closely.  It has been crafted to work well on all
+the supported browsers.
+
+Include the file domMenu_min.js in your script tags, which is a compressed
+version of the library for faster downloads.  The other two files, domLib.js
+and domMenu.js are the formatted source of this combined file.
+
+Migration from pre-0.3.2
+------------------------
+When upgrading from a release older than 0.3.2 you will need to make some
+changes to domMenu_items structure because domLib is now used as a common
+library for many domMenu functions.  The following changes need to be made:
+1. Replace all instances of domMenu_Hash with Hash
+2. Replace all instances of setItem with set
+3. Replace all instances of items with elementData
+4. Add a <script language="javascript" src="domLib.js"></script> tag to your menu pages
+   which will load domLib.js (included in distribution)
+
+Why is this program so big?
+---------------------------
+Partly because it is feature rich and thus there is lots of code, partly
+because we try to use comments where ever necessary to clarify issues, and
+partly because our coding style is one which makes liberal use of whitespace.
+However, to save your users the trouble of downloading 50k of JavaScript every
+time they come to your page you can use Douglas Crockford's excellent jsmin
+program to strip all non-essentials from the code, reducing it's size by as
+much as 50%.  This program has been verified to work with his program, located at:
+http://www.crockford.com/javascript/jsmin.html  
+An example usage would be: 
+bash# ./jsmin domMenu.js domMenu_min.js \
+"domMenu is Copyright Dan Allen (dan@mojavelinux.com) (2003).  Licensed under the LGPL"
+
+The Menu Structure:
+-------------------
+One of the advantages of DOM Menu over other menuing systems is the versatile
+data structure of the menu.  A customized Hash() class has been created which
+allows you to layout the menu data in a hierarchial fashion just as it is
+rendered on the page.  This allows for portability as well as a simple means
+for creating an alternative menu structure (such as a site-map or text-based
+version).  Each menu element has the following keys: 'contents,' 'uri,'
+'target,' and 'statusText'.  Every menu element can also have child elements,
+which are specified using numerical keys starting at the index 1.  Each numeric
+key is another Hash() with the same structure (a submenu).
+
+Browser Limitations
+-----------------------
+ - Konqueror: Cannot set the visibility to hidden on system draw elements
+   (such as multirow selects and flash animations).  As a result, these
+   elements are set to display: none, which obviously causes layout disruptions
+   and flash movies never recover.
+
+ - Mac IE: It is a known bug that two menus on the same page do not work on Mac
+   IE.  Mac IE is known to have a slow DOM implementation so don't expect
+   domMenu to be too zippy on that browser, and, in fact, the browser may crash
+   unexpectedly at times because Mac IE has the most buggy DOM implementation
+   of the supported browsers.  In short, don't rely on Mac IE as its support is
+   limited.
+
+The Menu Logic:
+---------------
+In a menu system, only one element can be active at any given time.  In this
+case, the term "active" means that that element has focus and the element, as
+well as the path leading up to the element, remains open until that focus is
+lost.  All other submenus, even if visible, are pending to be closed.
+
+All events on the menu that are triggered involve a transition from the current
+(or old) active element to a target (or new) active element.  Thus, by
+definition, a menu event is simply the changing of the guard (or active
+element).  If, at the time of the event, no active element exists, then the old
+active element is just null and the first level submenu is activated.  If, at
+the time of the event, the target element is not a menu item (owned by the
+current menu), then the new active element is null and the menu is set to be
+closed.
+
+The core of the menu logic resides in the change of the guard function,
+domMenu_changeActivePath().  When the focus changes from one element to
+another, the paths of these two elements are constructed by working recursively
+to the top of the menu.  The paths consist of the element and all the ancestors
+of that element.  If the two paths interesect, then the common path is
+preserved and only the part of the old active path which is unique is scheduled
+to be closed.  If the new active element is located in the path of the old
+active element then no action is taken and the active element remains
+unchanged.  Most of the logic in this function deals with the calling and
+cancelling of timeouts involving the opening and closing of submenus.
+
+While both the mouseover and the mouseout events are registered, the mouseover
+handler does most the logic.  When a mouseout event occurs, the only check is
+whether the target element is in fact an element in the menu.  If it is not an
+element, than the menu is scheduled to be closed.  If the target element on a
+mouseout event is a menu element, then the event is ignored and the mouseover
+event handler responds to the event by changing the active path.
+
+$Id: README 1892 2005-05-25 05:04:20Z dallen $
