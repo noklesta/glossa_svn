@@ -4,6 +4,17 @@
 
 */
 
+function printDisplayOptions() {
+
+	var Options;
+	for (i in displayContent) {
+	    if (i != 'clone') {
+	    	Options += "<option value='" + i + "'>" + displayContent[i] + "</option>";
+	    }
+	}
+	document.write(Options);
+
+}
 
 
 
