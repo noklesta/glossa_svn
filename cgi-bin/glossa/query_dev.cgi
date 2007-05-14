@@ -8,8 +8,11 @@ use Data::Dumper;
 use DBI;
 use WebCqp::Query_dev;
 
-          
+# if Glossa.pm is not installed in the system directories
+# (you can use this, for example, if you are making changes, 
+# or if you don't have access to the root account)          
 use lib ('/home/httpd/html/glossa/pm/');
+
 use Glossa;
 
 ##                                        ##
@@ -18,12 +21,16 @@ use Glossa;
 
 
 
+## get cgi input
 
+# All the input from the user (form data) is converted to a hash, which
+# is sendt to the Glossa module for further processing, since some 
+# of the information is stored as "_"-delimited names and values.
+# It is returned as a new hash "%in" containing all the input
+# as a hash of hashes, which can be called like this:
+# $corpus = $in{'query'}->{'corpus'}->[0];
 
-
-# get cgi input
 my $cgi = CGI->new;
-
 
 # FIXME: this should be done in module
 my %cgi_hash;
@@ -32,26 +39,23 @@ foreach my $p (@prms) {
     my @vals = $cgi->param($p);
     $cgi_hash{$p}=\@vals;
 }
-
-
-
-
 my $in = Glossa::create_cgi_hash2(\%cgi_hash);
 my %in = %$in;
 
 
 
-
+# get shorter name of some values that are used frequently
 my $CORPUS = $in{'query'}->{'corpus'}->[0];
 my $ROOT = $in{'query'}->{'root'}->[0];
 
+my $display_struct = CGI::param('structDisplay');
 
 
+## read configuration files
+# FIXME: should also be done in module
 
-# read configuration file
+# main configuration file
 my $conf_file = $ROOT . "/" . $CORPUS . "/cgi.conf";
-
-
 my %conf;
 open (CONF, $conf_file);
 while (<CONF>) {
@@ -63,8 +67,9 @@ while (<CONF>) {
 }
 close CONF;
 
+$conf{'base_corpus'}=$CORPUS;
 
-# read multitag file
+# multitag file
 my $file = $conf{'config_dir'} . "/" . $CORPUS . "/multitags.dat";
 my %multitags;
 open (M, $file);
@@ -78,11 +83,8 @@ while (<M>) {
 }
 close M;
 
-# read language file
+# language file
 my $lang_file = $conf{'config_dir'} . "/lang/" . $conf{'lang'} . ".dat";
-
-
-
 my %lang;
 open (LANG, $lang_file);
 while (<LANG>) {
@@ -94,63 +96,64 @@ while (<LANG>) {
 close LANG;
 
 
+
+## start the HTTP session and HTML file
 print "Content-type: text/html; charset=$conf{'charset'}\n\n";
-
-
-my $test=0;
-
-if($test){
-    my @prms = $cgi->param();
-    foreach my $prm (@prms){
-	my @vals = $cgi->param($prm);
-	my $elts = @vals;
-	if($vals[0]){
-	    print "$prm ($elts): ";
-	    foreach my $val (@vals){
-		print "$val, ";
-	    }
-	    print "<br />";
-	}
-    }
-}
-
-
 print "<html><head><title>$lang{'title'}</title><link href=\"", $conf{'htmlRoot'}, "/html/tags.css\" rel=\"stylesheet\" type=\"text/css\"></link></head><body>";
 
+# FIXME: temporary message
+if ($CORPUS eq 'test') {
+    print "<script language=\"JavaScript\">stopWait()</script>";
+    print "<strong><font color='red'>Sorry!<br><br>We don't currently have a completely free corpus 
+that we can show results from. If you would like to know more about Glossa, and actually see how it displays results, please contact lars.nygaard\@iln.uio.no</strong><font color='grey'>'";
+    die;
+}
 
+## for debugging
 #print "L: $conf_file<br>";
-
 #print "<pre>";
 #print Dumper %in;
 #print "</pre>";
 
+## more debugging
+#if($test){
+#    my @prms = $cgi->param();
+#    foreach my $prm (@prms){
+#	my @vals = $cgi->param($prm);
+#	my $elts = @vals;
+#	if($vals[0]){
+#	    print "$prm ($elts): ";
+#	    foreach my $val (@vals){ print "$val, " }
+#	    print "<br />";
+#	}
+#    }
+#}
 
 
-# set query id
+## Set query id
+# This id is used to identify the files resulting from a query, so 
+# they can be processed by other functions (collocations, annotation etc.)
 my $starttime=time();
 my $rand = int(rand 100000);
 $conf{'query_id'} = $starttime . "_" . $rand;
 
-# open log file
+
+## open log file
 open (LOG, ">>$conf{'logfile'}");
 
-# turn off buffering
+
+## turn off buffering; just a trick to display stuff more quickly
 select(STDOUT);
 $|=1;
 
 
-
-# initialize MySQL
+## initialize MySQL session
 my $dsn = "DBI:mysql:database=$conf{'db_name'};host=$conf{'db_host'}";
 my $dbh = DBI->connect($dsn, $conf{'db_uname'}, $conf{'db_pwd'}, {RaiseError => 1});
 
 
-
-
+## define some entities
 my $apostr = chr(0x60);
-
-
-
 
 
 
@@ -159,52 +162,67 @@ my $apostr = chr(0x60);
 ##             1. Build query             ##
 ##                                        ##
 
-my %corpora;
-my %aligned_corpora;
-my %aligned_corpora_opt;
-my $base_corpus;
-my $aligned;                # indicate if there are restrictions on aligned corpora
+# hashes for storing sub-queries
+my %corpora;                           
+my %aligned_corpora;                   
+my %aligned_corpora_opt;               # "opt" = optional
 
-my $phrases=$in{'phrase'}->{'number'};
+my $base_corpus;                       # name of base corpus (i.e. non-aligned)
+my $aligned;                           # boolean: indicate if there are restrictions on aligned corpora
+my $phrases=$in{'phrase'}->{'number'}; # the number of phrases (i.e. "rows" in the interface)
 
+
+## Loop through all the phrases
+# This is a key step, where the form data is converted to fragments 
+# in the CQP query language. The fragments are then put in the hashes for 
+# corpora, aligned_corpora or aligned_corpora_opt
 foreach my $row (@$phrases) {
 
+
+    # get the name of the *first* corpus, this is defined as the "base corpus" 
     my $corpus = $in{'phrase'}->{$row}->{'corpus'}->[0];
     if ($row == 0) {
 	$base_corpus=$corpus;
     }
 
+    # for storing the cqp expression for the entire row (FIXME: aka. "phrase)
     my $cqp_query_row;
 
+    # loop through each token in the row
     my $i=1;
     while (my $token=$in{'token'}->{$row}->{$i}) {
 
+	# for storing the cqp expression for the token
 	my $cqp_query;
 
-	my %atts;
 
-	my $string_neg;
-	my $string_class="word";
-	my $string_case = " \%c";
-	my $string_string=$token->{'string'}->[0];
 
+	my $string_neg;                             # is it negated?
+	my $string_class="word";                    # the default; can be changed to "lemma"
+	my $string_case = " \%c";                   # the default: case insensitive
+	my $string_string=$token->{'string'}->[0];  # the word sting
+
+	# escape special character unless the user wants to use
+       # regular expressions
 	unless ($in{'query'}->{'regex'}) {
 	    $string_string =~ s/([\.|\?|\+|\*|\|\'|\"])/\\$1/g;
 	}
 
 	
+	my $occurrence_restr;                       # store occurrence restrictions
 
-	my $occurrence_restr;
-
+	# loop through token attributes (POS, case etc.)
+	my %atts;	
 	my $atts = $token->{'atts'};
 	foreach my $att (@$atts) {
 	    my ($cat,$val)=split(/_/, $att);
 
+	    # FIXME: a hack, since "_" was stupidly chosen as a delimiter 
 	    $cat =~ s/~/_/g;
 	    $val =~ s/~/_/g;
 
+	    # the attributes in the "word" submenu
 	    if ($cat eq 'w') {
-
 		if ($val eq 'lemma') {
 		    $string_class = "lemma";
 		}
@@ -224,32 +242,50 @@ foreach my $row (@$phrases) {
 		    $string_neg = 1;
 		}
 	    }
+	    # the attributes in the "occurence" submenu
 	    elsif ($cat eq 'occ') {
 		$occurrence_restr=$val;
 	    }
-	    elsif ($val =~ s/^!//) {
+	    elsif ($val =~ s/^!//) { 	    # if the feature is negated
 		$atts{'neg'}->{$cat} .= "|" . $cat . "=\"" . $val. "\"";
 	    }
-	    else {
+	    else {                              # if it's *not* negated
+		# normal treatment to all others:
 		$atts{'pos'}->{$cat} .= "|" . $cat . "=\"" . $val . "\"";
 	    }
+
 	}
 
-	my @pos;
-	my @neg;
 
+
+	my @pos;  # list of non-negated cqp fragments
+	my @neg;  # list of negated cqp fragments
+
+	# create the cqp fragment for the word/lemma string, if any
+        # and place in the negated/non-negated list
+	#unless ($string_string eq '') {
+	#    my $string=$string_class . "=\"" . $string_string . "\"" . $string_case ;
+	#    if ($string_neg) {
+	#	push @neg, $string;
+	#    }
+	#    else {
+	#	push @pos, $string;
+	#    }
+	#}
+	
 	unless ($string_string eq '') {
-	    my $string=$string_class . "=\"" . $string_string . "\"" . $string_case ;
 	    if ($string_neg) {
-		push @neg, $string;
+		$atts{'neg'}->{$string_class} .= "|" . $string_class . "=\"" . $string_string . "\"" . $string_case;
 	    }
 	    else {
-		push @pos, $string;
+		$atts{'pos'}->{$string_class} .= "|" . $string_class . "=\"" . $string_string . "\"" . $string_case;
 	    }
 	}
 
+	# start of the cqp fragment for the entire token
 	$cqp_query .= "[";
 
+	# loop through the non-negated attributes, put them in the proper list 
 	my $pos = $atts{'pos'};
 	if ($pos) {
 	    my %pos = %$pos;
@@ -260,11 +296,13 @@ foreach my $row (@$phrases) {
 		push @pos, $pos;
 	    }
 	}
+
+	# concatenate the list of non-negated fragments to the token fragment
 	if (@pos > 0) {
 	   $cqp_query .= "(" . join(" & ", @pos) . ")";
 	}
 
-
+	# loop through the negated attributes, put them in the proper list 
 	my $neg = $atts{'neg'};
 	if ($neg) {
 	    my %neg = %$neg;
@@ -275,9 +313,12 @@ foreach my $row (@$phrases) {
 		push @neg, $neg;
 	    }
 	}
+
+	# concatenate the list of negated fragments to the token fragment
 	if (@neg > 0) {
 
-	    # ?????????????????
+	    # the negative fragments must be prefixed by an "&" it there are
+	    # any positive ones
 	    if (@pos > 0) {
 		$cqp_query .= " & ";
 	    }
@@ -285,65 +326,84 @@ foreach my $row (@$phrases) {
 	    $cqp_query .= " !(" . join(" | ", @neg) . ")";
 	}
 
+	# end of the cqp fragment for the entire token
 	$cqp_query .= "]";
 
-	# occurence
+	# add occurence restrictions
 	$cqp_query .= $occurrence_restr;
 
-        # interval
+       # for each token, there follows an "interval"
+	# (i.e. how many unspecified tokens may follow)
 	my $min = $token->{'intmin'}->[0];
 	my $max = $token->{'intmax'}->[0];
 
 	if ($min or $max) { 
-	    unless ($min) { $min = 0 }
-	    $cqp_query = " []{" . $min . "," . $max . "} " . $cqp_query;
+	    unless ($min) { $min = 0 }  # the default is 0
+	    # create cqp fragment and add to cqp expression for the token
+	    $cqp_query = " []{" . $min . "," . $max . "} " . $cqp_query; 
 	}
-
+	
+	# add expression for the token to expression for the row
 	$cqp_query_row .= $cqp_query;
 	
-	$i++;
+	$i++; # next token
 
     }
 
-
+    # if the row is associated with the base corpus, put it in the %corpora
+    # hash
     if ($corpus eq $base_corpus) {
 	$corpora{$corpus}->{$cqp_query_row}=1;
     }
+    # else, put it in either the %aligned_corpora or the %aligned_corpora_opt hash
     else {
-	my $optalign = $in{'phrase'}->{$row}->{'optalign'}->[0];
 
+	# all aligned cqp expressions are paranthesised
 	$cqp_query_row = " (" . $cqp_query_row;
 
+	# check for negation
 	if ($in{'phrase'}->{$row}->{'mode'}->[0] eq 'exclude') {
 	    $cqp_query_row = " !" . $cqp_query_row;
 	}
 
+	# check for optionality
+	my $optalign = $in{'phrase'}->{$row}->{'optalign'}->[0]; # optionality of the row
 	if ($optalign eq 'on') {
-		$aligned_corpora_opt{$corpus}=1;
+		$aligned_corpora_opt{$corpus}=1; # we only add the name of the corpus,
+                                                 # since restriction does not make
+		                                 # sense for optional alignment
 	}
 	else {
 	      
+	    # Non-optional alignments can be connected with either AND or OR.
+            # Therefore, this section is sligthly more complex than the other ones
+	    
+	    # get previous expressions for rows with the same corpus name
 	    my $previous_hash = $aligned_corpora{$corpus};
 	    my $previous = (keys %$previous_hash)[0];
 	    
+	    # check the connection type (AND or OR)
 	    my $connect_bool = $in{'phrase'}->{$row}->{'connectBool'}->[0];
-	    
-	    if (($connect_bool eq 'and') and $previous) {
+
+	    if (($connect_bool eq 'and') and $previous) { 
+		# non-default: join explicitly and delete previous
 		my $cqp_query_both = $previous . ") :" . $corpus . " " . $cqp_query_row;
 		$aligned_corpora{$corpus}->{$cqp_query_both}=1;
 		delete $aligned_corpora{$corpus}->{$previous};
 	    }
-	    else {
+	    else { # use the default connection
 		$aligned_corpora{$corpus}->{$cqp_query_row}=1;
 	    }
-	    $aligned=1;
+	    $aligned=1; # only the non-optinal alignment sets this, since
+                        # the purpose is to do optimalizations based on
+                        # the viability of early query restrictions
 	}
     }
     
 
 }
 
-
+# the full cqp expression for the base corpus
 my $base_queries = $corpora{$base_corpus};
 
 # stop if the query is empty
@@ -352,17 +412,24 @@ if ($$base_queries{'[]'}) {
 }
 
 
-
+# start the full cqp expression ($cqp_all), by
+# joining rows pertaining to the base corpus
+# (note: a cqp limitation forces this to always be 
+# joined by "OR" (i.e. "|"); in the future AND queries
+# should perhaps be hacked together by subqueries). 
 my $cqp_all = "(" . join(") | (", (keys %$base_queries)) . ") ";
 
 
-
+# add cqp expressions for aligned corpora
 while (my ($k,$v) = each %aligned_corpora) {
     $cqp_all .= ":" . $k . "" . join(") | (", (keys %$v)) . ") "
 }
 
+# end it
 $cqp_all .= ";";
 
+
+# for debugging
 #print $cqp_all, "\n";
 
 
@@ -370,9 +437,15 @@ $cqp_all .= ";";
 ##             2. Build subcorpus         ##
 ##                                        ##
 
-my ($subcorpus,$sql_query_nl,$list) = Glossa::create_tid_list(\%conf, \%in, $base_corpus, \%aligned_corpora, \%aligned_corpora_opt);
+# Query the database for 
+# - $subcorpus: boolean, whether there are subcorpus restrictions
+# - $sql_query_nl: a natural language expression for the subcorpus restrictions
+# - $list: a list of allowed text-ids
+# The subcorpus information (allowed token spans) is stored by the module in a .dump file
+# with the rest of the files pertaning to the query.
+my ($subcorpus,$sql_query_nl,$list) = Glossa::create_tid_list(\%conf, \%in, $CORPUS, \%aligned_corpora, \%aligned_corpora_opt);
 
-
+# print natural language version
 if ($sql_query_nl) {
     print "$lang{'metaquery'}: $sql_query_nl<br>";
 }
@@ -391,54 +464,59 @@ $cqp_query_source2print =~ s/>/\&gt;/g;
 my $top_text = "$lang{'query_string'}: <b>\"$cqp_query_source2print\"</b><br>";
 
 
-
 # start waiting ticker
 print "<div id='waiting'>searching </div>";
 print "<script language=\"JavaScript\" src=\"", $conf{'htmlRoot'}, "/js/wait.js\"></script>";
 print "<script language=\"JavaScript\" src=\"", $conf{'htmlRoot'}, "/js/", $CORPUS, ".conf.js\"></script>";
 
 
-
 # initialize CWB
 $WebCqp::Query::Registry = $conf{'cwb_registry'};
 
-
-
-
+# get some CWB parameters
 my $results_max=$in{'query'}->{'results'}->{'max'}->[0];
 my $randomize=$in{'query'}->{'results'}->{'random'}->[0];
 
-
-
+# initialize CWB query object
 my $query = new WebCqp::Query "$base_corpus";
+
+# print errors
 $query->on_error(sub{grep {print "<2>$_</h2>\n"} @_});
 
-
-
+# specify aligned corpora
 $query->alignments(keys %aligned_corpora, keys %aligned_corpora_opt); 
 
+# get structural attributes
 my $sts = $conf{'corpus_structures'};
 my @sts = split(/ +/, $sts);
-$query->structures(@sts);
+$query->structures(@sts);  # specify str-attrib. to print
 
-
+# get positional attributes
 my $atts = $conf{'corpus_attributes'};
 my @atts = split(/ +/, $atts);
-$query->attributes(@atts);
-shift @atts; # it is used later, without "word" attribute
+$query->attributes(@atts); # specify pos-attrib. to print
+shift @atts; # it is used later, without "word" attribute (always first)
 
 
+# There are three ways of reducing the number of hits. We use the 
+# standard "cut" and "reduce" cqp functions (first hits or random hits) 
+# if there are no restrictions due to alignment). Because of the  "cut 
+# applies too early"-bug in CWB, however, the patched version of 
+# the perl cqp interface has a "cut2" function that is used instead.
+# (Note: cut2 is slightly slower than "cut" but insanaly faster than 
+# importing all hits into perl, and then cutting the array size). 
 if ($randomize and $results_max) {
     $query->reduce($results_max);
 }
-elsif ($results_max and !$aligned and !$randomize) { # because of "cut applies too early"-bug
+elsif ($results_max and !$aligned and !$randomize) { 
     $query->cut($results_max);
 }
-elsif ($results_max) { # because of "cut applies too early"-bug in CWB
+elsif ($results_max) { 
     $query->cut2($results_max);
 }
 
-
+# specify name of context ("s" is default)
+# FIXME: should be in config file
 my $sentence_context;
 if ($CORPUS eq 'nota') {
     $sentence_context='who';
@@ -447,12 +525,16 @@ else {
     $sentence_context='s';
 }
 
-my $context_type=$in{'query'}->{'context'}->{'type'}->[0];
 
-my $context_left=$in{'query'}->{'context'}->{'left'}->[0];
+## specify context size
+
+# get type and size from user 
+my $context_type= $in{'query'}->{'context'}->{'type'}->[0];
+my $context_left= $in{'query'}->{'context'}->{'left'}->[0];
 my $context_right=$in{'query'}->{'context'}->{'right'}->[0];
 
-if ($context_type eq "chars") { 
+# one sentence is default
+if ($context_type eq "chars") {                   # FIXME: should be 'words'
     $context_left = $context_left . " word";
     $context_right = $context_right . " word";
     $query->context($context_left, $context_right);
@@ -465,16 +547,17 @@ elsif ($context_type eq "sentences") {
 }
 else { $query->context('1 s', '1 s'); }
 
+# execute cqp command to restrict to subcorpus
 if ($subcorpus) {
     my $dumpfile = $conf{'tmp_dir'} . "/" . $conf{'query_id'} . ".dump";
     $query->exec("undump QUERY < \"$dumpfile\";");
     $query->exec("QUERY;");
 }
 
-
+# finally, execute the query
 my @result = $query->query("$cqp_all");    
     
-
+# count number of hits
 my $nr_result = @result;
 
 
@@ -520,12 +603,14 @@ if ($conf{'type'} eq 'multilingual') {
 }
 
 #$top_text .= "<option onClick='window.location.href=\"" . $conf{'cgiRoot'} . "/annotate_choose.cgi?$actionurl\"'>$lang{'annotate'}</option> ";
+$top_text .= "<option value='" . $conf{'cgiRoot'} . "/annotate_choose.cgi?$actionurl'>$lang{'annotate'}</option> ";
 $top_text .= "<option value='" . $conf{'cgiRoot'} . "/meta.cgi?$actionurl'>$lang{'metadata'}</option> ";
 $top_text .= "<option value='" . $conf{'cgiRoot'} . "/meta-dist.cgi?$actionurl'>$lang{'meta-dist'}</option> ";
 $top_text .= "<option value='" . $conf{'cgiRoot'} . "/show_page_dev.cgi?$actionurl&n=1&del=yes'>$lang{'delete'}</option> ";
 $top_text .= "<option value='" . $conf{'cgiRoot'} . "/save_hits_choose.cgi?$actionurl'>$lang{'save_hits'}</option> ";
 
 $top_text .="</select><br>";
+
 
 
 
@@ -596,6 +681,14 @@ for (my $i = 0; $i < $nr_result; $i++) {
 
     }
 
+    # get value to display from database
+    if ($display_struct and !($sts{$display_struct})) {     # i.e. if the value to be displayed is not
+                                                            # a cqp structural annotation
+	$sts{$display_struct} = Glossa::get_metadata_feat($display_struct, $sts{'text_id'},\%conf);
+
+    } 
+    
+
     my @sts_strings;
     while (my ($key, $val) = each %sts) {
 	push @sts_strings, $key . "=" . $val;
@@ -635,9 +728,16 @@ for (my $i = 0; $i < $nr_result; $i++) {
 	next if ($al =~ m/^\(no alignment/);
 	
 	my $lang = $a;
+	
 	# FIXME: should be correct in db
 	$lang =~ s/omc3_//;
-	
+
+	# FIXME: should be general
+	if ($CORPUS eq 'samno') {
+	    if ($base_corpus eq 'SAMNO_SAMISK') {  $lang = "sa" }
+	    if ($base_corpus eq 'SAMNO_NORSK') {  $lang = "no" }
+	}
+
 	my $t2;
 	my $targets;
 	
@@ -650,14 +750,18 @@ for (my $i = 0; $i < $nr_result; $i++) {
 	
 	$target_line .= "<tr style='color:gray'><td>";
 
-	
-	my $sth = $dbh->prepare(qq{ SELECT target FROM s_align where source = '$sts{'s_id'}' and lang = '$lang';});
+
+	my $table = $CORPUS;
+	$table = uc($table) . "s_align";
+
+	my $sth = $dbh->prepare(qq{ SELECT target FROM $table where source = '$sts{'s_id'}' and lang = '$lang';});
 
 	my $target_tid;
 	my @target_sids;
 
 	$sth->execute  || die "Error fetching data: $DBI::errstr";
 	while (my ($target) = $sth->fetchrow_array) {
+
 
 	    $t2 = $target;
 	    $t2 =~ s/\..*//g;
@@ -690,7 +794,8 @@ for (my $i = 0; $i < $nr_result; $i++) {
 	    }
 	    $target_line .= ">";
 
-	    print_tokens_target($al), "<br>";
+	    print_tokens_target($al), "<br>";		
+
 	    $target_line .= "</td></tr>";
 	    
 	}
@@ -717,10 +822,10 @@ for (my $i = 0; $i < $nr_result; $i++) {
 
 	if ($CORPUS eq 'nota') {
 	    $source_line.=sprintf("<font size=\"-2\"><a href=\"#\" onClick=\"window.open('http://omilia.uio.no/cgi-bin/nota/expand.pl$ex_url',");
-	    $source_line.=sprintf("'mywindow','height=400,width=1000,status,scrollbars,resizable,screenX=0,screenY=5');\"><img style='border-style:none' src='http://omilia.uio.no/CE2/img/mov.gif'></a> \n&nbsp;</font>");
+	    $source_line.=sprintf("'mywindow','height=400,width=1000,status,scrollbars,resizable,screenX=0,screenY=5');\"><img style='border-style:none' src='http://omilia.uio.no/glossa/html/img/mov.gif'></a> \n&nbsp;</font>");
 
 	}
-	
+	$source_line.="<i>" . $sts{$display_struct} . "</i>";
 	$source_line.=sprintf("</nobr></td><td");
 	if ($context_type eq "chars") { $source_line.=sprintf(" align=\"right\""); }
 	$source_line.=sprintf(">");
@@ -731,21 +836,17 @@ for (my $i = 0; $i < $nr_result; $i++) {
             $a =~ s/\&amp;quot;/\&quot;/g;
 	}
 
+
 	print_tokens($res_l);
-
 	if ($context_type eq "chars") {$source_line.=sprintf("</td><td>"); }
-
 	$source_line.=sprintf("<b> &nbsp;");
-
 	print_tokens($ord);
-    
 	$source_line.=sprintf(" &nbsp;</b>");
-
 	if ($context_type eq "chars") { $source_line.=sprintf("</td><td>"); }
-
 	print_tokens($res_r);
-
 	$source_line.=sprintf("</td></tr>");
+
+
 
 
 
