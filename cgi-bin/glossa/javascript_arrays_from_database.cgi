@@ -23,6 +23,21 @@ my $corpus = CGI::param('corpus');
 my $conf = Glossa::get_conf_file($corpus);
 my %conf = %$conf;
 
+print "\n\ndisplayContent= new Array();\n";
+
+while (my ($k, $v) = each %conf) {
+
+    if ($k eq 'corpus_structures') {
+	my @s = split(/ +/, $v);
+	foreach my $s (@s) {
+	    next if ($s eq 'text_id');
+	    print "displayContent['$s']='$s';\n";
+	}
+    }
+
+}
+
+
 
 
 my $dsn = "DBI:mysql:database=$conf{'db_name'};host=$conf{'db_host'}";
@@ -66,6 +81,10 @@ while (<CONF>) {
     elsif ($type eq 'db') {
 	$conf_db{$name}=[$tablename,$colname,$constraint];
     }
+
+    my $s2 = $tablename . "." . $colname;
+    next if ($name =~ m/-alle$/); # FIXME
+    print "displayContent['$s2']='$name';\n";
 
 }
 

@@ -7,6 +7,7 @@ use POSIX;
 use Data::Dumper;
 use DBI;
 use WebCqp::Query_dev;
+#use CQP;
 
 # if Glossa.pm is not installed in the system directories
 # (you can use this, for example, if you are making changes, 
@@ -556,6 +557,8 @@ if ($subcorpus) {
 
 # finally, execute the query
 my @result = $query->query("$cqp_all");    
+
+$query->exec("dump Last > '/tmp/dumpit.dat';");
     
 # count number of hits
 my $nr_result = @result;
