@@ -6,9 +6,10 @@ use Carp;
 use CGI;
 use base qw{ Exporter };
 use Data::Dumper;
+use DBI;
 
 our $VERSION   = '0.1';
-our @EXPORT_OK = qw{ get_conf_file print_token print_token_target create_tid_list  };
+our @EXPORT_OK = qw{ get_conf_file print_token print_token_target create_tid_list get_metadata_feat };
  
 sub get_conf_file {
 
@@ -108,6 +109,27 @@ sub create_cgi_hash {
 
 }
 
+sub get_metadata_feat {
+
+    my ($feat, $tid, $conf) = @_;
+    my %conf = %$conf;
+    my $dsn = "DBI:mysql:database=$conf{'db_name'};host=$conf{'db_host'}";
+    my $dbh = DBI->connect($dsn, $conf{'db_uname'}, $conf{'db_pwd'}, {RaiseError => 1});    
+
+    my $feattable = $feat;
+    $feattable =~ s/\..*//;
+    $feat =~ s/.*\.//;
+    my $tablename = uc($conf{'base_corpus'}) . $feattable;
+    my $sql = "SELECT $feat from $tablename where tid='$tid';";
+
+    my $sth = $dbh->prepare($sql);
+    $sth->execute  || die "Error fetching data: $DBI::errstr";
+    my ($featval) = $sth->fetchrow_array;
+    next unless $featval;
+    return $featval;
+
+
+}
 
 sub create_tid_list {
 
@@ -295,6 +317,8 @@ sub create_tid_list {
     $sth->execute  || die "Error fetching data: $DBI::errstr";
     while (my ($tid,$s,$e) = $sth->fetchrow_array) {
 	$texts_allowed{$tid}=1;
+	unless ($s) { $s="" }
+	unless ($e) { $e="" }
 	$dumpstring .= $s . "\t" . $e . "\n";
 	$dumplength++;
     }
