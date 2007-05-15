@@ -32,13 +32,29 @@ if ( $_GET['corpus'] == 'test' ) {
   echo "<script language='javascript' src='" . $htmlRoot . "/js/test.js'></script>";
 }
 elseif ( $_GET['corpus'] == 'omc' ) {
+  echo "<script language='javascript' src='" . $htmlRoot . "/js/omc_en.js'></script>";
+  echo "<script language='javascript' src='" . $htmlRoot . "/js/omc_fr.js'></script>";
 
+  echo "<script language='javascript' src='" . $htmlRoot . "/js/omc_de.js'></script>";
+  echo "<script language='javascript' src='" . $htmlRoot . "/js/omc_nl.js'></script>";
+
+  echo "<script language='javascript' src='" . $htmlRoot . "/js/omc_no.js'></script>";
+  echo "<script language='javascript' src='" . $htmlRoot . "/js/omc_po.js'></script>";
 }
 elseif ( $_GET['corpus'] == 'sami' ) {
 
 }
 elseif ( $_GET['corpus'] == 'nota' ) {
   echo "<script language='javascript' src='" . $htmlRoot . "/js/nota.js'></script>";
+
+}
+elseif ( $_GET['corpus'] == 'bokmal' ) {
+  echo "<script language='javascript' src='" . $htmlRoot . "/js/bokmal.js'></script>";
+
+}
+elseif ( $_GET['corpus'] == 'samno' ) {
+  echo "<script language='javascript' src='" . $htmlRoot . "/js/samno_samisk.js'></script>";
+  echo "<script language='javascript' src='" . $htmlRoot . "/js/samno_norsk.js'></script>";
 
 }
 
@@ -94,7 +110,7 @@ elseif ( $_GET['corpus'] == 'nota' ) {
 
 <form action="
  <?php echo $cgiRoot ?>
-/query_dev.cgi" method="POST" onReset="hideAll()">
+/query_dev.cgi" method="POST" onSubmit='submitForm(); return false'  onReset="hideAll()">
 
 
 <!-- 
@@ -113,14 +129,16 @@ elseif ( $_GET['corpus'] == 'nota' ) {
 
      <td style="background-color:#efefef;border-width:1px;border-style:solid;border-color:#afaeae">
      <script language="javascript">
-       document.write("<input type='button' onClick='submitForm()' value='");
+
+       document.write("<input type='submit' value='");
+     //document.write("<input type='button' onClick='submitForm()' value='");
        document.write(strings[language]['search']);
-       document.write("' tabindex='0'>");
+       document.write("'>");
     </script><br><br>
      <script language="javascript">
        document.write("<input type='button' onClick='window.location.reload()()' value='");
        document.write(strings[language]['reset']);
-       document.write("' tabindex='1'>");
+       document.write("'>");
     </script>
      </td>
 </tr>
@@ -135,7 +153,7 @@ elseif ( $_GET['corpus'] == 'nota' ) {
 
 
 
-<tr><td style="background-color:#efefef;border-width:1px;border-style:solid;border-color:#afaeae">
+<tr><td style="background-color:#efefef;border-width:1px;border-style:solid;border-color:#afaeae" valign="top">
 
 <?php 
 
@@ -143,7 +161,7 @@ if ( $_GET['corpus'] == 'test' ) {
   include("test.inc");
 }
 elseif ( $_GET['corpus'] == 'omc' ) {
-
+  include("omc.inc");
 }
 elseif ( $_GET['corpus'] == 'sami' ) {
 
@@ -151,8 +169,17 @@ elseif ( $_GET['corpus'] == 'sami' ) {
 elseif ( $_GET['corpus'] == 'nota' ) {
   include("nota.inc");
 }
+elseif ( $_GET['corpus'] == 'bokmal' ) {
+  include("bokmal.inc");
+}
+elseif ( $_GET['corpus'] == 'samno' ) {
+  include("samno.inc");
+}
 
 ?>
+
+
+
 </td>
 
 
@@ -178,7 +205,39 @@ echo "</a>";
 
 
 
-</td></tr></table>
+</td></tr>
+<tr><td valign='top' style="background-color:#efefef;border-width:1px;border-style:solid;border-color:#afaeae">
+<span class="txt">
+Display: 
+<select name='structDisplay'>
+<option></option>
+ <option value="who_name">speaker (who)</option>
+ <option value="turn_speaker">speaker (turn)</option>
+ <option value="episode_circumstance">episode type</option>
+ <option value="text.category">category</option>
+</select>
+
+
+&nbsp; &nbsp; &nbsp;
+Search within: 
+<select>
+<option></option>
+ <option value=""> - last search - </option>
+ <option value="">mysearch1</option>
+ <option value="">mysearch2</option>
+ <option value="">mysearch3</option>
+</select>
+
+</span>
+</td>
+<td>
+</td>
+</tr>
+
+<tr><td><font color='red'><b>Caution: This page is currently undergoing development. Expect thing to be broken.</td></tr>
+
+
+</table>
 
 </form>
 
@@ -192,11 +251,18 @@ if ( $_GET['corpus'] == 'test' ) {
   include("test_cred.inc");
 }
 elseif ( $_GET['corpus'] == 'omc' ) {
-
+  include("omc_cred.inc");
 }
 elseif ( $_GET['corpus'] == 'sami' ) {
 
 }
+elseif ( $_GET['corpus'] == 'bokmal' ) {
+
+}
+elseif ( $_GET['corpus'] == 'samno' ) {
+  include("samno_cred.inc");
+}
+
 
 ?>
 
