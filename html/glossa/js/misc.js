@@ -15,15 +15,40 @@ function changeVisibility(Id, Style) {
 
 
 
-var Cell;
+var Cell = "0_1";
+
+
 
 function addOpt(Type, Id, Name) {
 
 
-//	var Name = Type + ": " + Id;
-	Id = Type + "_" + Id;
+	if (Type == 'ADDSTRING') {
+		var TmpName = prompt("Add your word/lemma:");
+		if (TmpName) {
+		}
+		else {
+			return 0;
+		}
+
+		TmpName = Name + TmpName;
+		Name = TmpName;
+
+		if (Id == 'word') {  	Name = "word:" + Name }	
+		if (Id == 'lemma') {  	Name = "lemma:" + Name }	
+
+
+		Id = Id + "_" + TmpName;
+
+	}	
+	else {
+		Id = Type + "_" + Id;
+	}
+	
+
+
 
 	var Select_Id = Cell + "_select";
+
 	changeVisibility(Select_Id, "block");
 
 	var Select = document.getElementById(Select_Id);
@@ -96,5 +121,11 @@ function setAction(target) {
 	document.forms[0].action=target;
 	submitForm();
 	document.forms[0].action=oldTarget;
+
+}
+
+function setFocus() {
+
+    document.forms[0].elements[0].focus();
 
 }
