@@ -220,9 +220,9 @@ Display:
 
 &nbsp; &nbsp; &nbsp;
 Search within: 
-<select>
+<select name='searchWithin'>
 <option></option>
- <option value=""> - last search - </option>
+ <option value="last"> - last search - </option>
  <option value="">mysearch1</option>
  <option value="">mysearch2</option>
  <option value="">mysearch3</option>
@@ -270,7 +270,9 @@ elseif ( $_GET['corpus'] == 'samno' ) {
 </tr>
 </table>
 
-
+<script language="javascript">
+setFocus();
+</script>
 
 
 <br>

@@ -4,6 +4,12 @@
    <input id='delRowsButton' type='button' value='delete phrase' onClick='delWidgetTokenRow()' disabled></input>
   </td>
  </tr>
+ <?php
+  if ($_GET['fullQuery'] == 'yes') {
+    echo "<script language='javascript'>fullQuery='yes';</script>";
+  }
+ ?>
+
  <script language="javascript">writeWidgetTokenRow(0);</script>
 
   <tr>

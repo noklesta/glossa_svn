@@ -19,8 +19,10 @@ function printJsHead() {
      . "<script language='JavaScript' src='" . $cgiRoot . "/javascript_arrays_from_database.cgi?corpus=" 
        . $corpus . "&subcorpus=" 
        . $subcorpus . "'></script>\n"
+     . "<script language='JavaScript' src='" . $htmlRoot . "/js/shortcuts.js'></script>\n"
      . "<script language='JavaScript' src='" . $htmlRoot . "/js/" . $corpus . ".conf.js'></script>\n"
-     . "<script language='JavaScript' src='" . $htmlRoot . "/js/dynamic_form_dev.js'></script>\n\n";
+     . "<script language='JavaScript' src='" . $htmlRoot . "/js/dynamic_form_dev.js'></script>\n\n"
+   ;
 
 
 
