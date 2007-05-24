@@ -30,9 +30,29 @@ Menu['NOTA2'] = new Hash(     1, new Hash(
 	      'uri', "addOpt('w','start','starten av ordet')"
 	   ),
 	    6, new Hash(
-         'contents', 'utelukk',
+         'contents', 'utelukk ordet',
 	      'type', 'js',
 	      'uri', "addOpt('w','neg','utelukk')"
+	   ),
+	    7, new Hash(
+         'contents', 'legg til ordform',
+	      'type', 'js',
+	      'uri', "addOpt('ADDSTRING','word','')"
+	   ),
+	    8, new Hash(
+         'contents', 'legg til negert ordform',
+	      'type', 'js',
+	      'uri', "addOpt('ADDSTRING','word','!')"
+	   ),
+	    9, new Hash(
+         'contents', 'legg til lemma',
+	      'type', 'js',
+	      'uri', "addOpt('ADDSTRING','lemma','')"
+	   ),
+	    10, new Hash(
+         'contents', 'legg til negert lemma',
+	      'type', 'js',
+	      'uri', "addOpt('ADDSTRING','lemma','!')"
 	   )
 ),
   	2, new Hash(
