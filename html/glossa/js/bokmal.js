@@ -1,6 +1,6 @@
 var Menu;
 function reloadMenuBokmal() {
-Menu['ILN_LEKS'] = new Hash(     1, new Hash(
+Menu['BOKMAL'] = new Hash(     1, new Hash(
         'contents', '<nobr>&nbsp;valg &#187;&nbsp;</nobr>',
   	1, new Hash(
        'contents', 'ord &#187;&nbsp;',
