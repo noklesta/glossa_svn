@@ -315,7 +315,7 @@ print "</body></html>";
 
 sub replace_count {
 
-    my $tablename = $base_corpus . "_lexstat";
+    my $tablename = uc($corpus) . "_lexstat";
 
     my ($w,$cc)=@_;
 
