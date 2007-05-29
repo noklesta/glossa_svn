@@ -223,9 +223,6 @@ Search within:
 <select name='searchWithin'>
 <option></option>
  <option value="last"> - last search - </option>
- <option value="">mysearch1</option>
- <option value="">mysearch2</option>
- <option value="">mysearch3</option>
 </select>
 
 </span>
@@ -234,7 +231,7 @@ Search within:
 </td>
 </tr>
 
-<tr><td><font color='red'><b>Caution: This page is currently undergoing development. Expect thing to be broken.</td></tr>
+<tr><td><font color='red'><b>Caution: This page is currently undergoing development. Some things will be broken.</td></tr>
 
 
 </table>
