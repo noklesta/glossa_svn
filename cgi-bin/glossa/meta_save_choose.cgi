@@ -52,7 +52,7 @@ my $format = CGI::param('format');
 my $tablename = $base_corpus . "_lexstat";
 
 
-my ($subcorpus,$sql_query_nl,$texts_allowed,$subcorpus_string) = Glossa::create_tid_list(\%conf, \%in, $base_corpus);
+my ($subcorpus,$sql_query_nl,$texts_allowed,$subcorpus_string) = Glossa::create_tid_list(\%conf, \%in, $CORPUS);
 
 if ($subcorpus_string) {
 
