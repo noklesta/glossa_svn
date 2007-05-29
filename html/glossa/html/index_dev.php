@@ -211,10 +211,8 @@ echo "</a>";
 Display: 
 <select name='structDisplay'>
 <option></option>
- <option value="who_name">speaker (who)</option>
- <option value="turn_speaker">speaker (turn)</option>
- <option value="episode_circumstance">episode type</option>
- <option value="text.category">category</option>
+<script language='javascript'>printDisplayOptions()</script>
+
 </select>
 
 
