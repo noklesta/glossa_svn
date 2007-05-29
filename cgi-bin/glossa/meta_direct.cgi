@@ -34,7 +34,7 @@ my %in = %$in;
 
 
 my $CORPUS = $in{'query'}->{'corpus'}->[0];
-my $base_corpus = $in{'phrase'}->{'0'}->{'corpus'}->[0];
+#my $base_corpus = $in{'phrase'}->{'0'}->{'corpus'}->[0];
 
 
 my $conf = Glossa::get_conf_file($CORPUS);
@@ -48,22 +48,25 @@ my $dbh = DBI->connect($dsn, $conf{'db_uname'}, $conf{'db_pwd'}, {RaiseError => 
 my $format = CGI::param('format');
 
 
-my ($subcorpus,$sql_query_nl,$texts_allowed) = Glossa::create_tid_list(\%conf, \%in, $base_corpus);
+my ($subcorpus,$sql_query_nl,$texts_allowed) = Glossa::create_tid_list(\%conf, \%in, $CORPUS);
 
 
+my $text_table = uc($CORPUS) . "text";
+my $author_table = uc($CORPUS) . "author";
+my $class_table = uc($CORPUS) . "class";
 
 my %texts_allowed = %$texts_allowed;
 my @tids = keys %texts_allowed;
 
 my @meta_class = split(/ /, $conf{'meta_class'});
 foreach my $m (@meta_class) {
-    $m = uc($CORPUS) . "class." . $m;
+    $m = $class_table . "." . $m;
 }
 my $class_select = join(", ", @meta_class);
 
 my @meta_author = split(/ /, $conf{'meta_author'});
 foreach my $m (@meta_author) {
-    $m = uc($CORPUS) . "author." . $m;
+    $m = $author_table . "." . $m;
 }
 my $author_select = join(", ", @meta_author);
 
@@ -75,7 +78,7 @@ print "<tr>";
 my @meta_text = split(/ /, $conf{'meta_text'});
 foreach my $m (@meta_text) {
     print "<td><b>", $m, "</b></td>";
-    $m = uc($CORPUS) . "text." . $m;
+    $m = $text_table . "." . $m;
 }
 my $text_select = join(", ", @meta_text);
 
@@ -99,9 +102,9 @@ my $origs;
 my $s=1;
 foreach my $tid (@tids_sorted) {
 
-    my $text_tablename = uc($CORPUS) . "text";
 
-    my $sql_query = "SELECT $text_select FROM $text_tablename WHERE tid = '$tid';";
+
+    my $sql_query = "SELECT $text_select FROM $text_table WHERE tid = '$tid';";
 
     my $sth = $dbh->prepare($sql_query);
     $sth->execute  || die "Error fetching data: $DBI::errstr";
@@ -127,7 +130,7 @@ foreach my $tid (@tids_sorted) {
     
     if ($class_select) {
 	# FIXME: at det er den første kommer an på cgi.conf
-	my $sql = "SELECT $class_select from class where class.tid='$r[0]';";
+	my $sql = "SELECT $class_select from $class_table where $class_table.tid='$r[0]';";
 	
 	my $sth2 = $dbh->prepare($sql);
 	$sth2->execute  || die "Error fetching data: $DBI::errstr";
@@ -142,7 +145,7 @@ foreach my $tid (@tids_sorted) {
 
     if ($author_select) {
 	# FIXME: at det er den første kommer an på cgi.conf
-	my $sql = "SELECT $author_select from author where author.tid='$r[0]';";
+	my $sql = "SELECT $author_select from $author_table where $author_table.tid='$r[0]';";
 	
 	my $sth2 = $dbh->prepare($sql);
 	$sth2->execute  || die "Error fetching data: $DBI::errstr";
