@@ -7,8 +7,6 @@ use DBI;
 use lib("/home/httpd/html/glossa/pm");
 use Glossa;
 
-print "Content-type: text/html; charset=$conf{'charset'}\n\n";
-print "<html><head></head><body>";
 
 
 my $case = CGI::param('case');
@@ -30,6 +28,10 @@ my $corpus_name = CGI::param('corpus_name');
 
 my $conf=Glossa::get_conf_file($corpus_name);
 my %conf = %$conf;
+
+print "Content-type: text/html; charset=$conf{'charset'}\n\n";
+print "<html><head></head><body>";
+
 
 my $dsn = "DBI:mysql:database=$conf{'db_name'};host=$conf{'db_host'}";
 my $dbh = DBI->connect($dsn, $conf{'db_uname'}, $conf{'db_pwd'}, {RaiseError => 1});
@@ -87,14 +89,7 @@ foreach my $f (@files) {
 	foreach my $target (@lines) {
 
 	    # aligned sentence
-	    my ($c, $s_id,$sts_string,$txt) = split(/\t/, $target);
-
-	    # get language
-	    my $sth = $dbh->prepare(qq{ SELECT lang,words FROM meta2 where id='$s_id';});
-	    $sth->execute  || die "Error fetching data: $DBI::errstr";
-	    my ($lang) = $sth->fetchrow_array;
-            
-            unless ($lang) { $lang = "_all_" }
+	    my ($c, $s_id, $sts_string, $txt) = split(/\t/, $target);
 
 	    my @tokens = split(/ /, $txt);
 	    foreach my $t (@tokens) {
@@ -119,7 +114,7 @@ foreach my $f (@files) {
 		if (CGI::param('lexeme')) { push @tmp, $lexeme }
 
 		my $match2 .= join("/", @tmp) . " ";
-		print OUTPUT $match2, " $lang\n";
+		print OUTPUT $match2, " $c\n";
 
 	    }
 	}
@@ -141,7 +136,7 @@ $cnt =~ s/tocnt/cnt/;
 
 
 `rm -f $cnt`;
-`count.pl --newLine --token $conf{'htmlRoot'}/html/token.regexp $cnt $output`;
+`count.pl --newLine --token $conf{'config_dir'}/token.regexp $cnt $output`;
 
 $/="\n";
 
