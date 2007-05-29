@@ -18,6 +18,9 @@ my %conf = %$conf;
 
 my $subcorp_dir = $conf{'subcorp_files'};
 
+my $user = $ENV{'REMOTE_USER'};
+
+$subcorp_dir = $subcorp_dir . "/" . $user;
 
 my @files = <$subcorp_dir/*.dat>;
 

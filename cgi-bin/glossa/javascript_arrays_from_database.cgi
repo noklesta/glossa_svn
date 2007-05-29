@@ -6,6 +6,7 @@ use Data::Dumper;
 use strict;
 use lib("/home/httpd/html/glossa/pm");
 use Glossa;
+my $user = $ENV{'REMOTE_USER'};
 
 
 ##
@@ -47,7 +48,7 @@ my $dbh = DBI->connect($dsn, $conf{'db_uname'}, $conf{'db_pwd'}, {RaiseError => 
 # FIXME
 my %subcorpus;
 my $subcorpus = CGI::param('subcorpus');
-my $file = $conf{'config_dir'} . '/' . $corpus . '/subcorp/' . $subcorpus . '.dat';
+my $file = $conf{'config_dir'} . '/' . $corpus . '/subcorp/' . $user . "/" . $subcorpus . '.dat';
 open (SUBCORPUS, "$file");
 while (<SUBCORPUS>) {
     chomp;
