@@ -36,6 +36,10 @@ unless ($query_id) {
 my $orig = $conf{'tmp_dir'} . "/" . $query_id; 
 my $new = $conf{'config_dir'} . "/" . $corpus . "/hits/" . $user . "/";
 
+my $new = $conf{'config_dir'} . "/" . $corpus . "/hits/" . $user . "/";
+unless (-e $new) {
+    mkdir($new);
+}
 
 
 # change .conf: add name
@@ -52,9 +56,9 @@ foreach my $f (@files) {
     $n =~ s|.*/||;
     $n = $new . $n;
 
-    print "$f $n <br>"; 
-
-    print copy($f,$n);
-
+    my $ok = copy($f,$n);
+    unless ($ok) {
+	print "WARNING: could not copy $f to $n<br>";
+    }
 }
 
