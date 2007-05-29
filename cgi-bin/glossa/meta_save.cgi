@@ -23,6 +23,6 @@ my %conf = %$conf;
 
 my $new_file_name = $conf{'config_dir'} . "/" . $corpus . "/subcorp/" . $name . ".dat";
 
-copy($file, $new_file_name) or die "File cannot be copied.";
+copy($file, $new_file_name) or die "File - $new_file_name - cannot be copied.";
 
 print "Subcorpus is saved. Click <a href='' onclick='javascript:self.close()'>here</a> to close window.";
