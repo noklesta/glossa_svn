@@ -47,13 +47,13 @@ my $class_table = uc($corpus) . "class";
 
 my @meta_class = split(/ /, $conf{'meta_class'});
 foreach my $m (@meta_class) {
-    $m = "class." . $m;
+    $m = $class_table . "." . $m;
 }
 my $class_select = join(", ", @meta_class);
 
 my @meta_author = split(/ /, $conf{'meta_author'});
 foreach my $m (@meta_author) {
-    $m = "author." . $m;
+    $m = $author_table . "." . $m;
 }
 my $author_select = join(", ", @meta_author);
 
@@ -101,7 +101,7 @@ foreach my $tid (@tids) {
     
     if ($class_select) {
 	# FIXME: at det er den første kommer an på cgi.conf
-	my $sql = "SELECT $class_select from $class_table where class.tid='$r[0]';";
+	my $sql = "SELECT $class_select from $class_table where $class_table.tid='$r[0]';";
 	
 	my $sth2 = $dbh->prepare($sql);
 	$sth2->execute  || die "Error fetching data: $DBI::errstr";
@@ -116,7 +116,7 @@ foreach my $tid (@tids) {
 
     if ($author_select) {
 	# FIXME: at det er den første kommer an på cgi.conf
-	my $sql = "SELECT $author_select from $author_table where author.tid='$r[0]';";
+	my $sql = "SELECT $author_select from $author_table where $author_table.tid='$r[0]';";
 	
 	my $sth2 = $dbh->prepare($sql);
 	$sth2->execute  || die "Error fetching data: $DBI::errstr";
