@@ -37,7 +37,7 @@ if ($format eq "xls") {
     $workbook = Spreadsheet::WriteExcel->new($out);
     $worksheet = $workbook->add_worksheet();
 }
-else { open (OUT, ">$out") }
+else { open (OUT, ">$out") or die("cannot open $out") }
 
 if ($format eq "html") { print OUT "<table border=1>"; }
 
