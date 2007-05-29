@@ -65,6 +65,8 @@ my $dbh = DBI->connect($dsn, $conf{'db_uname'}, $conf{'db_pwd'}, {RaiseError => 
 
 my $tablename = uc($corpus) . "_" . uc($base_corpus) . "lexstat";
 
+print "SELECT SUM(freq) from $tablename;";
+
 my $sth = $dbh->prepare(qq{SELECT SUM(freq) from $tablename;});
 $sth->execute  || die "Error fetching data: $DBI::errstr";
 my ($freq_total) = $sth->fetchrow_array;

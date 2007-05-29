@@ -15,6 +15,8 @@ print "Content-type: text/html\n\n";
 my $corpus=CGI::param('corpus');
 my $query_id = CGI::param('query_id');
 my $user = $ENV{'REMOTE_USER'}; 
+
+print "USER: $user";
 my $name = CGI::param('name');
  
 my $conf = Glossa::get_conf_file($corpus);
@@ -26,6 +28,10 @@ my %conf = %$conf;
 #print "CORPUS: $corpus<br>";
 #print "QI: $query_id<br>";
 #print "NAME: $name<br>";
+
+unless ($query_id) {
+    die("no query id");
+}
 
 my $orig = $conf{'tmp_dir'} . "/" . $query_id; 
 my $new = $conf{'config_dir'} . "/" . $corpus . "/hits/" . $user . "/";

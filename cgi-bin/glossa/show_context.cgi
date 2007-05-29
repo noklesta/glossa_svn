@@ -4,7 +4,7 @@ use CGI;
 use DBI;
 
 use Encode;
-use WebCqp::Query;
+use WebCqp::Query_dev;
 use lib("/home/httpd/html/glossa/pm");
 use Glossa;
 
@@ -26,13 +26,11 @@ my %conf = %$conf;
 my $dsn = "DBI:mysql:database=$conf{'db_name'};host=$conf{'db_host'}";
 my $dbh = DBI->connect($dsn, $conf{'db_uname'}, $conf{'db_pwd'}, {RaiseError => 1});
 
-if ($corpus eq 'sami') {
-    print "Content-type: text/html; charset=ISO-8859-10\n\n";
-}
-else {
-    print "Content-type: text/html\n\n";
-}
+
+print "Content-type: text/html; charset=$conf{'charset'}\n\n";
 print "<html><head></head><body>";
+
+
 
 if ($context_size > 10) { $context_size = 10 }
 

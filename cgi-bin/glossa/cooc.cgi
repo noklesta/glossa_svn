@@ -7,7 +7,7 @@ use DBI;
 use lib("/home/httpd/html/glossa/pm");
 use Glossa;
 
-print "Content-type: text/html\n\n";
+print "Content-type: text/html; charset=$conf{'charset'}\n\n";
 print "<html><head></head><body>";
 
 

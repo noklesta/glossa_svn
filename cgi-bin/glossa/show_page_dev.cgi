@@ -26,12 +26,7 @@ my $dsn = "DBI:mysql:database=$conf{'db_name'};host=$conf{'db_host'}";
 my $dbh = DBI->connect($dsn, $conf{'db_uname'}, $conf{'db_pwd'}, {RaiseError => 1});
 
 
-if ($corpus eq 'sami') {
-    print "Content-type: text/html; charset=ISO-8859-10\n\n";
-}
-else {
-    print "Content-type: text/html; charset=ISO-8859-1\n\n";
-}
+print "Content-type: text/html; charset=$conf{'charset'}\n\n";
 
 
 

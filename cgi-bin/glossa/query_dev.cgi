@@ -7,7 +7,7 @@ use POSIX;
 use Data::Dumper;
 use DBI;
 use WebCqp::Query_dev;
-#use CQP;
+use File::Copy;
 
 # if Glossa.pm is not installed in the system directories
 # (you can use this, for example, if you are making changes, 
@@ -48,6 +48,10 @@ my %in = %$in;
 # get shorter name of some values that are used frequently
 my $CORPUS = $in{'query'}->{'corpus'}->[0];
 my $ROOT = $in{'query'}->{'root'}->[0];
+my $user = $ENV{'REMOTE_USER'};
+
+
+
 
 my $display_struct = CGI::param('structDisplay');
 
@@ -101,6 +105,7 @@ close LANG;
 ## start the HTTP session and HTML file
 print "Content-type: text/html; charset=$conf{'charset'}\n\n";
 print "<html><head><title>$lang{'title'}</title><link href=\"", $conf{'htmlRoot'}, "/html/tags.css\" rel=\"stylesheet\" type=\"text/css\"></link></head><body>";
+
 
 # FIXME: temporary message
 if ($CORPUS eq 'test') {
@@ -555,10 +560,27 @@ if ($subcorpus) {
     $query->exec("QUERY;");
 }
 
+# execute cqp command to restrict to subcorpus
+if ($subcorpus) {
+    my $dumpfile = $conf{'tmp_dir'} . "/" . $conf{'query_id'} . ".dump";
+    $query->exec("undump QUERY < \"$dumpfile\";");
+    $query->exec("QUERY;");
+}
+
+
+if (CGI::param('searchWithin') eq 'last') {
+
+    my $dumpfile = $conf{'hits_files'} . "/" . $user . ".lastsearch";
+    print "<font color=red>undump QUERY with target keyword < \"$dumpfile\";</font>";
+    $query->exec("undump QUERY with target keyword < \"$dumpfile\";");
+    $query->exec("QUERY;");
+}
+
 # finally, execute the query
 my @result = $query->query("$cqp_all");    
 
-$query->exec("dump Last > '/tmp/dumpit.dat';");
+
+
     
 # count number of hits
 my $nr_result = @result;
@@ -901,6 +923,35 @@ foreach my $i (1..$d_files) {
 print "</body></html>\n";
 
 
+## create searchdump
+
+# Dump the positions of the query result (start and end positions of the matching phrase 
+# i.e. *not* the context.
+#   This file is used for the "search-within-results" function.
+#   Note that this dump is different from the subcorpus dump file.
+# "cqp> undump A with target keyword < '/tmp/1179238682_77981.searchdump';"
+
+# execute cqp command to restrict to subcorpus
+my $dumpfile = $conf{'tmp_dir'} . "/" . $conf{'query_id'} . ".searchdump";
+$query->exec("dump Last > '$dumpfile';");
+
+# add number of lines (required for cqp's 'undump' function, used for importing the dump data)
+my @lines;
+open (DUMP, "$dumpfile");
+while (<DUMP>) {
+    push @lines, $_;
+}
+close DUMP;
+open (DUMP, ">$dumpfile");
+my $len = @lines;
+print DUMP $len, "\n";
+print DUMP @lines;
+close DUMP;
+
+# copy to position for "last query"
+my $dumpfile2 = $conf{'hits_files'} . "/" . $user . ".lastsearch";
+copy($dumpfile, $dumpfile2);
+print "copy: $dumpfile $dumpfile2";
 
 
 

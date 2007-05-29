@@ -25,6 +25,8 @@ my %conf = %$conf;
 my $query_id2 = $query_id."_";
 my @files = <$conf{tmp_dir}/$query_id2*>;
 
+my $outputfile = $conf{tmp_dir} . "/" . $query_id . ".metadist";
+open (OUTFILE, ">$outputfile");
 
 my %count;
 my %tids;
@@ -128,6 +130,8 @@ foreach my $tid (keys %tids) {
 
     my $sql_query = "SELECT $text_select FROM $text_table WHERE tid = '$tid';";
 
+
+
     my $sth = $dbh->prepare($sql_query);
     $sth->execute  || die "Error fetching data: $DBI::errstr";
 
@@ -143,13 +147,16 @@ foreach my $tid (keys %tids) {
 
 
 	# FIXME: at det er den første kommer an på cgi.conf
-	my $sql = "SELECT $class_select from $class_table where class.tid='$tid';";
+	my $sql = "SELECT $class_select from $class_table where $class_table.tid='$tid';";
 
 	my $sth2 = $dbh->prepare($sql);
 	$sth2->execute  || die "Error fetching data: $DBI::errstr";
 	
-	while (my ($r2) = $sth2->fetchrow_array) { 
-	    $stats{'class'}->{$r2} += $count;
+	while (my (@r2) = $sth2->fetchrow_array) { 
+	    foreach my $a (@meta_class) {
+		my $tmp = shift @r2;
+		$stats{$a}->{$tmp} += $count;
+	    }	    
 	}
 
 	
@@ -159,7 +166,7 @@ foreach my $tid (keys %tids) {
 
 
 	# FIXME: at det er den første kommer an på cgi.conf
-	my $sql = "SELECT $author_select from $author_table where author.tid='$tid';";
+	my $sql = "SELECT $author_select from $author_table where $author_table.tid='$tid';";
 	
 	my $sth2 = $dbh->prepare($sql);
 	$sth2->execute  || die "Error fetching data: $DBI::errstr";
@@ -184,13 +191,12 @@ foreach my $tid (keys %tids) {
 
 while (my ($k,$v) = each %stats) {
 
-    print "<b>$k</b>";
     
     # map
     if ($k eq 'text.pubplace') {
 #	print " <a href='http://omilia.uio.no/omc/dat/$query_id.svg'>(kart)</a>";
     }
-    print"<br>";
+
     my %s = %$v;
 
     my @res;
@@ -216,16 +222,16 @@ while (my ($k,$v) = each %stats) {
 	    $sql = "select sum(wordcount) from $text_table where $k = '$k2';";
 	}
 	elsif ($k =~ m/class\./) {
-	    $sql = "select sum($text_table.wordcount) from $text_table,$class_table where $k = '$k2' and class.tid=text.tid;";
+	    $sql = "select sum($text_table.wordcount) from $text_table,$class_table where $k = '$k2' and $class_table.tid=$text_table.tid;";
 	}
 	elsif ($k =~ m/author\./) {
-	    $sql = "select sum($text_table.wordcount) from $text_table,$author_table where $k = '$k2' and author.tid=text.tid;";
+	    $sql = "select sum($text_table.wordcount) from $text_table,$author_table where $k = '$k2' and $author_table.tid=$text_table.tid;";
 	}
 	else {
 	    print "K $k<br>";
 	    die ("invalid option");
 	}
-	# print $sql, "<br>";
+#	print $sql, "<br>";
 
 	my $sth = $dbh->prepare($sql);
 	$sth->execute  || die "Error fetching data: $DBI::errstr";
@@ -250,17 +256,28 @@ while (my ($k,$v) = each %stats) {
 
     my @res_sorted = sort {$b->[2] <=> $a->[2]} @res;
 
+    my $array_length = @res;
+
+
+    print OUTFILE $k, "\t", $array_length, "\n";
+    print "<b>$k</b> (", $array_length, " entries)<br>";
+
     print "<table border=1>";
     foreach my $r (@res_sorted) {
+	print OUTFILE $r->[0], "\t", $r->[1], "\t", $r->[2], "\t", $r->[3], "\n";
 	print "<tr><td>", $r->[0], "</td><td>", $r->[1], "</td><td>", $r->[2], "</td><td>", $r->[3], "</td></tr>";
     }
     print "</table>";
     print "<br>";
 
+    print OUTFILE "\n";
+
 
 }
 
 sub print_map {
+
+    # This function is not written yet ...
 
     my $map = shift;
     my @map = @$map;
