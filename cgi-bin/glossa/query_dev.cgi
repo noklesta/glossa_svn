@@ -44,12 +44,12 @@ my $in = Glossa::create_cgi_hash2(\%cgi_hash);
 my %in = %$in;
 
 
+my $debug = 0;
 
 # get shorter name of some values that are used frequently
 my $CORPUS = $in{'query'}->{'corpus'}->[0];
 my $ROOT = $in{'query'}->{'root'}->[0];
 my $user = $ENV{'REMOTE_USER'};
-
 
 
 
@@ -73,6 +73,8 @@ while (<CONF>) {
 close CONF;
 
 $conf{'base_corpus'}=$CORPUS;
+
+
 
 # multitag file
 my $file = $conf{'config_dir'} . "/" . $CORPUS . "/multitags.dat";
@@ -101,7 +103,6 @@ while (<LANG>) {
 close LANG;
 
 
-
 ## start the HTTP session and HTML file
 print "Content-type: text/html; charset=$conf{'charset'}\n\n";
 print "<html><head><title>$lang{'title'}</title><link href=\"", $conf{'htmlRoot'}, "/html/tags.css\" rel=\"stylesheet\" type=\"text/css\"></link></head><body>";
@@ -115,13 +116,35 @@ that we can show results from. If you would like to know more about Glossa, and 
     die;
 }
 
-## for debugging
-#print "L: $conf_file<br>";
-#print "<pre>";
-#print Dumper %in;
-#print "</pre>";
 
-## more debugging
+## for debugging
+if ($debug) {
+print "L: $conf_file<br>";
+print "<pre>";
+print Dumper %in;
+print "</pre>";
+
+}
+
+
+# htgroup file; for corpora with restricted access (in addition to 
+# the .htaccess restrictions). Space-separated list of allowed users.
+if ($conf{'htgroup'}) {
+    unless (-e $conf{'htgroup'}) { die("htgroup file specified, but not found ($conf{'htgroup'})"); }
+    my %allowed_users;
+    open (H, $conf{'htgroup'});
+    while (<H>) {
+	chomp;
+	foreach my $u (split(/ +/, $_)) {
+	    $allowed_users{$u}=1;
+	}
+    }
+    unless ($allowed_users{$user}) {
+	die("You do not have access to this corpus.");
+    }
+}
+
+
 #if($test){
 #    my @prms = $cgi->param();
 #    foreach my $prm (@prms){
@@ -143,6 +166,7 @@ my $starttime=time();
 my $rand = int(rand 100000);
 $conf{'query_id'} = $starttime . "_" . $rand;
 
+#print "ID: $conf{'query_id'}<br>";
 
 ## open log file
 open (LOG, ">>$conf{'logfile'}");
@@ -160,7 +184,6 @@ my $dbh = DBI->connect($dsn, $conf{'db_uname'}, $conf{'db_pwd'}, {RaiseError => 
 
 ## define some entities
 my $apostr = chr(0x60);
-
 
 
 
@@ -409,6 +432,7 @@ foreach my $row (@$phrases) {
 
 }
 
+
 # the full cqp expression for the base corpus
 my $base_queries = $corpora{$base_corpus};
 
@@ -461,6 +485,7 @@ if ($sql_query_nl) {
 ##                                        ##
 ##             3. Execute query           ##
 ##                                        ##
+
 
 
 # print search expression
@@ -531,6 +556,9 @@ else {
     $sentence_context='s';
 }
 
+if ($debug) {
+    print "7";
+}
 
 ## specify context size
 
@@ -560,26 +588,32 @@ if ($subcorpus) {
     $query->exec("QUERY;");
 }
 
-# execute cqp command to restrict to subcorpus
-if ($subcorpus) {
-    my $dumpfile = $conf{'tmp_dir'} . "/" . $conf{'query_id'} . ".dump";
-    $query->exec("undump QUERY < \"$dumpfile\";");
-    $query->exec("QUERY;");
-}
 
 
 if (CGI::param('searchWithin') eq 'last') {
-
     my $dumpfile = $conf{'hits_files'} . "/" . $user . ".lastsearch";
     print "<font color=red>undump QUERY with target keyword < \"$dumpfile\";</font>";
     $query->exec("undump QUERY with target keyword < \"$dumpfile\";");
     $query->exec("QUERY;");
 }
 
+if ($debug) {
+    print "8";
+    print "<pre>";
+    print Dumper $query;
+    print "</pre>";
+}
+
+if ($debug) {
+    print $cqp_all;
+}
+
 # finally, execute the query
 my @result = $query->query("$cqp_all");    
 
-
+if ($debug) {
+    print "9";
+}
 
     
 # count number of hits
