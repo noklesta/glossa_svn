@@ -127,13 +127,15 @@ print "</pre>";
 }
 
 
-# htgroup file; for corpora with restricted access (in addition to 
+# group file; for corpora with restricted access (in addition to 
 # the .htaccess restrictions). Space-separated list of allowed users.
-if ($conf{'htgroup'}) {
-    unless (-e $conf{'htgroup'}) { die("htgroup file specified, but not found ($conf{'htgroup'})"); }
+if ($conf{'groupfile'}) {
+    unless (-e $conf{'groupfile'}) { die("group file specified, but not found ($conf{'groupfile'})"); }
     my %allowed_users;
-    open (H, $conf{'htgroup'});
+    open (H, $conf{'groupfile'});
     while (<H>) {
+	next if (/^\s*#/);
+	next if (/^\s*\n/);
 	chomp;
 	foreach my $u (split(/ +/, $_)) {
 	    $allowed_users{$u}=1;
