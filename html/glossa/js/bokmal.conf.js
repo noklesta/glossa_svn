@@ -8,6 +8,8 @@ conf['title'] = 'Search the LKB';
 conf['corpus_name'] = 'Lexicograpic corpus for Norwegian Bokmål';
 var language='en';
 
+var cgiRoot = 'http://omilia.uio.no/cgi-bin/glossa/';
+
 
 // ** shortcuts ** //
 
