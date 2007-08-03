@@ -6,6 +6,9 @@ use lib ('/home/httpd/html/glossa/pm/');
 use Glossa;
 use Data::Dumper;
 use strict;
+use POSIX qw(locale_h);
+
+setlocale('LC_TYPE', "norweigan");
 
 select(STDOUT);
 $|=1;
@@ -34,7 +37,7 @@ my %in = %$in;
 
 
 my $CORPUS = $in{'query'}->{'corpus'}->[0];
-#my $base_corpus = $in{'phrase'}->{'0'}->{'corpus'}->[0];
+
 
 
 my $conf = Glossa::get_conf_file($CORPUS);
@@ -71,16 +74,18 @@ foreach my $m (@meta_author) {
 my $author_select = join(", ", @meta_author);
 
 
-print "<div id='origs'></div>";
+print "<div id='stats'></div>";
 
 print "<hr><table style='border-width:1px;border-style:outset;border-color:#afaeae;padding:0px;margin:0px'>";
 print "<tr>";
 my @meta_text = split(/ /, $conf{'meta_text'});
 foreach my $m (@meta_text) {
     print "<td><b>", $m, "</b></td>";
-    $m = $text_table . "." . $m;
+    #$m = $text_table . "." . $m;
 }
 my $text_select = join(", ", @meta_text);
+
+my @meta_text_sum = split(/ /, $conf{'meta_text_sum'});
 
 if ($class_select) {
     print "<td><b>class</b></td>";
@@ -96,25 +101,30 @@ print "<tr>";
 my @tids_sorted = sort @tids;
 
 
-# for OMC ...
-my $origs;
+my %stats;
+
 
 my $s=1;
 foreach my $tid (@tids_sorted) {
 
-
-
-    my $sql_query = "SELECT $text_select FROM $text_table WHERE tid = '$tid';";
+    my $sql_query = "SELECT * FROM $text_table WHERE tid = '$tid';";
 
     my $sth = $dbh->prepare($sql_query);
     $sth->execute  || die "Error fetching data: $DBI::errstr";
 
-    my @r = $sth->fetchrow_array;
+    my $r = $sth->fetchrow_hashref;
+    my %r = %$r;
 
-    # for OMC ..
-    if ($r[13] eq 'n') {
-	$origs++;
+    my @r;
+    foreach my $col (@meta_text) {
+	push @r, $r{$col}
     }
+
+    foreach my $col (@meta_text_sum) {
+	my $cont = $r{$col};
+	$stats{$col}->{$cont}+=$r{'wordcount'};
+    }
+    $stats{'ALL'}->{'ALL'}+=$r{'wordcount'};
 
     print "<tr"; 
     if ($s) {
@@ -166,6 +176,21 @@ foreach my $tid (@tids_sorted) {
 
 print "</table>";
 
-print "<script language='javascript'>";
-print "document.getElementById('origs').innerHTML=$origs;";
-print "</script>";
+
+while (my ($k, $v) = each %stats) {
+    print "<b>$k</b>";
+    print "<table>";
+
+    my @list;
+    while (my ($k2, $v2) = each %$v) {
+	push @list, [$k2, $v2];
+    }
+
+    my @list_sorted = sort {$a->[0] cmp $b->[0]} @list;
+    foreach my $entry (@list_sorted) {
+	print "<tr><td width=200>" . $entry->[0] . "</td><td>" . $entry->[1] . "</td></tr>\n";
+    }
+
+    print "</table><br>\n\n";
+
+}
