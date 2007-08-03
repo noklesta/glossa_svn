@@ -6,8 +6,13 @@ use CGI;
 use POSIX;
 use Data::Dumper;
 use DBI;
-use WebCqp::Query_dev;
+use WebCqp::Query_dev; # this is the modified version of the module
 use File::Copy;
+use Text::Iconv;
+
+
+
+
 
 # if Glossa.pm is not installed in the system directories
 # (you can use this, for example, if you are making changes, 
@@ -40,6 +45,11 @@ foreach my $p (@prms) {
     my @vals = $cgi->param($p);
     $cgi_hash{$p}=\@vals;
 }
+
+# This functions converts the cgi input to a hash, based on underscores
+# (_) in the parameter names. This is a bit unintuitive, and is a key point
+# to grasp.
+# FIXME: examples
 my $in = Glossa::create_cgi_hash2(\%cgi_hash);
 my %in = %$in;
 
@@ -58,6 +68,7 @@ my $display_struct = CGI::param('structDisplay');
 
 ## read configuration files
 # FIXME: should also be done in module
+# FIXME: standard file format
 
 # main configuration file
 my $conf_file = $ROOT . "/" . $CORPUS . "/cgi.conf";
@@ -119,11 +130,23 @@ that we can show results from. If you would like to know more about Glossa, and 
 
 ## for debugging
 if ($debug) {
-print "L: $conf_file<br>";
-print "<pre>";
-print Dumper %in;
-print "</pre>";
-
+    print "L: $conf_file<br>";
+    print "<pre>";
+    print Dumper %in;
+    print "</pre>";
+}
+# more debugging
+if($debug){
+    my @prms = $cgi->param();
+    foreach my $prm (@prms){
+	my @vals = $cgi->param($prm);
+	my $elts = @vals;
+	if($vals[0]){
+	    print "$prm ($elts): ";
+	    foreach my $val (@vals){ print "$val, " }
+	    print "<br />";
+	}
+    }
 }
 
 
@@ -147,18 +170,12 @@ if ($conf{'groupfile'}) {
 }
 
 
-#if($test){
-#    my @prms = $cgi->param();
-#    foreach my $prm (@prms){
-#	my @vals = $cgi->param($prm);
-#	my $elts = @vals;
-#	if($vals[0]){
-#	    print "$prm ($elts): ";
-#	    foreach my $val (@vals){ print "$val, " }
-#	    print "<br />";
-#	}
-#    }
-#}
+# set up charset conversion
+
+my $iconv;
+if ($conf{'charsetfrom'}) {
+    $iconv= Text::Iconv->new($conf{'charsetfrom'}, $conf{'charset'});
+} 
 
 
 ## Set query id
@@ -207,7 +224,10 @@ my $phrases=$in{'phrase'}->{'number'}; # the number of phrases (i.e. "rows" in t
 # This is a key step, where the form data is converted to fragments 
 # in the CQP query language. The fragments are then put in the hashes for 
 # corpora, aligned_corpora or aligned_corpora_opt
+
 foreach my $row (@$phrases) {
+
+
 
 
     # get the name of the *first* corpus, this is defined as the "base corpus" 
@@ -292,17 +312,6 @@ foreach my $row (@$phrases) {
 	my @pos;  # list of non-negated cqp fragments
 	my @neg;  # list of negated cqp fragments
 
-	# create the cqp fragment for the word/lemma string, if any
-        # and place in the negated/non-negated list
-	#unless ($string_string eq '') {
-	#    my $string=$string_class . "=\"" . $string_string . "\"" . $string_case ;
-	#    if ($string_neg) {
-	#	push @neg, $string;
-	#    }
-	#    else {
-	#	push @pos, $string;
-	#    }
-	#}
 	
 	unless ($string_string eq '') {
 	    if ($string_neg) {
@@ -378,9 +387,16 @@ foreach my $row (@$phrases) {
 	$cqp_query_row .= $cqp_query;
 	
 	$i++; # next token
-
+	
     }
-
+    
+    
+    # if fullQuery is used the previous step is not relevant:
+    if ($in{'fullQuery'}) {
+	$cqp_query_row = $in{'fullQuery'}->{$row}->{'string'}->[0];
+    }
+	
+	
     # if the row is associated with the base corpus, put it in the %corpora
     # hash
     if ($corpus eq $base_corpus) {
@@ -458,11 +474,16 @@ while (my ($k,$v) = each %aligned_corpora) {
 }
 
 # end it
-$cqp_all .= ";";
+    $cqp_all .= ";";
 
 
-# for debugging
-#print $cqp_all, "\n";
+if ($debug) {
+    print "CQP: ", $cqp_all, "\n";
+}
+
+
+
+
 
 
 ##                                        ##
@@ -536,7 +557,7 @@ shift @atts; # it is used later, without "word" attribute (always first)
 # if there are no restrictions due to alignment). Because of the  "cut 
 # applies too early"-bug in CWB, however, the patched version of 
 # the perl cqp interface has a "cut2" function that is used instead.
-# (Note: cut2 is slightly slower than "cut" but insanaly faster than 
+# (Note: cut2 is slightly slower than "cut" but insanly faster than 
 # importing all hits into perl, and then cutting the array size). 
 if ($randomize and $results_max) {
     $query->reduce($results_max);
@@ -591,7 +612,9 @@ if ($subcorpus) {
 }
 
 
-
+# the search-within-search feature. CQPs 'undump' function is used
+# to create a subcorpus, based on the previous search (defined by a
+# file created by the 'dump' function.
 if (CGI::param('searchWithin') eq 'last') {
     my $dumpfile = $conf{'hits_files'} . "/" . $user . ".lastsearch";
     print "<font color=red>undump QUERY with target keyword < \"$dumpfile\";</font>";
@@ -606,9 +629,6 @@ if ($debug) {
     print "</pre>";
 }
 
-if ($debug) {
-    print $cqp_all;
-}
 
 # finally, execute the query
 my @result = $query->query("$cqp_all");    
@@ -626,39 +646,52 @@ my $nr_result = @result;
 ##             4. Print result            ##
 ##                                        ##
 
-
+# For storing all uniqe tag combinations. Will later be used to 
+# create "divs" that floats over words, displaying grammatical information. 
 my %tags;
 my $tag_i;
 
-
+# The first data file. The DATA filehandle will later be replaced, if there
+# are a sufficient number of hits.
 my $filename=$conf{'tmp_dir'} . "/" . $conf{'query_id'} . "_1.dat"; 
 open (DATA, ">$filename");
 
+# A file for storing a html snippet about the search (search string, links to results
+# pages etc.)
 my $top=$conf{'tmp_dir'} . "/" . $conf{'query_id'} . ".top";
 open (TOP, ">$top");
 
+# Some meta-information, used by other scripts.
 my $conf=$conf{'tmp_dir'} . "/" . $conf{'query_id'} . ".conf"; 
 open (CONF, ">>$conf");
 print CONF "context_type=$context_type\n";
 close CONF;
 
+
+# Javascript programs used in displaying results.
 print "<script language=\"JavaScript\" src=\"", $conf{'htmlRoot'}, "/js/reslist.js\"></script>";
 print "<script language=\"JavaScript\" src=\"", $conf{'htmlRoot'}, "/js/showtag.js\"></script></head>\n<body>";
 
 
+## links to subsidiary scripts
+
+# The basic part of each URL
 my $actionurl = 
   "corpus=" . $in{'query'}->{'corpus'}->[0] 
   . "&query_id=" . $conf{'query_id'}
   . "&base_corpus=" . $in{'phrase'}->{0}->{'corpus'}->[0];
   ;
 
-$top_text .= "$lang{'action'}: <select onChange=\"window.location.href=(this.options[this.selectedIndex].value)\"><option></option>";
+# Create a select widget. The onchange event redirects to the selected url. (The onclick event sets 
+# the selected value to 0, ensureing that even when selecting the same action twice 
+# the "onchange" event will still fire.) 
+$top_text .= "$lang{'action'}: <select id='actionselect' onClick=\"this.options.selectedIndex=0\" onChange=\"window.location.href=(this.options[this.selectedIndex].value)\"><option></option>";
 $top_text .= "<option value='" . $conf{'cgiRoot'} . "/count_choose.cgi?$actionurl'>$lang{'count'}</option> ";
 $top_text .= "<option value='" . $conf{'cgiRoot'} . "/download_choose.cgi?$actionurl'>$lang{'download'}</option> ";
 $top_text .= "<option value='" . $conf{'cgiRoot'} . "/sort_choose.cgi?$actionurl'>$lang{'sort'}</option> ";
 $top_text .= "<option value='" . $conf{'cgiRoot'} . "/coll_choose.cgi?$actionurl'>$lang{'collocations'}</option> ";
                                                                                                
-
+# only relevant for multilingual corpora
 if ($conf{'type'} eq 'multilingual') {
     $top_text .= "<option value='" . $conf{'cgiRoot'} . "/cooc_choose.cgi?$actionurl'>$lang{'co-occurence'}</option> ";
 }
@@ -677,9 +710,16 @@ $top_text .="</select><br>";
 
 
 
+
+# The top text is now finished; print it to STDOUT and to file.
 print TOP $top_text;
 print $top_text;
 
+# this span will later be used to hold the links to the results pages.
+# (We do not yet know how many there will be. We cannot use the number of
+# results, since some results may be discarded.
+# FIXME: is this still true?
+# )
 print "<span id=\"placeholder\"></span>";
 
 
@@ -692,7 +732,7 @@ my $c; my $d_files=1;
 print "<table border=\"0\">";
 
 
-# loop through result set
+
 
 my $source_line;
 my $target_line;
@@ -703,7 +743,18 @@ my $aligns=0;
 # stop waiting ticker
 print "<script language=\"JavaScript\">stopWait()</script>";
 
+
+# loop through result set
+
 for (my $i = 0; $i < $nr_result; $i++) {
+
+
+
+    ##########################################
+    #
+    # 4.1: Structural annotation
+    #
+    ##########################################
 
     
     $source_line="";
@@ -711,11 +762,17 @@ for (my $i = 0; $i < $nr_result; $i++) {
     $alignmentp=0;
 
     my $m;
-    if ($randomize) { $m = splice (@result, rand @result, 1) }
+    # if $results_max they are already randomized
+    if (($randomize) and !($results_max)) { $m = splice (@result, rand @result, 1) }
     else { $m = $result[$i] }
 
+
+
+    # For structural annotations.
     my %sts;
 
+    # Loop through the annotations specified in the configuration file,
+    # make some corpus-specific changes, and add them to a hash.
     foreach my $a (@sts) {
 
 	# temporary fix for OMC ...
@@ -750,6 +807,7 @@ for (my $i = 0; $i < $nr_result; $i++) {
     } 
     
 
+    # structural annotations as a string (to be used later).
     my @sts_strings;
     while (my ($key, $val) = each %sts) {
 	push @sts_strings, $key . "=" . $val;
@@ -757,14 +815,29 @@ for (my $i = 0; $i < $nr_result; $i++) {
 
     my $sts_string = join("||", @sts_strings);
 
+
+
+    ##########################################
+    #
+    # 4.2: Base concordance. part 11.
+    #
+    ##########################################
+
+    # get the matching phrase from cqp
     my $ord = $m->{'kwic'}->{'match'};
+
+    # get the right and left context from cqp
     my $res_r = $m->{'kwic'}->{'right'};
     my $res_l = $m->{'kwic'}->{'left'};
 
 
+    # FIXME: is this still necessary?
     next if ($results_max and ($hits >= $results_max));
     $hits++;
 
+
+    # Keep track of number of results in this page/datafile.
+    # Change page/datafile if necessary.
     $c++;
     if ($c == $results_page) {
 	$d_files++;
@@ -774,20 +847,56 @@ for (my $i = 0; $i < $nr_result; $i++) {
 	$c=0;
     }
 
+    # convert the charset of the matches and context
+    if ($conf{'charsetfrom'}) {
+	foreach my $textstring ($res_l,$ord,$res_r) {
+	    $textstring = $iconv->convert($textstring);
+	}
+    } 
 
+    # print to the data file
     print DATA $base_corpus, "\t", $sts{'s_id'}, "\t", $sts_string, "\t$res_l\t$ord\t$res_r\n";
 
 
+    ##########################################
     #
-    #   alignment
-    # 
+    # 4.3. Alignment
+    #
+    ##########################################
 
-    foreach my $a (keys %aligned_corpora, keys %aligned_corpora_opt) { #targets
 
+    # Loop through the possible target corpora, retrieve alignement (if any).
+    foreach my $a (keys %aligned_corpora, keys %aligned_corpora_opt) { 
+
+	# Name always lowercased for CQP
 	my $a = lc($a);
+
+	# Get aligned region
 	my $al = $m->{$a};
 	next if ($al =~ m/^\(no alignment/);
-	
+
+	# Convert charset of aligned region.
+	# FIXME: charset should possibly be specified by corpus, not by
+	# project. (But: Future versions of CQP is supposed to support 
+	# unicode ...
+	if ($conf{'charsetfrom'}) {
+	    $al = $iconv->convert($al);
+	} 
+
+
+	# Start the alignment output.
+	if ($hits < $results_page) {
+	    $target_line.=sprintf("<tr bgcolor=\"#ffffff\"><td>");  # Aligned regions are gray.
+	}
+	$target_line .= "<tr style='color:gray'><td>";
+
+
+	#
+	##  Retrieve the id of the aligned region, based on the id of the matched region.
+	#   (Unfortunately CQP does not offer this function; thus this hack.)
+
+	# the name of the corpus, as a basis for the language name.
+	# FIXME: this is just silly.
 	my $lang = $a;
 	
 	# FIXME: should be correct in db
@@ -799,30 +908,25 @@ for (my $i = 0; $i < $nr_result; $i++) {
 	    if ($base_corpus eq 'SAMNO_NORSK') {  $lang = "no" }
 	}
 
-	my $t2;
-	my $targets;
-	
-	if ($hits < $results_page) {
-	    $target_line.=sprintf("<tr bgcolor=\"#ffffff\"><td>");
-	}
-	
-	#	print $source_line;
-	
-	
-	$target_line .= "<tr style='color:gray'><td>";
 
-
+	# The name of the MySQL table.
 	my $table = $CORPUS;
 	$table = uc($table) . "s_align";
 
+
+	# Id's for the aligned region.
+	my $target_tid; # the text id
+	my @target_sids; # one or more sentence ids
+
+	my $t2;
+	my $targets;
+
+	# Run the query.
 	my $sth = $dbh->prepare(qq{ SELECT target FROM $table where source = '$sts{'s_id'}' and lang = '$lang';});
-
-	my $target_tid;
-	my @target_sids;
-
 	$sth->execute  || die "Error fetching data: $DBI::errstr";
-	while (my ($target) = $sth->fetchrow_array) {
 
+	#Loop through the results.
+	while (my ($target) = $sth->fetchrow_array) {
 
 	    $t2 = $target;
 	    $t2 =~ s/\..*//g;
@@ -837,7 +941,8 @@ for (my $i = 0; $i < $nr_result; $i++) {
 	    if ($hits < $results_page) {
 		
 		$alignmentp=1;
-		#                $target_line.=sprintf("<br />");
+
+		# Print links for context/metadata for the aligned regions.
 		# FIXME: generaliser
 		$target_line.=sprintf("<font size=\"-2\"><a href=\"#\" onClick=\"window.open('$conf{'cgiRoot'}/show_context.cgi?s_id=$target&text_id=$t2&cs=3&corpus=$in{'query'}->{'corpus'}->[0]&subcorpus=$a',");
 		$target_line.=sprintf("'mywindow','height=500,width=650,status,scrollbars,resizable');\">$target</a> </font>");
@@ -847,6 +952,8 @@ for (my $i = 0; $i < $nr_result; $i++) {
 		
 	}
 
+
+	# Print the aligned regions.
 	if ($hits < $results_page) {
 
 	    $target_line .= "</td><td";
@@ -855,6 +962,9 @@ for (my $i = 0; $i < $nr_result; $i++) {
 	    }
 	    $target_line .= ">";
 
+	    # Output of the aligned regions. handling tags etc.
+	    # (does not actually print, but adds to the "$target_line" variable,
+	    # which will be printed later).
 	    print_tokens_target($al), "<br>";		
 
 	    $target_line .= "</td></tr>";
@@ -863,10 +973,18 @@ for (my $i = 0; $i < $nr_result; $i++) {
 
 	my $target_sids = join(" ", @target_sids);
 
+	# Print to data file.
 	print DATA uc($a), "\t", $target_sids, "\t", $sts_string, "\t$al\n";
 	
-    }
+    } # end of alignment.
 
+
+
+    ##########################################
+    #
+    # 4.4. Base concordance, part 2.
+    #
+    ##########################################
 
     if ($hits < $results_page) {
 
@@ -929,9 +1047,19 @@ for (my $i = 0; $i < $nr_result; $i++) {
 
 print "</table>";
 
+
+    ##########################################
+    #
+    # 5. Cleanup.
+    #
+    ##########################################
+
+
 ## to allow tags to be show at the bottom of the page
 print "<br><br><br><br><br><br><br><br><br>";
 
+# For each unique tag, create a div that can be "floated" 
+# over the appropriate tokens.
 while (my ($id, $tags) = each %tags) {
     print "<div id=\"$id\" class=\"tag\">$tags</div>";
 }
@@ -944,7 +1072,9 @@ my $max;
 if ($hits == $results_max) {
     $max=$lang{'max'};
 }
-#if($mand_align){$hits=$aligns;}
+
+# The javscript function (in reslist.js) to display the links to the 
+# results pages (in the "placeholder" span).
 print "<script language=\"javascript\">showList($d_files,'$conf{'query_id'}',$hits,'$CORPUS','$max')</script>";
 
 # print page header to file, so that it is accessible for 
@@ -957,6 +1087,7 @@ foreach my $i (1..$d_files) {
     print TOP " <a id=\"$id\" href=\"$conf{'cgiRoot'}/show_page_dev.cgi?n=$i&query_id=$conf{'query_id'}&corpus=$CORPUS\">$i</a> ";
 }
 print "</body></html>\n";
+
 
 
 ## create searchdump
@@ -987,7 +1118,7 @@ close DUMP;
 # copy to position for "last query"
 my $dumpfile2 = $conf{'hits_files'} . "/" . $user . ".lastsearch";
 copy($dumpfile, $dumpfile2);
-print "copy: $dumpfile $dumpfile2";
+
 
 
 
