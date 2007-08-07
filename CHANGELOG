@@ -28,3 +28,11 @@ larsnyg: added comments to query_dev.cgi
 larsnyg: search-within-search
  
 larsnyg: user-specified structural/metadata fields in concordance
+
+larsnyg: started new docs: "quickstart" and "developers guide"
+
+larsnyg: started framework for rewriting formatting functions
+
+larsnyg: started work on ambigous tokens
+
+larsnyg: started framwork for highlighting 
