@@ -1,3 +1,12 @@
+* "case sensitive" virker ikke (bokmål ...)
+
+* make dist: inkluder et test-korpus 
+	- reg-fil
+	- sql-fil for å opprette og fylle database
+
+* mkdir i "hits"
+
+
 - Småting:
  - "BM-korpus: Hvorfor kan vi ikke søke på sammensetninger lenger?"
  - bokmål: ikke "detaljer", men heller: "titler, større verk" vs. "titler, mindre verk"
@@ -73,7 +82,7 @@ FEATURES
 - (fra øystein) få oppgitt hvor mange informanter (el.lign.) det aktuelle søket fordeler seg på
   - oppdater metadatadistribusjon
     - antall i treff + totalt antall (mulige)
-
+  -> wordcount i nota
 
 
 
@@ -88,12 +97,17 @@ FEATURES
     - alignment
 
 - Vis strukturell informasjon ved konkordanse
+  - struct-anno + metadata
+  - select multiple i grensesnitt
+  - hvis metadata: legg til i struct-anno-liste
+
+  nytt felt: strukt + søk-i-søk
 
 
 - flertydighet
 
 - kolonne+attributt -> farge
-
+  - implement as addition to "choose"/"exclude" in metadata widget
 
 
 * søk i søk
@@ -109,7 +123,11 @@ FEATURES
     - søk-i-søk-meny: *enten* "forrige søk" eller "navngitt søk"
       - for navngitt: åpne nytt "vindu", cgi som leter opp navnene på alle
         lagrede søk 
+    - ELLER: onclick -> populate select-widget
   - dmp-filer lages for alle søk
+ 
+
+
 
 * koding av enkeltresultater
   - hver annotering: 
@@ -149,7 +167,7 @@ FEATURES
 
 * faktisk bruke språkkoder fra <corpusname>.conf.js
 
-
+* search on segments of compounds
 
 
 
@@ -200,6 +218,7 @@ LONG TERM
 
 BUGS:
 - OMC-bugs (from Joel)
+- "search within"
 
 
 DOCUMENTATION
