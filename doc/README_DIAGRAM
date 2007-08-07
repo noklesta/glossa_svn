@@ -1,0 +1,4 @@
+
+run more than once to ensure optimal layout:
+
+ neato -Tps -Gstart=rand glossa_source_diagram.neat > dia.neat.ps

@@ -1,0 +1,32 @@
+graph G {
+
+       graph [overlap="false"];
+
+	{node [shape=octagon,style=filled,color=skyblue] "index_dev.php" "query_dev.cgi" "create_menu_item.pl" "glossa.inc\nglossa_text.inc\n<project>.inc\n<project>_cred.inc" "meta.js\ndynamic_form.js\nmisc.js\nshortcuts.js" "Glossa.pm" "postprocessing cgi progs" "reslist.js \n showtags.js" "get_javascript_arrays.js" "create_menu_item.pl"}
+
+	"index_dev.php" -- "query_dev.cgi";
+	"index_dev.php" -- "<project>.js";
+	"create_menu_item.pl" -- "<project>.js";
+	"create_menu_item.pl" -- "menu.conf";
+	"index_dev.php" -- "glossa.inc\nglossa_text.inc\n<project>.inc\n<project>_cred.inc";
+	"index_dev.php" -- "meta.js\ndynamic_form.js\nmisc.js\nshortcuts.js";
+       "dommenu" -- "meta.js\ndynamic_form.js\nmisc.js\nshortcuts.js";
+       "index_dev.php" -- "get_javascript_arrays.js";
+       "get_javascript_arrays.js" -- "MySQL db";
+	"get_javascript_arrays.js" -- "meta.conf";
+	"query_dev.cgi" -- "Glossa.pm";
+	"Glossa.pm" -- "MySQL db";
+	"query_dev.cgi" -- "query results files";
+	"Glossa.pm" -- "cgi.conf";
+	"query_dev.cgi" -- "Query_dev.pm";
+	"Query_dev.pm" -- "CQP bin files";
+	"postprocessing cgi progs" -- "query results files";
+	"postprocessing cgi progs" -- "Glossa.pm";
+	"query_dev.cgi" -- "reslist.js \n showtags.js";
+/*	"misc scripts" -- "CQP bin files";
+	"misc scripts" -- "MySQL db";
+	"corpus files" -- "misc scripts"; */
+
+
+
+}
