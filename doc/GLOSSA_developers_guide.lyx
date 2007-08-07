@@ -1,0 +1,98 @@
+#LyX 1.4.1 created this file. For more info see http://www.lyx.org/
+\lyxformat 245
+\begin_document
+\begin_header
+\textclass article
+\begin_preamble
+\date{}
+\end_preamble
+\language english
+\inputencoding auto
+\fontscheme default
+\graphics default
+\paperfontsize default
+\spacing single
+\papersize default
+\use_geometry false
+\use_amsmath 1
+\cite_engine basic
+\use_bibtopic false
+\paperorientation portrait
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\defskip medskip
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Glossa Developers Guide
+\end_layout
+
+\begin_layout Author
+Lars Nygaard
+\end_layout
+
+\begin_layout Abstract
+This document is meant as extra help for those who want to work on the Glossa
+ source code.
+ Corpus maintainers should refer to the 
+\emph on
+Glossa Administrators Manual
+\emph default
+.
+\end_layout
+
+\begin_layout Section
+Overview
+\end_layout
+
+\begin_layout Section
+The search window
+\end_layout
+
+\begin_layout Section
+The query program
+\end_layout
+
+\begin_layout Subsection
+Generating cqp query
+\end_layout
+
+\begin_layout Subsection
+Generating subcorpus 
+\end_layout
+
+\begin_layout Subsection
+Displaying concordances
+\end_layout
+
+\begin_layout Section
+Postprocessing scripts
+\end_layout
+
+\begin_layout Subsection
+UI
+\end_layout
+
+\begin_layout Subsection
+Computation/processing
+\end_layout
+
+\begin_layout Subsection
+Display
+\end_layout
+
+\begin_layout Section
+Auxilliary scripts (for corpus maintainance)
+\end_layout
+
+\end_body
+\end_document

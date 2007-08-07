@@ -1,0 +1,124 @@
+#LyX 1.4.1 created this file. For more info see http://www.lyx.org/
+\lyxformat 245
+\begin_document
+\begin_header
+\textclass article
+\begin_preamble
+\date{}
+\end_preamble
+\language english
+\inputencoding auto
+\fontscheme default
+\graphics default
+\paperfontsize default
+\spacing single
+\papersize default
+\use_geometry false
+\use_amsmath 1
+\cite_engine basic
+\use_bibtopic false
+\paperorientation portrait
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\defskip medskip
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Glossa Quickstart
+\end_layout
+
+\begin_layout Author
+Lars Nygaard
+\end_layout
+
+\begin_layout Section
+Introduction
+\end_layout
+
+\begin_layout Standard
+Can and cannot do with Glossa.
+\end_layout
+
+\begin_layout Section
+Words and phrases
+\end_layout
+
+\begin_layout Standard
+- add option
+\end_layout
+
+\begin_layout Standard
+- double click to remove options
+\end_layout
+
+\begin_layout Standard
+- add token
+\end_layout
+
+\begin_layout Standard
+- for multilingual: add phrase
+\end_layout
+
+\begin_layout Section
+Bibliographic information
+\end_layout
+
+\begin_layout Section
+Viewing results
+\end_layout
+
+\begin_layout Standard
+Show grammatical annotations.
+\end_layout
+
+\begin_layout Standard
+Postprocessing options.
+\end_layout
+
+\begin_layout Section
+Other functions
+\end_layout
+
+\begin_layout Standard
+Regexp.
+\end_layout
+
+\begin_layout Standard
+Stored results.
+\end_layout
+
+\begin_layout Standard
+Edit results.
+\end_layout
+
+\begin_layout Standard
+Overview of corpus/subcorpus.
+\end_layout
+
+\begin_layout Standard
+More advanced queries.
+\end_layout
+
+\begin_layout Standard
+Change display.
+\end_layout
+
+\begin_layout Standard
+Search within search.
+\end_layout
+
+\begin_layout Standard
+Lexial statistics.
+\end_layout
+
+\end_body
+\end_document
