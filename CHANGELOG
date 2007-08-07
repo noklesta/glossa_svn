@@ -1,16 +1,30 @@
-* 2007.04.25 larsnyg: Implemented feature "additional word"/"additional lemma"
+larsnyg: Implemented feature "additional word"/"additional lemma"
 
-* 2007.04.25 larsnyg: Interface now submits when the user presses 'enter'
+larsnyg: Interface now submits when the user presses 'enter'
 
-* 2007.04.25 larsnyg: Removed compound names for 'translation' metadata elements
+larsnyg: Removed compound names for 'translation' metadata elements
 
-* 2007.04.25 larsnyg: Regular expressions are now disabled by default
+larsnyg: Regular expressions are now disabled by default
 
-* 2007.04.26 larsnyg: Bugfixes in meta-dist.cgi
+larsnyg: Bugfixes in meta-dist.cgi
 
-* 2007.04.26 larsnyg: meta-dist.cgi now includes a category count, and 
+larsnyg: meta-dist.cgi now includes a category count, and 
 		      creates a tab-separated file (for reformatting).
 
-* 2007.04.26 larsnyg: {interface} massive speedup of form submit
+larsnyg: {interface} massive speedup of form submit
 
-* 2007.04.26 larsnyg: {interface} focus set on first text field 
+larsnyg: {interface} focus set on first text field
+
+larsnyg: "show texts" now include a breakdown according to various categories
+
+larsnyg: fullQuery mode
+
+larsnyg: charset conversion
+
+larsnyg: group-based restriction on access
+
+larsnyg: added comments to query_dev.cgi 
+
+larsnyg: search-within-search
+ 
+larsnyg: user-specified structural/metadata fields in concordance
