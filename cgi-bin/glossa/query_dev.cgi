@@ -696,7 +696,7 @@ if ($conf{'type'} eq 'multilingual') {
     $top_text .= "<option value='" . $conf{'cgiRoot'} . "/cooc_choose.cgi?$actionurl'>$lang{'co-occurence'}</option> ";
 }
 
-#$top_text .= "<option onClick='window.location.href=\"" . $conf{'cgiRoot'} . "/annotate_choose.cgi?$actionurl\"'>$lang{'annotate'}</option> ";
+
 $top_text .= "<option value='" . $conf{'cgiRoot'} . "/annotate_choose.cgi?$actionurl'>$lang{'annotate'}</option> ";
 $top_text .= "<option value='" . $conf{'cgiRoot'} . "/meta.cgi?$actionurl'>$lang{'metadata'}</option> ";
 $top_text .= "<option value='" . $conf{'cgiRoot'} . "/meta-dist.cgi?$actionurl'>$lang{'meta-dist'}</option> ";

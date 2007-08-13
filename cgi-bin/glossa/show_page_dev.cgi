@@ -12,7 +12,7 @@ use Glossa;
 my $query_id = CGI::param('query_id');
 my $corpus=CGI::param('corpus');
 unless ($query_id =~ m/^\d+_\d+$/) { die("illegal value") };
-unless ($corpus =~ m/^[\w|\d|_|-]+$/) { die("illegal value") };
+#unless ($corpus =~ m/^[\w|\d|_|-]+$/) { die("illegal value") };
 
 
 my $hits_name=CGI::param('name');
@@ -179,7 +179,9 @@ while (<DATA>) {
     print "<tr><td><br>";
     if ($set_id) {
 
-	my $sth = $dbh->prepare(qq{ SELECT value_id FROM annotations where sentence_id = '$s_id';});
+	my $annotation_table = uc($corpus) . "annotations";
+
+	my $sth = $dbh->prepare(qq{ SELECT value_id FROM $annotation_table where s_id = '$s_id';});
 	$sth->execute  || die "Error fetching data: $DBI::errstr";
 	my ($stored_value) = $sth->fetchrow_array;
 

@@ -61,12 +61,15 @@ elsif ($action eq 'default') {
 
 print "<html><head></head><body>";
 
+print "<script language=\"JavaScript\" src=\"", $conf{'htmlRoot'}, "/js/misc.js\"></script>";
+
+
 print "<form action=\"", $conf{'cgiRoot'}, "/edit_set.cgi\" method=\"get\">";
 print "<input type=\"hidden\" value=\"$set_id\" name=\"set\"></input>";
-print "<input type=\"hidden\" name=\"action\"></input>";
+print "<input id='actionWidget' type=\"hidden\" name=\"action\"></input>";
 print "<input type='hidden' name='corpus' value='$corpus'></input>";
 
-print "<br><input type=\"button\" value=\"Add value\" onclick=\"submitForm('add')\"></input> name: <input name=\"newname\" type=\"text\"></input><br><br><br>";
+print "<br><input type=\"button\" value=\"Add value\" onclick=\"submitFormSets('add')\"></input> name: <input name=\"newname\" type=\"text\"></input><br><br><br>";
 
 print "Value: <select name=\"value\">";
 print "<option value=\"\"></option>";
@@ -79,7 +82,7 @@ while (my ($id, $name) = $sth->fetchrow_array) {
 print "</select><br>";
 
 
-print "<br><input type=\"button\" value=\"Drop value\" onclick=\"submitForm('delete')\"></input><br>";
+print "<br><input type=\"button\" value=\"Drop value\" onclick=\"submitFormSets('delete')\"></input><br>";
 
 my $sth = $dbh->prepare(qq{ SELECT default_value FROM $sets_table where id = '$set_id';});
 $sth->execute  || die "Error fetching data: $DBI::errstr";
@@ -92,7 +95,7 @@ my ($default) = $sth->fetchrow_array;
 print "<br>Default value is: <b>$default</b>";
 
 
-print "<br><input type=\"button\" value=\"Set new default\" onclick=\"submitForm('default')\"></input><br>";
+print "<br><input type=\"button\" value=\"Set new default\" onclick=\"submitFormSets('default')\"></input><br>";
 
 
 print "</form>";

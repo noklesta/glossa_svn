@@ -22,7 +22,7 @@ print "Content-type: text/html\n\n";
 print "<html><head></head><body>";
 
 print "select annotation set:<br>";
-print "<form action=\"", $conf{'cgiRoot'}, "/show_page.cgi\" method=\"get\">";
+print "<form action=\"", $conf{'cgiRoot'}, "/show_page_dev.cgi\" method=\"get\">";
 
 print "<input type=\"hidden\" name=\"query_id\" value=\"$query_id\"></input>";
 
