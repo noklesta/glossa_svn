@@ -11,3 +11,4 @@ conf['type'] = 'monolingual';
 conf['title'] = 'Søk i Bokmålskorpuset';
 conf['corpus_name'] = 'Korpus for moderne bokmål';
 var language='no';
+

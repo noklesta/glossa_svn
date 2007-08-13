@@ -98,7 +98,8 @@ function writeWidgetTokenRow() {
     
 
     if (fullQuery == 'yes') {
-	Html += "<textarea id=\"fullQuery_" + curRow + "\" name=\"fullQuery_" + curRow + "_string\" size=\"12\"></textarea>";
+	Html += "<textarea id=\"fullQuery_" + curRow + "\" name=\"fullQuery_" + curRow + "_string\" cols=\"30\" rows=\"3\"></textarea>";
+	Html += "<input type='hidden' name='phrase_number' value='" + curRow + "'></input>";
 	tableCell.innerHTML = Html;
     }
     else {

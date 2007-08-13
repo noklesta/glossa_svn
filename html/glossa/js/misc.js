@@ -115,6 +115,17 @@ function submitForm() {
 
 }
 
+function submitFormSets(newValue) {
+
+
+    actionWidget = document.getElementById('actionWidget');
+    actionWidget.value=newValue;
+    document.forms[0].submit();
+
+
+}
+
+
 function setAction(target) {
 	
 	var oldTarget=document.forms[0].action;
