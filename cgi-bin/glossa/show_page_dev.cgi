@@ -5,6 +5,7 @@ use DBI;
 use Data::Dumper;
 use lib("/home/httpd/html/glossa/pm");
 use Glossa;
+use strict;
 
 
 # variables $query_id and $corpus ends up on the command line; 
@@ -14,6 +15,7 @@ my $corpus=CGI::param('corpus');
 unless ($query_id =~ m/^\d+_\d+$/) { die("illegal value") };
 #unless ($corpus =~ m/^[\w|\d|_|-]+$/) { die("illegal value") };
 
+my %in;
 
 my $hits_name=CGI::param('name');
 
@@ -75,20 +77,24 @@ my $set_id = CGI::param('set');
 my $annotation_select;
 
 
-my $annotate = 0;
+my $sets_table = uc($corpus) . "annotation_sets";
+my $values_table = uc($corpus) . "annotation_values";
+
+my @values;
+my $default;
+
+my $annotate = 1;
 if ($annotate) {
-    my $sth = $dbh->prepare(qq{ SELECT default_value FROM annotation_sets where id = '$set_id';});
+    my $sth = $dbh->prepare(qq{ SELECT default_value FROM $sets_table where id = '$set_id';});
     $sth->execute  || die "Error fetching data: $DBI::errstr";
     my ($default) = $sth->fetchrow_array;
 
-    
-
-    my @values;
     # get values
-    my $sth = $dbh->prepare(qq{ SELECT id, value_name FROM annotation_values where set_id = '$set_id';});
+    my $sth = $dbh->prepare(qq{ SELECT id, value_name FROM $values_table where set_id = '$set_id';});
     $sth->execute  || die "Error fetching data: $DBI::errstr";
     while (my ($id, $name) = $sth->fetchrow_array) {
-	push @values, [$id, $name]; 
+	push @values, [$id, $name];
+ 
     }
 }
 
@@ -126,6 +132,7 @@ if ($set_id) {
     print "<form action=\"", $conf{'cgiRoot'}, "/save_annotations.cgi\">";
     print "<input type=\"hidden\" name=\"set\" value=\"$set_id\">";
     print "<input type=\"hidden\" name=\"query_id\" value=\"$query_id\">";
+    print "<input type=\"hidden\" name=\"corpus\" value=\"$corpus\"></input>";
     print "<br><input type=\"submit\" value=\"Save annotations\"></input>";
 }
 
@@ -134,6 +141,7 @@ if ($del) {
     print "<input type=\"hidden\" name=\"query_id\" value=\"$query_id\">";
     print "<input type=\"hidden\" name=\"corpus\" value=\"$corpus\">";
     print "<input type=\"hidden\" name=\"n\" value=\"$n\">";
+    print "<input type=\"hidden\" name=\"corpus\" value=\"$corpus\"></input>";
     print "<br><input type=\"submit\" value=\"Delete selection\"></input>";
 }
 
@@ -174,7 +182,7 @@ while (<DATA>) {
 	my ($k,$v) = split(/=/, $sts);
 	$sts{$k}=$v;
     }
-    $t_id = $sts{'text_id'};
+    my $t_id = $sts{'text_id'};
 
     print "<tr><td><br>";
     if ($set_id) {
@@ -187,6 +195,7 @@ while (<DATA>) {
 
 	print "<select name=\"$s_id\"><option value=\"\"></option>"; 
 	foreach my $val (@values) {
+	    print $val->[0], " ::: ", $val->[1], "<br>";
 	    print "<option value=\"$val->[0]\"";
 	    if ($val->[0] == $stored_value) { print " selected" }
 	    elsif (($val->[0] == $default) and !($stored_value)) { print " selected" }
@@ -246,7 +255,7 @@ while (<DATA>) {
 	foreach my $target (@targets) {
 
 	    print "<font size=\"-2\"><a href=\"#\" onClick=\"window.open('", $conf{'htmlRoot'}, "/show_context.cgi?text_id=$t_id&s_id=$target&cs=3&$corpus_string&subcorpus=$corp',";
-	    print "'mywindow','height=500,width=650,status,scrollbars,resizable');\">$text</a> \n&nbsp; </font>";
+	    print "'mywindow','height=500,width=650,status,scrollbars,resizable');\">$t_id</a> \n&nbsp; </font>";
 	    
 	}
 
@@ -280,7 +289,7 @@ print "<br><br><br><br><br><br><br><br><br>";
 print "</body></html>";
 
 
-
+my $tag_i;
 sub print_it {
 
     my $in = shift;
