@@ -2,13 +2,13 @@ use strict;
 use DBI;
 use Getopt::Long qw(:config bundling);
 
-my ($data, $mode, $table);
-GetOptions ("tag=s"   => \$data,
-	    "mode=s"    => \$verbose,
-	    "table=s" => \$table;
+my ($tag, $mode, $table);
+GetOptions ("tag=s"   => \$tag,
+	    "mode=s"    => \$mode,
+	    "table=s" => \$table
 	   );
 
-unless ($data and $mode and $table) {
+unless ($tag and $mode and $table) {
     die("you must specify tag, mode and table\n"); 
 }
 
