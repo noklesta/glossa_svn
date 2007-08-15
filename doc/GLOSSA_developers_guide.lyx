@@ -33,7 +33,7 @@
 \begin_body
 
 \begin_layout Title
-Glossa Developers Guide
+Glossa Developer's Guide
 \end_layout
 
 \begin_layout Author
@@ -54,61 +54,132 @@ Glossa Administrators Manual
 Overview
 \end_layout
 
+\begin_layout Standard
+Glossa concists of three «clusters» of functions:
+\end_layout
+
+\begin_layout Itemize
+The main search window.
+\end_layout
+
+\begin_layout Itemize
+The concordance page.
+\end_layout
+
+\begin_layout Itemize
+The postprocessing functions: download, annotate, collocations, coun etc.
+\end_layout
+
+\begin_layout Standard
+The Glossa source code is quite heterogenerous, and consists of the following
+ parts:
+\end_layout
+
+\begin_layout Itemize
+Patches to external libraries: DomMenu, CQP perl modules and Text::NSP modules.
+\end_layout
+
+\begin_layout Itemize
+PHP code to display the main search window (and some other windows, like
+ the lexical statistics interface).
+ The PHP code is quite simple, though unfortunately not very easy to grasp,
+ since it is mixed with javascript functions and cgi calls.
+\end_layout
+
+\begin_layout Itemize
+Javascript libraries with functions for the main search window and the concordan
+ce window, and a few functions for the postprocessing functions.
+\end_layout
+
+\begin_layout Itemize
+Javascript files containing configuration, in particular the menu files.
+\end_layout
+
+\begin_layout Itemize
+CGI (Perl) programs that does the actual searching and for the postprosessing
+ functions.
+\end_layout
+
+\begin_layout Itemize
+Auxilliary (Perl) programs for some common administration tasks: Creating
+ CQP corpora, populating metadata databases etc.
+\end_layout
+
+\begin_layout Standard
+In addition, corpus data needs to be encoded in a variety of ways:
+\end_layout
+
+\begin_layout Itemize
+Metadata as a MySQL database.
+\end_layout
+
+\begin_layout Itemize
+Text data as CQP corpora.
+\end_layout
+
+\begin_layout Itemize
+Configuration files and menues.
+\end_layout
+
 \begin_layout Section
 The search window
 \end_layout
 
 \begin_layout Standard
-- av kildekode
+The index.php progran takes the following parameters:
+\end_layout
+
+\begin_layout Itemize
+corpus (i.e.
+ "project") -- obligatory.
+\end_layout
+
+\begin_layout Itemize
+subcorpus (a user-specified, saved selection of text).
+\end_layout
+
+\begin_layout Itemize
+fullQuery (if set to "yes", a different interface is presented).
 \end_layout
 
 \begin_layout Standard
-document keywords:
+The program then 
+\end_layout
+
+\begin_layout Itemize
+calls the appropriate .js configuration files.
+\end_layout
+
+\begin_layout Itemize
+the cgi program get_javascript_arrays_from_database.cgi with the appropriate
+ arguments, to get the data for populating the metadata widgets.
+\end_layout
+
+\begin_layout Itemize
+includes project specific (php) files for customization of the interface.
 \end_layout
 
 \begin_layout Standard
-- _ as delimiter
+The heavy lifting in this phase is done in the files dynamic_form.js and
+ meta.js, creating the dynamic interface for both query phrases and metadata.
 \end_layout
 
 \begin_layout Standard
-- ADDSTRING
+The query builder (for the text search itself) is based on a metaphor of
+ 'rows' and 'columns' where the first token in the first phrase is column
+ 1, row 1.
 \end_layout
 
 \begin_layout Standard
-- tid
-\end_layout
-
-\begin_layout Standard
---
-\end_layout
-
-\begin_layout Standard
-- what goes where (result files, db, cwb)
-\end_layout
-
-\begin_layout Standard
-- anatomy of a search
-\end_layout
-
-\begin_layout Standard
-- common functions:
-\end_layout
-
-\begin_layout Standard
-- db
-\end_layout
-
-\begin_layout Standard
-- format
-\end_layout
-
-\begin_layout Standard
-- interface (html,js,php) vs.
- cgi 
-\end_layout
-
-\begin_layout Standard
-- names (base corpus, subcorpus etc.) 
+A complex set of form input fields, some visible and some hidden, are created
+ and passed to the next phase.
+ The "_" character is used as a 
+\emph on
+separator
+\emph default
+ in the field names to create a hierachical data structure.
+ Some of the values are 'special', such as 'addstring', 'lemma' and 'case'.
+ 
 \end_layout
 
 \begin_layout Section
@@ -145,6 +216,38 @@ Display
 
 \begin_layout Section
 Auxilliary scripts (for corpus maintainance)
+\end_layout
+
+\begin_layout Section
+\start_of_appendix
+Architecture
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename dia.neat.ps
+	height 100col%
+	rotateAngle 270
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Caption
+Overview of the Glossa system.
+ Blue boxes are source code.
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \end_body
