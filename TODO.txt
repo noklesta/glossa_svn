@@ -98,6 +98,10 @@
 
 * innlesning av datafiler burde være i Glossa.pm (og mye mer)
 
+* rewrite collocation/coocurance funcitons
+  - remove dependency on Text::NSP
+  - filters
+
 * manage subcorpora
   - delete
   - rename
