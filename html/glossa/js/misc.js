@@ -140,3 +140,16 @@ function setFocus() {
     document.forms[0].elements[0].focus();
 
 }
+
+
+/* for get_hits.cgi */
+
+function getNewName() {
+
+    var newName = prompt('new name');
+    var renameWidget = document.getElementById('renameA');
+    var href = renameWidget.href;
+    href = href + "&newname=" + newName;
+    renameWidget.href=href;
+
+}
