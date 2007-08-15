@@ -930,11 +930,114 @@ Metadata database
 \end_layout
 
 \begin_layout Standard
-Tables
+Tables.
+ Named with the project-name in capitals: BOKMALtext.
 \end_layout
 
 \begin_layout Standard
 Content
+\end_layout
+
+\begin_layout Standard
+NOTATER:
+\end_layout
+
+\begin_layout Standard
+
+\family typewriter
+Både author og class kan brukes.
+ Det kommer an på hva slags data du har, hva som er hensiktsmessig.
+ Author/class er laget for situasjoner der man har et en-til-mange-forhold,
+ for eksempel der man har flere forfattere for en tekst, eller der en tekst
+ kan være medlem av flere "klasser" (for eksempel genre, emne ...).
+\end_layout
+
+\begin_layout Standard
+
+\family typewriter
+Hvis man vil bruke author/class-tabellene, må man passe på at den første
+ kolonnen heter "tid" og er en lenke til "tid" i tabellen "text".
+ Så er det bare å bruke meta.conf og "corpus".inc til å spesifisere innholdet.
+\end_layout
+
+\begin_layout Standard
+---
+\end_layout
+
+\begin_layout Standard
+
+\family typewriter
+There are one main table, called <CORPUSNAME>text (if the corpus is
+\end_layout
+
+\begin_layout Standard
+
+\family typewriter
+called "TEST", the table is called "TESTtext".
+ The first column is an
+\end_layout
+
+\begin_layout Standard
+
+\family typewriter
+integer called "tid" (for "text id").
+ There must be an integer colum
+\end_layout
+
+\begin_layout Standard
+
+\family typewriter
+called "startpos" and one called "endpos".
+ Apart from that, you can fill
+\end_layout
+
+\begin_layout Standard
+
+\family typewriter
+it with whatever columns you prefer (for example "title", "genre",
+\end_layout
+
+\begin_layout Standard
+
+\family typewriter
+"register" etc.)
+\end_layout
+
+\begin_layout Standard
+
+\family typewriter
+In addition, for one-to-many-relationships, you may (or may not) want to
+\end_layout
+
+\begin_layout Standard
+
+\family typewriter
+have two additional tables: <CORPUSNAME>author and <CORPUSNAME>class
+\end_layout
+
+\begin_layout Standard
+
+\family typewriter
+Again, the first column must be an integer called "tid", but the other
+\end_layout
+
+\begin_layout Standard
+
+\family typewriter
+columns are "free".
+\end_layout
+
+\begin_layout Standard
+
+\family typewriter
+In addition, there are tables for lexical statistics, and an alignment
+\end_layout
+
+\begin_layout Standard
+
+\family typewriter
+table for parallelll corpora.
+ 
 \end_layout
 
 \begin_layout Section

@@ -40,6 +40,26 @@ Glossa Quickstart
 Lars Nygaard
 \end_layout
 
+\begin_layout Standard
+- og/eller koblinger
+\end_layout
+
+\begin_layout Standard
+- dobbeltklikk
+\end_layout
+
+\begin_layout Standard
+- resultater er midlertidige til de lagres
+\end_layout
+
+\begin_layout Standard
+- "!" betyr negering
+\end_layout
+
+\begin_layout Standard
+- søk-i-søk betyr *match*, ikke *context*
+\end_layout
+
 \begin_layout Section
 Introduction
 \end_layout

@@ -58,6 +58,59 @@ Overview
 The search window
 \end_layout
 
+\begin_layout Standard
+- av kildekode
+\end_layout
+
+\begin_layout Standard
+document keywords:
+\end_layout
+
+\begin_layout Standard
+- _ as delimiter
+\end_layout
+
+\begin_layout Standard
+- ADDSTRING
+\end_layout
+
+\begin_layout Standard
+- tid
+\end_layout
+
+\begin_layout Standard
+--
+\end_layout
+
+\begin_layout Standard
+- what goes where (result files, db, cwb)
+\end_layout
+
+\begin_layout Standard
+- anatomy of a search
+\end_layout
+
+\begin_layout Standard
+- common functions:
+\end_layout
+
+\begin_layout Standard
+- db
+\end_layout
+
+\begin_layout Standard
+- format
+\end_layout
+
+\begin_layout Standard
+- interface (html,js,php) vs.
+ cgi 
+\end_layout
+
+\begin_layout Standard
+- names (base corpus, subcorpus etc.) 
+\end_layout
+
 \begin_layout Section
 The query program
 \end_layout
