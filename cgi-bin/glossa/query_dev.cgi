@@ -781,6 +781,7 @@ for (my $i = 0; $i < $nr_result; $i++) {
 	# the right way ...
 	$sts{$a} = $m->{'data'}->{$a};
 
+	$sts{$a} = $m->{'data'}->{$a};
 	# temporary fix for OMC ...
 	if (($CORPUS eq 'omc') and ($a eq 's_id')) {
 	    my $tmp = $m->{'data'}->{$a};
@@ -798,6 +799,9 @@ for (my $i = 0; $i < $nr_result; $i++) {
 	}
 
     }
+
+    #corpus position
+    $sts{'cpos'}=$m->{'cpos'};
 
     # get value to display from database
     if ($display_struct and !($sts{$display_struct})) {     # i.e. if the value to be displayed is not

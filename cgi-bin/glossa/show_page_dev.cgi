@@ -83,11 +83,11 @@ my $values_table = uc($corpus) . "annotation_values";
 my @values;
 my $default;
 
-my $annotate = 1;
-if ($annotate) {
+
+if ($set_id) {
     my $sth = $dbh->prepare(qq{ SELECT default_value FROM $sets_table where id = '$set_id';});
     $sth->execute  || die "Error fetching data: $DBI::errstr";
-    my ($default) = $sth->fetchrow_array;
+    ($default) = $sth->fetchrow_array;
 
     # get values
     my $sth = $dbh->prepare(qq{ SELECT id, value_name FROM $values_table where set_id = '$set_id';});
@@ -184,24 +184,35 @@ while (<DATA>) {
     }
     my $t_id = $sts{'text_id'};
 
-    print "<tr><td><br>";
+    print "<tr colspan=2><td colspan=2><br>";
     if ($set_id) {
 
 	my $annotation_table = uc($corpus) . "annotations";
 
-	my $sth = $dbh->prepare(qq{ SELECT value_id FROM $annotation_table where s_id = '$s_id';});
+	my $sth = $dbh->prepare(qq{ SELECT value_id FROM $annotation_table where s_id = '$s_id' and set_id = '$set_id';});
 	$sth->execute  || die "Error fetching data: $DBI::errstr";
 	my ($stored_value) = $sth->fetchrow_array;
 
-	print "<select name=\"$s_id\"><option value=\"\"></option>"; 
-	foreach my $val (@values) {
-	    print $val->[0], " ::: ", $val->[1], "<br>";
-	    print "<option value=\"$val->[0]\"";
-	    if ($val->[0] == $stored_value) { print " selected" }
-	    elsif (($val->[0] == $default) and !($stored_value)) { print " selected" }
-	    print ">$val->[1]</option>";
+	print "<input type='hidden' name='annotationcpos_", $s_id, "' value='", $sts{'cpos'}, "'></input>";
+
+	if ($set_id eq "__FREE__") {
+	    print "<input name='annotation_", $s_id, "' value='", $stored_value, "'></input>";
 	}
-	print "</select>";
+	else {
+
+	    print "<select name=\"annotation_", "$s_id\"><option value=\"\"></option>"; 
+	    foreach my $val (@values) {
+		# print $val->[0], " ::: ", $val->[1], "<br>";
+		print "<option value=\"$val->[0]\"";
+		if ($val->[0] == $stored_value) { print " selected" }
+		elsif (($val->[0] == $default) and !($stored_value)) { print " selected" }
+		print ">$val->[1]</option>";
+	    }
+	    print "</select>";
+	    
+	}
+
+
 
     }
     print "</td></tr><tr><td><nobr>";

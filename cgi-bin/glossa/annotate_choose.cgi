@@ -30,6 +30,8 @@ print "<input type=\"hidden\" name=\"corpus\" value=\"$corpus\"></input>";
 
 print "<input type=\"hidden\" name=\"n\" value=\"1\"></input>";
 print "<select name=\"set\">";
+print "<option value=\"\" selected></option>";
+print "<option value=\"__FREE__\">** free annotation **</option>";
 
 my $sets_table = uc($corpus) . "annotation_sets";
 

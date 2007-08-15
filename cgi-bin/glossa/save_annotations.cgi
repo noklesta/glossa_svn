@@ -27,15 +27,44 @@ my $annotations_table = uc($corpus) . "annotations";
 
 foreach my $name (@names) {
     
-    unless (($name eq "set") or ($name eq "query_id") or ($name eq "corpus")) { 
-	my $value = CGI::param($name);
+
+    my $value = CGI::param($name);
+
+    if ($name =~ s/^annotation_//) {
 	print "$name <b>$value</b><br>";
-	$dbh->do(qq{ insert into $annotations_table set s_id = '$name', value_id = '$value', set_id = '$set'; });
+	update_db($value,'value_id',$name);
+    }
+
+    if ($name =~ s/^annotationcpos_//) {
+	print "cpos: <b>$value</b><br>";
+	update_db($value,'start',$name);
     }
 
 
 }
 
-
-
 print "</body></html>";
+
+sub update_db {
+
+    my ($val,$col,$s_id)=@_;
+
+    my $sth = $dbh->prepare("SELECT id FROM $annotations_table where s_id = '$s_id' and set_id = '$set';");
+    $sth->execute  || die "Error fetching data: $DBI::errstr";
+    my ($id) = $sth->fetchrow_array;
+    
+
+    if ($id) {
+	$dbh->do("update $annotations_table set $col = '$val' where id = '$id';");
+    }
+    else {
+	$dbh->do("insert into $annotations_table set $col = '$val', s_id = '$s_id', set_id = '$set';");	
+    }
+    
+
+			    
+
+
+}
+
+
