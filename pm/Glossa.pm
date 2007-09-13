@@ -325,8 +325,8 @@ sub create_tid_list {
     $sth->execute  || die "Error fetching data: $DBI::errstr";
     while (my ($tid,$s,$e) = $sth->fetchrow_array) {
 	$texts_allowed{$tid}=1;
-	unless ($s) { $s="" }
-	unless ($e) { $e="" }
+	unless (defined $s) { $s="" }
+	unless (defined $e) { $e="" }
 	$dumpstring .= $s . "\t" . $e . "\n";
 	$dumplength++;
     }
