@@ -119,13 +119,15 @@ sub get_metadata_feat {
     my $feattable = $feat;
     $feattable =~ s/\..*//;
     $feat =~ s/.*\.//;
-    my $tablename = uc($conf{'base_corpus'}) . $feattable;
-    my $sql = "SELECT $feat from $tablename where tid='$tid';";
+
+    my $sql = "SELECT $feat from $feattable where tid='$tid';";
+
+#    print STDERR $sql;
 
     my $sth = $dbh->prepare($sql);
     $sth->execute  || die "Error fetching data: $DBI::errstr";
     my ($featval) = $sth->fetchrow_array;
-    next unless $featval;
+#    next unless $featval;
     return $featval;
 
 
@@ -136,7 +138,7 @@ sub create_tid_list {
 
     my $conf = shift;                my %conf = %$conf;
     my $in = shift;                  my %in = %$in;
-    my $base_corpus = shift;
+    my $CORPUS = shift;
     
     my $aligned_corpora = shift;
     my %aligned_corpora;
@@ -149,6 +151,7 @@ sub create_tid_list {
 	%aligned_corpora_opt = %$aligned_corpora_opt;
     }
 
+    my $base_corpus = shift;
 
     use DBI;
 
@@ -168,7 +171,12 @@ sub create_tid_list {
     my $sql_query_nl;
     my $subcorpus_string;
 
+    my %from_string;
+
     while (my ($cat,$vals) = each %$cats) {
+
+	next unless ($vals->[0]);
+	#print "C: $cat ", join(" ", @$vals), "<br>";
 	
 	my ($id, $sql) = split(/::/, $cat); 
 	my ($tablename, $colname) = split(/\./, $sql);
@@ -195,6 +203,7 @@ sub create_tid_list {
 		push @restr_neg, "$sql <= '$to'";	   
 		$sql_query_nl .= "$sql less than $to; "; 
 	    }
+	    $from_string{$tablename}=1;
 	}
 
 
@@ -223,7 +232,7 @@ sub create_tid_list {
 		$sql_query_nl .= "$sql is $val; ";
 	    }
 
-
+	    $from_string{$tablename}=1;
 	    
 	}
 	$subcorpus_string .= "\n";
@@ -250,18 +259,19 @@ sub create_tid_list {
 	
     }
 
-    $base_corpus = uc($base_corpus);
+    $CORPUS = uc($CORPUS);
 
-    my $text_table_name = $base_corpus . "text";  
-    my $author_table_name = $base_corpus . "author"; 
-    my $class_table_name = $base_corpus . "class";    
+    my $text_table_name = $CORPUS . "text";  
+    my $author_table_name = $CORPUS . "author"; 
+    my $class_table_name = $CORPUS . "class";    
 
     # language restrictions
     # FIXME: how to generalize this?
 
     my @lang_restr;
     foreach my $corpusname ((keys %aligned_corpora), (keys %aligned_corpora_opt), $base_corpus) {
-	
+
+
 	my ($a,$lang)= split(/_/, $corpusname);
 	next unless ($a eq 'OMC3');
 	if ($lang) {
@@ -276,15 +286,18 @@ sub create_tid_list {
     
     my $select= " $text_table_name.tid,$text_table_name.startpos,$text_table_name.endpos";
     my $from = " $text_table_name";
+    my $from_other = join(",", (keys %from_string));
+    if ($from_other) {
+	$from = $from . "," . $from_other;
+    }
+    
     my $join;
     if ($tables{'author'}) {
 	$select .= ",author.tid";
-	$from .= ",author";
 	$join .= " AND author.tid = $text_table_name.tid";
     }
     if ($tables{'class'}) {
 	$select .= ", class.tid";
-	$from .= ",class";
 	$join .= " AND class.tid = $text_table_name.tid";
     }
     
@@ -312,7 +325,7 @@ sub create_tid_list {
     
     my %texts_allowed;
 
-#    print "SQL: $sql_query<br>";
+    #print "SQL: $sql_query<br>";
     my $sth = $dbh->prepare($sql_query);
     $sth->execute  || die "Error fetching data: $DBI::errstr";
     while (my ($tid,$s,$e) = $sth->fetchrow_array) {
