@@ -270,10 +270,8 @@ sub create_tid_list {
 
     my @lang_restr;
     foreach my $corpusname ((keys %aligned_corpora), (keys %aligned_corpora_opt), $base_corpus) {
-
-
 	my ($a,$lang)= split(/_/, $corpusname);
-	next unless ($a eq 'OMC3');
+	next unless (($a eq 'OMC3') or ($a eq 'OMC4'));
 	if ($lang) {
 	    $lang=lc($lang);
 	    push @lang_restr, "$text_table_name.lang='$lang'";
@@ -285,21 +283,18 @@ sub create_tid_list {
     } 
     
     my $select= " $text_table_name.tid,$text_table_name.startpos,$text_table_name.endpos";
+
+
+    my $join;
     my $from = " $text_table_name";
-    my $from_other = join(",", (keys %from_string));
-    if ($from_other) {
-	$from = $from . "," . $from_other;
+    foreach my $table (keys %from_string) {
+	next if ($table =~ m/text/);
+	$select .= "," . $table . ".tid";
+	$join .= " AND " . $table . ".tid = $text_table_name.tid";
+	$from .= "," . $table;
     }
     
-    my $join;
-    if ($tables{'author'}) {
-	$select .= ",author.tid";
-	$join .= " AND author.tid = $text_table_name.tid";
-    }
-    if ($tables{'class'}) {
-	$select .= ", class.tid";
-	$join .= " AND class.tid = $text_table_name.tid";
-    }
+
     
     my $sql_query;
     if ((@all_restr > 0) or (@lang_restr > 0)) {
