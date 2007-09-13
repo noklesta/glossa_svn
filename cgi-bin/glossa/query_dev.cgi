@@ -229,7 +229,6 @@ foreach my $row (@$phrases) {
 
 
 
-
     # get the name of the *first* corpus, this is defined as the "base corpus" 
     my $corpus = $in{'phrase'}->{$row}->{'corpus'}->[0];
     if ($row == 0) {
@@ -495,8 +494,8 @@ if ($debug) {
 # - $sql_query_nl: a natural language expression for the subcorpus restrictions
 # - $list: a list of allowed text-ids
 # The subcorpus information (allowed token spans) is stored by the module in a .dump file
-# with the rest of the files pertaning to the query.
-my ($subcorpus,$sql_query_nl,$list) = Glossa::create_tid_list(\%conf, \%in, $CORPUS, \%aligned_corpora, \%aligned_corpora_opt);
+# with the rest of the files pertaining to the query.
+my ($subcorpus,$sql_query_nl,$list) = Glossa::create_tid_list(\%conf, \%in, $CORPUS, \%aligned_corpora, \%aligned_corpora_opt, $base_corpus);
 
 # print natural language version
 if ($sql_query_nl) {
@@ -573,6 +572,9 @@ elsif ($results_max) {
 # FIXME: should be in config file
 my $sentence_context;
 if ($CORPUS eq 'nota') {
+    $sentence_context='who';
+}
+if ($CORPUS eq 'upus') {
     $sentence_context='who';
 }
 else {
@@ -777,13 +779,16 @@ for (my $i = 0; $i < $nr_result; $i++) {
 
 	# temporary fix for OMC ...
 	next if (($CORPUS eq 'omc') and ($a eq 'text_id'));
+	next if (($CORPUS eq 'omc4') and ($a eq 'text_id'));
+	next if (($CORPUS eq 'upus') and ($a eq 'text_id'));
+	next if (($CORPUS eq 'upus') and ($a eq 's_id'));
 
 	# the right way ...
 	$sts{$a} = $m->{'data'}->{$a};
 
 	$sts{$a} = $m->{'data'}->{$a};
 	# temporary fix for OMC ...
-	if (($CORPUS eq 'omc') and ($a eq 's_id')) {
+	if (($CORPUS eq 'omc' or $CORPUS eq 'omc4') and ($a eq 's_id')) {
 	    my $tmp = $m->{'data'}->{$a};
 	    if ($tmp =~ m/([^\.]+)\.(.*)/) {
 		$sts{'text_id'} = $1;
@@ -796,6 +801,17 @@ for (my $i = 0; $i < $nr_result; $i++) {
 	}
 	if (($CORPUS eq 'nota') and ($a eq 'who_line_key')) {
 	    $sts{'s_id'} = $m->{'data'}->{$a};
+	}
+
+	if (($CORPUS eq 'upus') and ($a eq 'who')) {
+	    $sts{'text_id'} = $m->{'data'}->{$a};
+	    $sts{'text_id'} =~ s/.*=//;
+	    $sts{'text_id'} =~ s/\D//g;
+	}
+	if (($CORPUS eq 'upus') and ($a eq 'who')) {
+	    $sts{'s_id'} = $m->{'data'}->{$a};
+	    $sts{'s_id'} =~ s/.*=//;
+	    $sts{'s_id'} =~ s/\D//g;
 	}
 
     }
@@ -905,6 +921,7 @@ for (my $i = 0; $i < $nr_result; $i++) {
 	
 	# FIXME: should be correct in db
 	$lang =~ s/omc3_//;
+	$lang =~ s/omc4_//;
 
 	# FIXME: should be general
 	if ($CORPUS eq 'samno') {
