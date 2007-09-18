@@ -269,7 +269,11 @@ sub create_tid_list {
     # FIXME: how to generalize this?
 
     my @lang_restr;
-    foreach my $corpusname ((keys %aligned_corpora), (keys %aligned_corpora_opt), $base_corpus) {
+
+   # LN: Her bør vi tenke oss om. Trenger vi lang_restr for de alignede
+   # korpusene?
+#    foreach my $corpusname ((keys %aligned_corpora), (keys %aligned_corpora_opt), $base_corpus) {
+    foreach my $corpusname ($base_corpus) {
 	my ($a,$lang)= split(/_/, $corpusname);
 	next unless (($a eq 'OMC3') or ($a eq 'OMC4'));
 	if ($lang) {
@@ -312,7 +316,7 @@ sub create_tid_list {
     }
 
     
-    $sql_query = "SELECT $select FROM $from" . $sql_query . " order by $text_table_name.startpos;"; 
+    $sql_query = "SELECT distinct $select FROM $from" . $sql_query . " order by $text_table_name.startpos;"; 
    
 
     my $dumpstring;
@@ -320,7 +324,7 @@ sub create_tid_list {
     
     my %texts_allowed;
 
-    #print "SQL: $sql_query<br>";
+    print "SQL: $sql_query<br>";
     my $sth = $dbh->prepare($sql_query);
     $sth->execute  || die "Error fetching data: $DBI::errstr";
     while (my ($tid,$s,$e) = $sth->fetchrow_array) {
