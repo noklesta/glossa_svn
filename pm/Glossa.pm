@@ -288,6 +288,11 @@ sub create_tid_list {
     
     my $select= " $text_table_name.tid,$text_table_name.startpos,$text_table_name.endpos";
 
+    # FIXME: UPUS-hack; må generaliseres
+    if ($base_corpus =~ m/UPUS/i) {
+        $select= " $text_table_name.tid,$text_table_name.bounds";
+    }
+
 
     my $join;
     my $from = " $text_table_name";
@@ -320,8 +325,10 @@ sub create_tid_list {
    
 
     my $dumpstring;
+    my @dumpstring_ary;
     my $dumplength;
     
+
     my %texts_allowed;
 
     print "SQL: $sql_query<br>";
@@ -329,12 +336,32 @@ sub create_tid_list {
     $sth->execute  || die "Error fetching data: $DBI::errstr";
     while (my ($tid,$s,$e) = $sth->fetchrow_array) {
 	$texts_allowed{$tid}=1;
-	unless (defined $s) { $s="" }
-	unless (defined $e) { $e="" }
-	$dumpstring .= $s . "\t" . $e . "\n";
-	$dumplength++;
+
+	# FIXME: UPUS-hack; må generaliseres
+	if ($base_corpus =~ m/UPUS/i) {
+	    
+	    my @bounds = split(/\n/, $s);
+	    foreach my $b (@bounds) {
+		$b =~ s/ /\t/;
+		push @dumpstring_ary, $b;
+		$dumplength++;
+	    }
+	}
+	else {
+	    unless (defined $s) { $s="" }
+	    unless (defined $e) { $e="" }
+	    $dumpstring .= $s . "\t" . $e . "\n";
+	    $dumplength++;	    
+	}
+
     }
-    
+
+    # FIXME: UPUS-hack; må generaliseres
+    if ($base_corpus =~ m/UPUS/i) {
+	my @dumpstring_ary_sorted = sort { $a <=> $b } @dumpstring_ary;
+	$dumpstring = join("\n", @dumpstring_ary);
+    }
+
     my $dumpfile = $conf{'tmp_dir'} . "/" . $conf{'query_id'} . ".dump";
     open (DUMP, ">$dumpfile");
     print DUMP $dumplength, "\n", $dumpstring;
