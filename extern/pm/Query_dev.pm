@@ -237,7 +237,7 @@ sub query {
 
     my @kwic;
     if ($self->{'cut2'}) {
-	@kwic = $cqp->exec("cat Last 1 $self->{'cut2'}");
+	@kwic = $cqp->exec("cat Last 0 $self->{'cut2'}");
     }
     else {
 	@kwic = $cqp->exec("cat Last");	
