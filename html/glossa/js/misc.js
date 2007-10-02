@@ -86,13 +86,19 @@ function toggleSelectAll (truefalse) {
 	for (var i = 0; i < selects.length; i++) { 
 
 		var select = selects[i];
-		if (select.multiple) {	
+
+		if (
+                     (select.multiple) && 
+                     !(select.id.match("-selected"))
+                   ) 
+	          {	
+
 			var Options = select.options;
 			var l = Options.length;
 			for (var k=0;k<l;k++) {
 				Options[k].selected = truefalse;
 			}
-		}
+		   }
 
 	}
 
