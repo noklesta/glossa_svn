@@ -153,7 +153,7 @@ sub create_tid_list {
 
     my $base_corpus = shift;
 
-    use DBI;
+
 
     # initialize MySQL
 #my $dsn = "DBI:mysql:database=glossa;host=omilia.uio.no";
@@ -331,7 +331,7 @@ sub create_tid_list {
 
     my %texts_allowed;
 
-    print "SQL: $sql_query<br>";
+#    print "SQL: $sql_query<br>";
     my $sth = $dbh->prepare($sql_query);
     $sth->execute  || die "Error fetching data: $DBI::errstr";
     while (my ($tid,$s,$e) = $sth->fetchrow_array) {
@@ -340,9 +340,9 @@ sub create_tid_list {
 	# FIXME: UPUS-hack; må generaliseres
 	if ($base_corpus =~ m/UPUS/i) {
 	    
-	    my @bounds = split(/\n/, $s);
+	    my @bounds = split(/\t/, $s);
 	    foreach my $b (@bounds) {
-		$b =~ s/ /\t/;
+		$b =~ s/-/\t/;
 		push @dumpstring_ary, $b;
 		$dumplength++;
 	    }
@@ -385,6 +385,45 @@ sub create_tid_list {
 }
 
 
+sub get_token_freq {
+
+    my $sql = shift;
+    my $sql_orig = $sql;
+    
+    my $conf = shift;
+    my %conf = %$conf;
+    my $CORPUS = shift;
+
+    my $dsn = "DBI:mysql:database=$conf{'db_name'};host=$conf{'db_host'}";
+    my $dbh = DBI->connect($dsn, $conf{'db_uname'}, $conf{'db_pwd'}, {RaiseError => 1});
+
+    # FIXME
+    return unless ($CORPUS eq 'bokmal');
+
+
+
+    $sql =~ s/\.\*/%/g;
+    $sql =~ s/word=/form=/g;
+    $sql =~ s/ & / and /g;
+    $sql =~ s/ \| / or /g;   
+    $sql =~ s/\[//g;
+    $sql =~ s/\]//g;
+    $sql =~ s/ \%c//g;
+
+    # FIXME
+    $sql =~ s/ordkl=/pos=/g;
+
+    $sql = "select freq from BOKMAL_BOKMALlexstat where " . $sql . ";";
+
+    my $total = 0;
+    my $sth = $dbh->prepare($sql);
+    $sth->execute  || die "Error fetching data: $DBI::errstr";
+    while (my ($freq) = $sth->fetchrow_array) {
+	$total += $freq;
+    }
+    print "$total (total frequency for <b>$sql_orig</b>)<br>";
+
+}
 
 
 1;
