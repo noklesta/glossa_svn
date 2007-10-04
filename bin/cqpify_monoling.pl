@@ -36,6 +36,10 @@ elsif ($c =~ m/^SAMNO_SAMISK$/) {
 elsif ($c =~ m/^NOTA2$/) {
  `/usr/local/bin/cwb-encode -xsB -f $tab -d $dat_dir -s -D -P lemma -P pos -P sex -P num -P type -P defn -P temp -P pers -P case -P degr -P descr -P pron -P id -S sync:O+time+end -S turn:O+endtime+speaker+starttime -S who:O+nb+name+line_key -S episode:O+circumstance -S trans`;
 }
+elsif ($c =~ m/^BUL$/) {
+# pos type ref grade dia val tense aspect defin mood case person type2 number gender poss_gender
+ `/usr/local/bin/cwb-encode -xsB -f $tab -d $dat_dir -s -D -P lemma -P pos -P type -P ref -P grade -P dia -P val -P tense -P aspect -P defin -P mood -P case -P person -P type2 -P nuber -P gender -P poss_grade -S text:O+id -S s:O+id`;
+}
 #else {
 # `/usr/local/bin/cwb-encode -f $tab -d $dat_dir -s -D -P POS -P lemma -V s -V text`;
 #}
@@ -43,13 +47,17 @@ elsif ($c =~ m/^NOTA2$/) {
 print "running makeall ...\n";
 `/usr/local/bin/cwb-makeall -V $c`;
 
-print "compressing ...\n";
-`/usr/local/bin/cwb-huffcode -T -A $c`;
-`/usr/local/bin/cwb-compress-rdx -T -A $c`;
+unless ($c eq 'BUL') { # the corpus is to large, and we run out of address space on omilia
 
-print "deleting uncompressed files ...\n";
-`rm $dat_dir/*.corpus`;
-`rm $dat_dir/*.rev`;
-`rm $dat_dir/*.rdx`;
+    print "compressing ...\n";
+    `/usr/local/bin/cwb-huffcode -T -A $c`;
+    `/usr/local/bin/cwb-compress-rdx -T -A $c`;
+    
+    print "deleting uncompressed files ...\n";
+    `rm $dat_dir/*.corpus`;
+    `rm $dat_dir/*.rev`;
+    `rm $dat_dir/*.rdx`;
+    
+}
 
 
