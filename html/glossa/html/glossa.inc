@@ -26,10 +26,6 @@ function printJsHead() {
 
 
 
-  echo "<script language='JavaScript'>if (domLib_isKonq) {
-   alert('The Konqueror web browser is not supported.');
-  }</script>";
-
 
 }
 

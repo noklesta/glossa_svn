@@ -8,8 +8,8 @@
 
 <?php
   // ** initialize Glossa ** //  
-  $htmlRoot = 'http://corp.hum.sdu.dk/glossa/';
-  $cgiRoot = 'http://corp.hum.sdu.dk/cgi-bin/glossa/';
+  $htmlRoot = 'http://omilia.uio.no/glossa/';
+  $cgiRoot = 'http://omilia.uio.no/cgi-bin/glossa/';
   $corpus = $_GET['corpus'];
   $subcorpus = $_GET['subcorpus'];
   include("glossa.inc");
@@ -31,7 +31,7 @@
 ?> 
 </h1>
 
-<form action="http://corp.hum.sdu.dk/cgi-bin/glossa/stats2.cgi" method="GET">
+<form action=" <?php echo $cgiRoot ?>/stats2.cgi" method="GET">
 
 
 <?php 
@@ -96,6 +96,9 @@ if ( $_GET['corpus'] == 'bokmal' ) {
   include("bokmal.inc");
 }
 elseif ( $_GET['corpus'] == 'omc' ) {
+  include("omc.inc");
+}
+elseif ( $_GET['corpus'] == 'omc4' ) {
   include("omc.inc");
 }
 elseif ( $_GET['corpus'] == 'sami' ) {

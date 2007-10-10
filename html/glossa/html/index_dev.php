@@ -3,7 +3,7 @@
 <html>
  <head>
 
- <meta http-equiv="Content-Type" content="text/html;charset=iso-8859-1" >
+
 
 
 
@@ -17,12 +17,22 @@
   include("glossa.inc");
 ?>
 
+
+
  <link rel="stylesheet" type="text/css" href="
 
 <?php echo $htmlRoot ?>/html/CE.css">
 
 <?php printJsHead();   // ** Glossa ** //   ?>
 
+<script language='javascript'>
+  var charset='iso-8859-1';
+  if (conf['charset']) {
+    charset=conf['charset'];
+  }
+  var a = "<meta http-equiv='Content-Type' content='text/html;charset=" + charset + "' >";
+  document.write(a);
+</script>
 
 <?php 
 
@@ -41,11 +51,25 @@ elseif ( $_GET['corpus'] == 'omc' ) {
   echo "<script language='javascript' src='" . $htmlRoot . "/js/omc_no.js'></script>";
   echo "<script language='javascript' src='" . $htmlRoot . "/js/omc_po.js'></script>";
 }
+elseif ( $_GET['corpus'] == 'omc4' ) {
+  echo "<script language='javascript' src='" . $htmlRoot . "/js/omc4_en.js'></script>";
+  echo "<script language='javascript' src='" . $htmlRoot . "/js/omc4_fr.js'></script>";
+
+  echo "<script language='javascript' src='" . $htmlRoot . "/js/omc4_de.js'></script>";
+  echo "<script language='javascript' src='" . $htmlRoot . "/js/omc4_nl.js'></script>";
+
+  echo "<script language='javascript' src='" . $htmlRoot . "/js/omc4_no.js'></script>";
+  echo "<script language='javascript' src='" . $htmlRoot . "/js/omc4_po.js'></script>";
+}
 elseif ( $_GET['corpus'] == 'sami' ) {
 
 }
-elseif ( $_GET['corpus'] == 'nota' ) {
+elseif ($_GET['corpus'] == 'nota' ) {
   echo "<script language='javascript' src='" . $htmlRoot . "/js/nota.js'></script>";
+
+}
+elseif ($_GET['corpus'] == 'upus') {
+  echo "<script language='javascript' src='" . $htmlRoot . "/js/upus.js'></script>";
 
 }
 elseif ( $_GET['corpus'] == 'bokmal' ) {
@@ -57,6 +81,10 @@ elseif ( $_GET['corpus'] == 'samno' ) {
   echo "<script language='javascript' src='" . $htmlRoot . "/js/samno_norsk.js'></script>";
 
 }
+elseif ( $_GET['corpus'] == 'bul' ) {
+  echo "<script language='javascript' src='" . $htmlRoot . "/js/bul.js'></script>";
+}
+
 
 ?>
 
@@ -92,7 +120,7 @@ elseif ( $_GET['corpus'] == 'samno' ) {
  Glossa (  
  <?php echo "<a href='" . $cgiRoot . "/get_hits.cgi?corpus=" . $_GET['corpus'] . "'>stored results</a> | "; ?>
  <?php echo "<a href='" . $htmlRoot . "/html/stats.php?corpus=" . $corpus . "&base_corpus=" . $def_base_corpus . "'>statistics</a> | "; ?>
- <?php // echo "<a href='" . $htmlRoot . "/html/query_regexp.php?corpus=" . $_GET['corpus'] . "'>advanced</a> | "; ?>
+ <?php echo "<a href='" . $htmlRoot . "/html/index_dev.php?fullQuery=yes&corpus=" . $_GET['corpus'] . "'>fullquery</a> | "; ?>
  <?php echo "<a target='_new' href='" . $htmlRoot . "/html/GLOSSA_manual.html'>help</a>"; ?> 
  )
  </td>
@@ -152,15 +180,19 @@ elseif ( $_GET['corpus'] == 'samno' ) {
 
 
 
-
 <tr><td style="background-color:#efefef;border-width:1px;border-style:solid;border-color:#afaeae" valign="top">
 
 <?php 
+
+
 
 if ( $_GET['corpus'] == 'test' ) {
   include("test.inc");
 }
 elseif ( $_GET['corpus'] == 'omc' ) {
+  include("omc.inc");
+}
+elseif ( $_GET['corpus'] == 'omc4' ) {
   include("omc.inc");
 }
 elseif ( $_GET['corpus'] == 'sami' ) {
@@ -169,11 +201,18 @@ elseif ( $_GET['corpus'] == 'sami' ) {
 elseif ( $_GET['corpus'] == 'nota' ) {
   include("nota.inc");
 }
+elseif ( $_GET['corpus'] == 'upus' ) {
+  include("upus.inc");
+}
 elseif ( $_GET['corpus'] == 'bokmal' ) {
   include("bokmal.inc");
 }
 elseif ( $_GET['corpus'] == 'samno' ) {
   include("samno.inc");
+}
+
+elseif ( $_GET['corpus'] == 'bul' ) {
+  include("bul.inc");
 }
 
 ?>
@@ -229,7 +268,16 @@ Search within:
 </td>
 </tr>
 
-<tr><td><font color='red'><b>Caution: This page is currently undergoing development. Some things will be broken.</td></tr>
+<tr><td><font color='red'><b>
+
+<script language='javascript'>
+if (domLib_isOpera) { document.write("The Glossa interface has some minor problems with The Opera browser.<br> We recommend using Firefox (or Internet Explorer).") }
+if (domLib_isSafari) { document.write("The Glossa interface has some problems with The Safari browser. <br>We recommend using Firefox (or Internet Explorer).") }
+if (domLib_isKonq) { document.write("The Glossa interface has significant problems with The Konqueror browser. <br>We recommend using Firefox (or Internet Explorer).") }
+</script>
+
+
+<p>Caution: This page is currently undergoing development. <br>Some things will be broken.</td></tr>
 
 
 </table>
@@ -248,6 +296,9 @@ if ( $_GET['corpus'] == 'test' ) {
 elseif ( $_GET['corpus'] == 'omc' ) {
   include("omc_cred.inc");
 }
+elseif ( $_GET['corpus'] == 'omc4' ) {
+  include("omc_cred.inc");
+}
 elseif ( $_GET['corpus'] == 'sami' ) {
 
 }
@@ -257,7 +308,13 @@ elseif ( $_GET['corpus'] == 'bokmal' ) {
 elseif ( $_GET['corpus'] == 'samno' ) {
   include("samno_cred.inc");
 }
+elseif ( $_GET['corpus'] == 'upus' ) {
+  include("upus_cred.inc");
+}
 
+elseif ( $_GET['corpus'] == 'snakkis' ) {
+  include("snakkis_cred.inc");
+}
 
 ?>
 
