@@ -362,6 +362,10 @@ function ReloadMenu(language) {
        else if (language == 'SAMNO_NORSK') {
                reloadMenuSamNoNorsk();
        }
+       else if (language == 'BUL') {
+	   alert("BUL!");
+               reloadMenuBul();
+       }
 
 
     
