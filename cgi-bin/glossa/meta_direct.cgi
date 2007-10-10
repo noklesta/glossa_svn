@@ -182,13 +182,18 @@ while (my ($k, $v) = each %stats) {
     print "<table>";
 
     my @list;
+    my $total;
     while (my ($k2, $v2) = each %$v) {
+	$total+=$v2;
 	push @list, [$k2, $v2];
     }
 
     my @list_sorted = sort {$a->[0] cmp $b->[0]} @list;
+
     foreach my $entry (@list_sorted) {
-	print "<tr><td width=200>" . $entry->[0] . "</td><td>" . $entry->[1] . "</td></tr>\n";
+	my $pct = ($entry->[1]/$total)*100;
+	$pct = sprintf("%.1f", $pct);
+	print "<tr><td width=200>" . $entry->[0] . "</td><td>" . $entry->[1] . "</td><td>" . $pct . "</td></tr>\n";
     }
 
     print "</table><br>\n\n";

@@ -164,7 +164,7 @@ while (<CONF>) {
 my %tags;
 
 
-print "<table>";
+print "<table border=0>";
  
 $/="\n\n\n";
 
@@ -176,16 +176,22 @@ while (<DATA>) {
 
     my ($corp, $s_id, $sts_string, $res_l, $ord, $res_r) = split(/\t/, $source);
 
+    my $sts_url = "?" . $corpus_string . "&subcorpus=" . $corp . "&cs=3";
+
     my @sts = split(/\|\|/, $sts_string);
     my %sts;
     foreach my $sts (@sts) {
 	my ($k,$v) = split(/=/, $sts);
 	$sts{$k}=$v;
+	$sts_url .= "&" . $k . "=" . $v;
+
     }
     my $t_id = $sts{'text_id'};
 
-    print "<tr colspan=2><td colspan=2><br>";
+
     if ($set_id) {
+
+	print "<tr colspan=2><td colspan=2>";
 
 	my $annotation_table = uc($corpus) . "annotations";
 
@@ -212,17 +218,18 @@ while (<DATA>) {
 	    
 	}
 
-
+	print "</td></tr>";
 
     }
-    print "</td></tr><tr><td><nobr>";
+
+    print "<tr><td height=\"30\"><nobr>";
 
     if ($del) {
 	print "<input type='checkbox' name='delete' value='$s_id' />";
     }
 
-    print "<font size=\"-2\"><a href=\"#\" onClick=\"window.open('", $conf{'cgiRoot'}, "/show_context.cgi?text_id=$t_id&s_id=$s_id&cs=3$corpus_string&subcorpus=$corp',";
-    print "'mywindow','height=500,width=650,status,scrollbars,resizable');\">$t_id</a> \n&nbsp;</font>";
+    print "<font size=\"-2\"><a href=\"#\" onClick=\"window.open('", $conf{'cgiRoot'}, "/show_context.cgi$sts_url',";
+    print "'mywindow','height=500,width=650,status,scrollbars,resizable');\">$s_id</a> \n&nbsp;</font>";
 
 
     if ($corpus eq 'nota') {
@@ -253,20 +260,26 @@ while (<DATA>) {
 
 	my ($corp, $targets, $sts_string, $al) = split(/\t/, $l);
 
+	my $sts_url = "?" . $corpus_string . "&subcorpus=" . $corp . "&cs=3";
+
 	my @sts = split(/\|\|/, $sts_string);
 	my %sts;
 	foreach my $sts (@sts) {
 	    my ($k,$v) = split(/=/, $sts);
 	    $sts{$k}=$v;
+	    next if ($k eq 's_id');
+	    $sts_url .= "&" . $k . "=" . $v;
 	}
 	my $t_id = $sts{'text_id'};
 
 	my @targets = split(/ /, $targets);
 
+	$sts_url .= "&s_id=" . $targets[0];
+
 	foreach my $target (@targets) {
 
-	    print "<font size=\"-2\"><a href=\"#\" onClick=\"window.open('", $conf{'htmlRoot'}, "/show_context.cgi?text_id=$t_id&s_id=$target&cs=3&$corpus_string&subcorpus=$corp',";
-	    print "'mywindow','height=500,width=650,status,scrollbars,resizable');\">$t_id</a> \n&nbsp; </font>";
+	    print "<font size=\"-2\"><a href=\"#\" onClick=\"window.open('", $conf{'cgiRoot'}, "/show_context.cgi$sts_url',";
+	    print "'mywindow','height=500,width=650,status,scrollbars,resizable');\">$targets</a> \n&nbsp; </font>";
 	    
 	}
 

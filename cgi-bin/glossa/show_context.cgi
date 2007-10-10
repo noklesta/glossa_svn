@@ -7,6 +7,7 @@ use Encode;
 use WebCqp::Query_dev;
 use lib("/home/httpd/html/glossa/pm");
 use Glossa;
+use Data::Dumper;
 
 # meta
 #  - tid
@@ -62,17 +63,38 @@ my $class_table = uc($corpus) . "class";
 
 $WebCqp::Query::Registry = $conf{'cwb_registry'};
 
+
 my $query = new WebCqp::Query "$base_corpus";
 
 $context_size++;
 
-$context_size = $context_size . " s";
+my $context_att = "s";
+
+my $cqp = "<" . $context_att . "_id='" . $s . "'> [] expand to " . $context_att . ";";
+if (($corpus eq 'nota') or ($corpus eq 'upus') or ($corpus eq 'taus')) {
+    $context_att = "who";
+    $s = CGI::param('who_line_key');
+    $cqp = "<who_line_key='" . $s . "'> [] expand to " . $context_att . ";";
+
+}
+
+#    my $cqp2 = $cqp;
+#    $cqp2 =~ s/\</{/g;
+#    $cqp2 =~ s/\>/}/g;
+#    print "<br>", $cqp2, "<br>";
+
+$context_size = $context_size . " " . $context_att;
+
+#print "CS: $context_size<br>";
 
 $query->context($context_size, $context_size);
 #$query->context("0 text", "0 text");
 
-my $cqp = "<s_id='$s'> [] expand to s;";
-my @result = $query->query("$cqp");
+
+
+my ($result,$size) = $query->query("$cqp");
+
+my @result = @$result;
 
 $m = $result[0];
 

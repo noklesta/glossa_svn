@@ -21,7 +21,7 @@ print "Content-type: text/html\n\n";
 
 print "<html><head></head><body>";
 
-print "select annotation set:<br>";
+print "<table><tr><td valign=top>select annotation set:<br>";
 print "<form action=\"", $conf{'cgiRoot'}, "/show_page_dev.cgi\" method=\"get\">";
 
 print "<input type=\"hidden\" name=\"query_id\" value=\"$query_id\"></input>";
@@ -46,6 +46,18 @@ print "</select>";
 print "<br><input type=\"submit\" value=\"Annotate!\"></input><br>";
 print "</form>";
 
-print "<br><a href=\"", $conf{'cgiRoot'}, "/annotation_sets.cgi?corpus=$corpus\">Manage sets</a>";
+print "<br><a href=\"", $conf{'cgiRoot'}, "/annotation_sets.cgi?corpus=$corpus\">Manage sets</a></td>";
+
+
+print "<td width=50>&nbsp;</td>";
+
+print "<td valign='top' width=200 style='background-color:#efefef;border-width:1px;border-style:solid;border-color:#afaeae'>";
+
+print "<b>Help:</b><br>";
+print "<p>Before you can start annotating, you must choose an <B>annotation set</B>, specifying the various options that can be chosen for each corpus occurence. One set is special, the one named 'free annotation', which allows you to enter free text instead of the usual fixe options.";
+print "<p>Select the set you would like to use, and press 'Annotate!'.";
+print "<p>If you need to create a new set, or modify an existing one, click 'Manage sets'.";
+
+print "</td></tr></table>";
 
 print "</body></html>";

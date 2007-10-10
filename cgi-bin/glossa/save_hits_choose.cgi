@@ -24,12 +24,12 @@ my %conf = %$conf;
 
 
 
-print "<br>";
+print "<table><tr><td valign='top'><br>";
 print "<form action='", $conf{'cgiRoot'}, "/save_hits.cgi' method='GET'>";
 print "<input type='hidden' name='corpus' value='$corpus' />";
 print "<input type='hidden' name='query_id' value='$query_id' />";
 print "<input name='name' /> name of results set<br><br>";
-print "<input type='submit' />";
+print "<input type='submit' value='Save results'/>";
 print "</form>";
 print "<br><br><b>Previous names:</b><br>";
 
@@ -49,3 +49,13 @@ foreach my $f (@files) {
     }
 
 }
+
+
+print "<td width=50>&nbsp;</td>";
+
+print "<td valign='top' width=200 style='background-color:#efefef;border-width:1px;border-style:solid;border-color:#afaeae'>";
+
+print "<b>Help:</b><br>";
+print "<p>To save a set of results, you must give them a name; so it can be retrieved easily later.";
+
+print "</td></tr></table>";

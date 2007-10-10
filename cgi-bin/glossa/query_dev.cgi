@@ -173,8 +173,10 @@ if ($conf{'groupfile'}) {
 # set up charset conversion
 
 my $iconv;
+my $iconvr;
 if ($conf{'charsetfrom'}) {
     $iconv= Text::Iconv->new($conf{'charsetfrom'}, $conf{'charset'});
+    $iconvr= Text::Iconv->new($conf{'charset'}, $conf{'charsetfrom'});
 } 
 
 
@@ -219,11 +221,15 @@ my $base_corpus;                       # name of base corpus (i.e. non-aligned)
 my $aligned;                           # boolean: indicate if there are restrictions on aligned corpora
 my $phrases=$in{'phrase'}->{'number'}; # the number of phrases (i.e. "rows" in the interface)
 
+my @token_freq;
+
 
 ## Loop through all the phrases
 # This is a key step, where the form data is converted to fragments 
 # in the CQP query language. The fragments are then put in the hashes for 
 # corpora, aligned_corpora or aligned_corpora_opt
+
+
 
 foreach my $row (@$phrases) {
 
@@ -252,6 +258,10 @@ foreach my $row (@$phrases) {
 	my $string_case = " \%c";                   # the default: case insensitive
 	my $string_string=$token->{'string'}->[0];  # the word sting
 
+	if ($conf{'charsetfrom'}) {
+	    $string_string = $iconvr->convert($string_string);
+	} 
+
 	# escape special character unless the user wants to use
        # regular expressions
 	unless ($in{'query'}->{'regex'}) {
@@ -270,6 +280,10 @@ foreach my $row (@$phrases) {
 	    # FIXME: a hack, since "_" was stupidly chosen as a delimiter 
 	    $cat =~ s/~/_/g;
 	    $val =~ s/~/_/g;
+
+	    if ($conf{'charsetfrom'}) {
+		$val = $iconvr->convert($val);
+	    } 
 
 	    # the attributes in the "word" submenu
 	    if ($cat eq 'w') {
@@ -356,7 +370,7 @@ foreach my $row (@$phrases) {
 	# concatenate the list of negated fragments to the token fragment
 	if (@neg > 0) {
 
-	    # the negative fragments must be prefixed by an "&" it there are
+	    # the negative fragments must be prefixed by an "&" if there are
 	    # any positive ones
 	    if (@pos > 0) {
 		$cqp_query .= " & ";
@@ -367,6 +381,9 @@ foreach my $row (@$phrases) {
 
 	# end of the cqp fragment for the entire token
 	$cqp_query .= "]";
+
+	push @token_freq, Glossa::get_token_freq($cqp_query,\%conf,$CORPUS);
+	
 
 	# add occurence restrictions
 	$cqp_query .= $occurrence_restr;
@@ -512,6 +529,9 @@ if ($sql_query_nl) {
 
 # print search expression
 my $cqp_query_source2print = $cqp_all;
+if ($conf{'charsetfrom'}) {
+    $cqp_query_source2print = $iconv->convert($cqp_query_source2print);
+} 
 $cqp_query_source2print =~ s/</\&lt;/g;
 $cqp_query_source2print =~ s/>/\&gt;/g;
 my $top_text = "$lang{'query_string'}: <b>\"$cqp_query_source2print\"</b><br>";
@@ -529,6 +549,7 @@ $WebCqp::Query::Registry = $conf{'cwb_registry'};
 # get some CWB parameters
 my $results_max=$in{'query'}->{'results'}->{'max'}->[0];
 my $randomize=$in{'query'}->{'results'}->{'random'}->[0];
+my $fastcut=$in{'query'}->{'results'}->{'fastcut'}->[0];
 
 # initialize CWB query object
 my $query = new WebCqp::Query "$base_corpus";
@@ -561,7 +582,7 @@ shift @atts; # it is used later, without "word" attribute (always first)
 if ($randomize and $results_max) {
     $query->reduce($results_max);
 }
-elsif ($results_max and !$aligned and !$randomize) { 
+elsif ($results_max and !$aligned and !$randomize and $fastcut) { 
     $query->cut($results_max);
 }
 elsif ($results_max) { 
@@ -571,10 +592,7 @@ elsif ($results_max) {
 # specify name of context ("s" is default)
 # FIXME: should be in config file
 my $sentence_context;
-if ($CORPUS eq 'nota') {
-    $sentence_context='who';
-}
-if ($CORPUS eq 'upus') {
+if (($CORPUS eq 'nota') or ($CORPUS eq 'upus') or ($CORPUS eq 'taus')) {
     $sentence_context='who';
 }
 else {
@@ -633,7 +651,22 @@ if ($debug) {
 
 
 # finally, execute the query
-my @result = $query->query("$cqp_all");    
+my ($result,$size) = $query->query("$cqp_all");    
+
+my @result;
+if ($result) {
+@result = @$result;
+} 
+else {
+    print "<b>-- no hits --</b><br><br>";
+}
+
+if (@token_freq > 1) {
+    print @token_freq;
+    print "<br>";
+}
+
+
 
 if ($debug) {
     print "9";
@@ -642,6 +675,7 @@ if ($debug) {
     
 # count number of hits
 my $nr_result = @result;
+
 
 
 ##                                        ##
@@ -752,6 +786,8 @@ for (my $i = 0; $i < $nr_result; $i++) {
 
 
 
+
+
     ##########################################
     #
     # 4.1: Structural annotation
@@ -767,6 +803,7 @@ for (my $i = 0; $i < $nr_result; $i++) {
     # if $results_max they are already randomized
     if (($randomize) and !($results_max)) { $m = splice (@result, rand @result, 1) }
     else { $m = $result[$i] }
+    #print LOG $m->{'kwic'}->{'match'} . "\n";
 
 
 
@@ -796,22 +833,11 @@ for (my $i = 0; $i < $nr_result; $i++) {
 	}
 
 	# temporary fix for NOTA
-	if (($CORPUS eq 'nota') and ($a eq 'who_line_key')) {
+	if ((($CORPUS eq 'nota') or ($CORPUS eq 'upus') or ($CORPUS eq 'taus')) and ($a eq 'who_name')) {
 	    $sts{'text_id'} = $m->{'data'}->{$a};
 	}
-	if (($CORPUS eq 'nota') and ($a eq 'who_line_key')) {
+	if ((($CORPUS eq 'nota') or ($CORPUS eq 'upus') or ($CORPUS eq 'taus')) and ($a eq 'who_line_key')) {
 	    $sts{'s_id'} = $m->{'data'}->{$a};
-	}
-
-	if (($CORPUS eq 'upus') and ($a eq 'who')) {
-	    $sts{'text_id'} = $m->{'data'}->{$a};
-	    $sts{'text_id'} =~ s/.*=//;
-	    $sts{'text_id'} =~ s/\D//g;
-	}
-	if (($CORPUS eq 'upus') and ($a eq 'who')) {
-	    $sts{'s_id'} = $m->{'data'}->{$a};
-	    $sts{'s_id'} =~ s/.*=//;
-	    $sts{'s_id'} =~ s/\D//g;
 	}
 
     }
@@ -1020,7 +1046,7 @@ for (my $i = 0; $i < $nr_result; $i++) {
 	$source_line.=sprintf("<font size=\"-2\"><a href=\"#\" onClick=\"window.open('$conf{'cgiRoot'}/show_context.cgi$sts_url&cs=3',");
 	$source_line.=sprintf("'mywindow','height=500,width=650,status,scrollbars,resizable');\">$sts{'s_id'}</a> \n&nbsp;</font>");
 
-	if ($CORPUS eq 'nota') {
+	if ($CORPUS eq 'nota' or $CORPUS eq 'upus') {
 	    $source_line.=sprintf("<font size=\"-2\"><a href=\"#\" onClick=\"window.open('http://omilia.uio.no/cgi-bin/nota/expand.pl$ex_url',");
 	    $source_line.=sprintf("'mywindow','height=400,width=1000,status,scrollbars,resizable,screenX=0,screenY=5');\"><img style='border-style:none' src='http://omilia.uio.no/glossa/html/img/mov.gif'></a> \n&nbsp;</font>");
 
@@ -1032,8 +1058,8 @@ for (my $i = 0; $i < $nr_result; $i++) {
 
 	foreach my $a ($res_l, $res_r, $ord) {
             # temporary fixes (should be cleverer in corpus) ...
-            $a =~ s/\'/$apostr/g; # '
-            $a =~ s/\&amp;quot;/\&quot;/g;
+            $a =~ s/'/$apostr/g;
+             $a =~ s/\&amp;quot;/\&quot;/g;
 	}
 
 
@@ -1091,7 +1117,7 @@ while (my ($id, $tags) = each %tags) {
 
 my $max;
 if ($hits == $results_max) {
-    $max=$lang{'max'};
+    $max= " of " . $size;
 }
 
 # The javscript function (in reslist.js) to display the links to the 
@@ -1194,6 +1220,7 @@ sub print_tokens_target {
 	foreach my $a (@atts) {
 	    my $att_token = shift @atts_token;
 	    next if ($att_token eq "_");
+	    next if ($att_token eq "__UNDEF__");
 	    next unless ($att_token);
 	    if ($a =~ m/_/) {
 		my $new_a = $multitags{$a}->{$att_token};
@@ -1212,5 +1239,6 @@ sub print_tokens_target {
     }
     
 }
+
 
 

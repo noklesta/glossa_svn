@@ -102,7 +102,7 @@ if ($subcorpus) {
     
     foreach my $id (@ids) {
 	
-	my $f = $conf{'config_dir'} . "/" . $corpus . "/stats/" . $id . ".dat.gz";
+	my $f = $conf{'stats_dir'} . "/" . $id . ".dat.gz";
 	
 #	print $f, "<br>";
 

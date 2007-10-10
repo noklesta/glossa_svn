@@ -121,7 +121,7 @@ if ($action eq 'join') {
 	    my $newfilename = $query_id . "_" . $no . ".dat";
 	    print "cp $file $newfilename<br>";
 	    `cp $file $newfilename`;
-	    print TOP "<a id='page_8' href='http://omilia.uio.no/cgi-bin/glossa//show_page_dev.cgi?n=", $no, "&query_id=", $query_id_short, "&corpus=bokmal'>", $no, "</a> ";
+	    print TOP "<a id='page_8' href='http://omilia.uio.no/cgi-bin/glossa//show_page_dev.cgi?n=", $no, "&query_id=", $query_id_short, "&corpus=bokmal'>", $no, "</a>";
 	}
     }
 

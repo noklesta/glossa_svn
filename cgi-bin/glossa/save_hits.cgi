@@ -16,7 +16,6 @@ my $corpus=CGI::param('corpus');
 my $query_id = CGI::param('query_id');
 my $user = $ENV{'REMOTE_USER'}; 
 
-print "USER: $user";
 my $name = CGI::param('name');
  
 my $conf = Glossa::get_conf_file($corpus);
@@ -50,6 +49,8 @@ close CONF;
 
 my @files=<$orig*>;
 
+my $warning;
+
 foreach my $f (@files) {
 
     my $n = $f;
@@ -59,6 +60,11 @@ foreach my $f (@files) {
     my $ok = copy($f,$n);
     unless ($ok) {
 	print "WARNING: could not copy $f to $n<br>";
+	$warning = 1;
     }
 }
 
+
+unless ($warning) {
+    print "The results have been saved. Hit the 'back' button on your browser to return to your results.";
+}
