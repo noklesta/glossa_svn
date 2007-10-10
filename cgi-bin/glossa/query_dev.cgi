@@ -281,6 +281,8 @@ foreach my $row (@$phrases) {
 	    $cat =~ s/~/_/g;
 	    $val =~ s/~/_/g;
 
+	    $val =~ s/ /_/g; # for multi-word-expressions
+
 	    if ($conf{'charsetfrom'}) {
 		$val = $iconvr->convert($val);
 	    } 
