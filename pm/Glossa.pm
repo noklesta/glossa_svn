@@ -421,7 +421,12 @@ sub get_token_freq {
     while (my ($freq) = $sth->fetchrow_array) {
 	$total += $freq;
     }
-    print "$total (total frequency for <b>$sql_orig</b>)<br>";
+    $sql_orig =~ s/^\[//;
+    $sql_orig =~ s/^\(//g;
+    $sql_orig =~ s/\]$//;
+    $sql_orig =~ s/\)$//g;
+    $sql_orig =~ s/ \%c//g;
+    return "<b>$sql_orig</b> occurs <B>$total</b> in the corpus<br>";
 
 }
 
