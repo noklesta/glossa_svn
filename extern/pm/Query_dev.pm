@@ -289,7 +289,7 @@ sub query {
       push @lines, $line;
     }
 
-    return @lines;
+    return \@lines,$size;
   }
 }
 
