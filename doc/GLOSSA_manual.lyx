@@ -96,7 +96,7 @@ Glossa
 
 \end_inset
 
-
+.
 \begin_inset Foot
 status collapsed
 
@@ -106,7 +106,7 @@ http://cwb.sf.net
 
 \end_inset
 
-.
+
 \end_layout
 
 \begin_layout Standard
@@ -181,16 +181,12 @@ Opera
 
 \end_inset
 
-
-\end_layout
-
-\begin_layout Itemize
-Safari
+ and Safari
 \begin_inset LatexCommand \index{Safari}
 
 \end_inset
 
-
+ (though these are not recommended, due to some minor problems)
 \end_layout
 
 \begin_layout Standard
@@ -262,8 +258,8 @@ Simple interface.
 \end_layout
 
 \begin_layout Standard
-If you type a word into the box designated «word 1» and press «Search corpus»,
- a new window will appear
+If you type a word into the input field and press «Search corpus», a new
+ window will appear
 \begin_inset Foot
 status collapsed
 
@@ -499,7 +495,7 @@ word
 
 \end_inset
 
- if "cat" is entered in the search string box and "start of word" is selected,
+ If "cat" is entered in the search string box and "start of word" is selected,
  the program will also return "cats", "category" etc.
  
 \end_layout
@@ -512,7 +508,7 @@ word
 
 \end_inset
 
- if "cat" is entered in the search string box and "end of word" is selected,
+ If "cat" is entered in the search string box and "end of word" is selected,
  the program will also return "housecat", "muscat" etc.
 \end_layout
 
@@ -524,7 +520,7 @@ word
 
 \end_inset
 
- if "cat" is entered in the search string box and "middle of word" is selected,
+ If "cat" is entered in the search string box and "middle of word" is selected,
  the program will also return "housecats", "muscatpie" etc.
 \end_layout
 
@@ -535,7 +531,7 @@ sensitive
 
 \end_inset
 
- if "cat" is entered in the search string box and "case sensitive" is selected,
+ If "cat" is entered in the search string box and "case sensitive" is selected,
  the program will return "cat", but not "Cat".
 \end_layout
 
@@ -545,7 +541,7 @@ Lemma
 
 \end_inset
 
- if "cat" is entered in the search string box and "lemma" is selected, the
+ If "cat" is entered in the search string box and "lemma" is selected, the
  program will return all forms of the word, i.e.
  "cat", and "cats".
 \begin_inset Foot
@@ -566,7 +562,39 @@ Exclude
 
 \end_inset
 
- the program will not return words that match.
+ The program will not return words that match.
+\end_layout
+
+\begin_layout Description
+Add\InsetSpace ~
+word Adds an alternative word form.
+ If "cat" is entered in the search string box and you select 'add word'
+ and then enter 'dog', you can search for 'cat' 
+\emph on
+or
+\emph default
+ 'dog'.
+
+\emph on
+ 
+\end_layout
+
+\begin_layout Description
+Add\InsetSpace ~
+lemma Adds an alternative lemma form.
+\end_layout
+
+\begin_layout Description
+Add\InsetSpace ~
+word\InsetSpace ~
+(negated) Adds a negated alternative word form.
+ 
+\end_layout
+
+\begin_layout Description
+Add\InsetSpace ~
+lemma\InsetSpace ~
+(negated) Adds a negated lemma form.
 \end_layout
 
 \begin_layout Subsubsection
@@ -632,6 +660,19 @@ Occurrences
 
 \begin_layout Numbered Examples
 It was much much too cold.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Standard
+Addlemma; addword
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Section
@@ -783,58 +824,6 @@ kicked the blubber
  and felt the skins and the walrus tusks.
 \end_layout
 
-\begin_layout Subsection
-Additional phrases
-\begin_inset LatexCommand \index{additional phrases}
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-In some cases, it can be useful to join two different queries in the same
- result set.
- This can be done by adding additional phrases, with the buttion marked
- «++» (these can be removed by clicking the button marked «- -»).
-\end_layout
-
-\begin_layout Standard
-For example, figure 
-\begin_inset LatexCommand \ref{fig:Several-phrases}
-
-\end_inset
-
- demonstrates a search for both «coin museum» and «museum for coins».
-\begin_inset Float figure
-wide false
-sideways false
-status collapsed
-
-\begin_layout Standard
-\begin_inset Graphics
-	filename img/phrase_additional.png
-	width 100line%
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Caption
-Several phrases.
-\begin_inset LatexCommand \label{fig:Several-phrases}
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
 \begin_layout Section
 General options
 \begin_inset LatexCommand \index{general options}
@@ -923,7 +912,9 @@ This parameter restricts the matching of searches containing arbitrary tokens.
 \end_layout
 
 \begin_layout Description
-integer where all matches will be within the specified number of tokens
+an\InsetSpace ~
+integer (for example '10') where all matches will be within the specified
+ number of tokens
 \end_layout
 
 \begin_layout Standard
@@ -933,7 +924,7 @@ If you set the «search within» parameter to 's' and search for «kick» and
 \end_layout
 
 \begin_layout Subsubsection
-Results per page
+Hits per page
 \begin_inset LatexCommand \index{results per page}
 
 \end_inset
@@ -948,7 +939,7 @@ The search results are divided into a number of pages; the number of results
 \end_layout
 
 \begin_layout Subsubsection
-Number of results
+Max results
 \begin_inset LatexCommand \index{number of results}
 
 \end_inset
@@ -959,8 +950,37 @@ Number of results
 \begin_layout Standard
 Searching for common words in large corpora can be slow.
  Restricting the total number of results can improve response times.
- Unless 'randomize' is selected, the first hits in the corpus will be displayed.
  
+\end_layout
+
+\begin_layout Subsubsection
+Randomize
+\end_layout
+
+\begin_layout Standard
+It this option is selected, the 'max results' option will mean «give me
+ a random selection of the possible hits».
+ If it is not selected, 'max results' will give you the 
+\emph on
+first 
+\emph default
+possible hits, in the order they were retrieved in the corpus.
+ The randomize option will possibly give a more representative sample, but
+ might be slower, and has the disadvantage that the same query will give
+ different results each time.
+ If you plan to use the concordance list for statistical purposes, you should
+ always select 'randomize'.
+\end_layout
+
+\begin_layout Subsubsection
+Skip global frequency
+\end_layout
+
+\begin_layout Standard
+Normally, Glossa will display the total number of times the query is matched
+ in the corpus.
+ However, if you are not interested in this number, selecting 'skip global
+ frequency' will result in faster searches.
 \end_layout
 
 \begin_layout Subsubsection
@@ -1275,6 +1295,59 @@ status collapsed
 
 \end_layout
 
+\begin_layout Section
+Other options
+\end_layout
+
+\begin_layout Description
+Display This drop-down menu allows you to select a value (from the set of
+ metadata) that will be displayed by each concordance line.
+\end_layout
+
+\begin_layout Description
+Search\InsetSpace ~
+within It is possible to search within the results of a previous search.
+ (Currently it is only possible to select the last performed search.) Note
+ that this means searching within the matched phases, not the context.
+\end_layout
+
+\begin_layout Section
+Keyboard shortcuts
+\end_layout
+
+\begin_layout Standard
+Each corpus may have a set of keyboard shortcuts configured, but some are
+ common for all corpora:
+\end_layout
+
+\begin_layout Description
+Ctrl+Shift+L Word option: lemma form 
+\end_layout
+
+\begin_layout Description
+Ctrl+Shift+S Word option: start of word
+\end_layout
+
+\begin_layout Description
+Ctrl+Shift+E Word option: end of word
+\end_layout
+
+\begin_layout Description
+Ctrl+Shift+C Word option: case sensitive
+\end_layout
+
+\begin_layout Description
+Ctrl+Shift+N Part-of-Speech: Noun
+\end_layout
+
+\begin_layout Description
+Ctrl+Shift+V Part-of-Speech: Verb 
+\end_layout
+
+\begin_layout Description
+Enter/Return Search corpus 
+\end_layout
+
 \begin_layout Chapter
 Browsing results
 \begin_inset LatexCommand \index{browsing results}
@@ -1340,7 +1413,12 @@ The CWB
 
 \end_inset
 
+.
+\end_layout
 
+\begin_layout Itemize
+The frequencies of each of the tokens in the query (only available for some
+ corpora) if there is more than one token in the query.
 \end_layout
 
 \begin_layout Itemize
@@ -1354,7 +1432,8 @@ A list of available actions for further processing of the result set (described
 \end_layout
 
 \begin_layout Itemize
-The number of matches returned.
+The number of matches returned and the total numer of matches in the corpus
+ (unless 'skip global frequency' has been selected).
 \end_layout
 
 \begin_layout Itemize
@@ -1758,7 +1837,7 @@ any combination of the above
 \end_layout
 
 \begin_layout Subsubsection
-collocations
+Collocations
 \begin_inset LatexCommand \index{collocations}
 
 \end_inset
@@ -1907,6 +1986,13 @@ Note that only first word in the matching phrase is used.
  statistics will contain errors.
 \end_layout
 
+\begin_layout Standard
+Normally, the association values will be computed based on the result set.For
+ some corpora, however, it is possible to select the 'use global statistics'
+ option, which will give much more reliable association statistics, since
+ the whole corpus is taken into account.
+\end_layout
+
 \begin_layout Subsection
 Deleting hits
 \begin_inset LatexCommand \index{deleting hits}
@@ -2007,7 +2093,24 @@ Store on server
 
 \begin_layout Standard
 \begin_inset Note Note
-status collapsed
+status open
+
+\begin_layout Standard
+FIXME
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Annotating hits
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
 
 \begin_layout Standard
 FIXME
@@ -2061,6 +2164,17 @@ Distribution
 This function displays the number of hits, sorted according to the categories
  of meta-data available, including information about the number of hits
  per thousand words.
+\end_layout
+
+\begin_layout Section
+Multi-modal corpora
+\end_layout
+
+\begin_layout Standard
+When browsing results from multi-modal corpora, one or two additional icons
+ are displayed, for sound and for video.
+ These icons link to a separate module for navigating audio/video content.
+ (Documentation to come.)
 \end_layout
 
 \begin_layout Chapter
@@ -2338,25 +2452,6 @@ Miscellanea
 \end_layout
 
 \begin_layout Standard
-When searching for common words, it is recommended to use 'randomize
-\begin_inset LatexCommand \index{randomize}
-
-\end_inset
-
-', since it will generally be faster.
-\begin_inset Note Note
-status collapsed
-
-\begin_layout Standard
-Not in new version.
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
 Context size
 \begin_inset LatexCommand \index{context size}
 
@@ -2376,31 +2471,10 @@ Meta-information
 \end_layout
 
 \begin_layout Chapter
-Querying speech corpora
+Advanced features
 \end_layout
 
-\begin_layout Standard
-\begin_inset Note Note
-status collapsed
-
-\begin_layout Standard
-- show sound/video
-\end_layout
-
-\begin_layout Standard
-- navigate sound/video
-\end_layout
-
-\begin_layout Standard
-- search phonology
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Chapter
+\begin_layout Section
 Creating frequency tables
 \end_layout
 
@@ -2444,7 +2518,7 @@ Interface for frequency tables.
 
 \end_inset
 
-
+ This page can be reached by the 'statistics' link in the main window.
 \end_layout
 
 \begin_layout Standard
@@ -2552,10 +2626,63 @@ Note that all frequency compilations can take up to several minutes, depending
  on the size of the corpus.
 \end_layout
 
-\begin_layout Chapter
-Querying treebanks
+\begin_layout Section
+Fullquery mode
 \end_layout
 
+\begin_layout Standard
+As mentioned in the introduction, Glossa does not give complete flexibility.
+ Therefore, a separate interface is provided, allowing the user to input
+ CQP queries directly.
+ This page can be reached by the 'statistics' link in the main window.
+\end_layout
+
+\begin_layout Standard
+The CQP query language is documented here:
+\end_layout
+
+\begin_layout Itemize
+The CQP Language Tutorial, chapter 2.4 -- 2.8:
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+http://www.ims.uni-stuttgart.de/projekte/CorpusWorkbench/CQPTutorial/html/node11.htm
+l
+\end_layout
+
+\begin_layout Itemize
+http://www.ims.uni-stuttgart.de/projekte/CorpusWorkbench/CQPTutorial/html/node12.htm
+l
+\end_layout
+
+\begin_layout Itemize
+http://www.ims.uni-stuttgart.de/projekte/CorpusWorkbench/CQPTutorial/html/node13.htm
+l
+\end_layout
+
+\begin_layout Itemize
+http://www.ims.uni-stuttgart.de/projekte/CorpusWorkbench/CQPTutorial/html/node14.htm
+l
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+The CQP User's Manual, chapters 3 and 4 
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+http://www.ims.uni-stuttgart.de/projekte/CorpusWorkbench/CQPUserManual/HTML/node11.h
+tml#SECTION00400000000000000000
+\end_layout
+
+\begin_layout Itemize
+http://www.ims.uni-stuttgart.de/projekte/CorpusWorkbench/CQPUserManual/HTML/node16.h
+tml#SECTION00500000000000000000
+\end_layout
+
+\end_deeper
 \begin_layout Chapter
 \start_of_appendix
 Acknowledgements
