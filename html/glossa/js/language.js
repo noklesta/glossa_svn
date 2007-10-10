@@ -42,6 +42,9 @@ strings['en']['max_res']='Max results';
 strings['no']['rand']='Tilfeldig utvalg';
 strings['en']['rand']='Randomize';
 
+strings['no']['fastcut']='Ingen totalfrekvens';
+strings['en']['fastcut']='Skip total frequency';
+
 strings['no']['sent']='setning';
 strings['en']['sent']='sentence';
 

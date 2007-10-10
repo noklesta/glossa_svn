@@ -246,13 +246,15 @@ function writeWidgetToken(row) {
     
     var cell=row + "_" + col;
     
-    Html += "<td valign='top'>"
-	+ "<input type=\"TEXT\" id=\"string_" + row + "_" + col + "\" name=\"token_" + row + "_" + col + "_string\" size=\"12\"></input>"
-	+ "<div onMouseOver=\"Cell='" + cell + "'\" id='" + menuName + "'></div>"
+    Html += "<td onMouseOver=\"Cell='" + cell + "'\" valign='top'>"
+ 	+ "<input onSelect=\"Cell='" + cell + "'\" type=\"TEXT\" id=\"string_" + row + "_" + col + "\" name=\"token_" + row + "_" + col + "_string\" size=\"12\"></input>"
+	+ "<div id='" + menuName + "'></div>"
 	+ "<select onMouseOver=\"Cell='" + cell + "'\" name=\"token_"  + row + "_" + col + "_atts\" id=\""  + row + "_" + col + "_select\" style='display:none' multiple size=2 onDblClick=\"remOpt(this)\">"
 	+ "</select>"
 	+ "</td></tr></table>";
-    
+
+//    alert(Html);
+
     tableCell.vAlign="top";
     tableCell.innerHTML = Html;
     
@@ -318,16 +320,40 @@ function ReloadMenu(language) {
        else if (language == 'OMC3_EN') {
                reloadMenuOmc2_en();
        }
+       else if (language == 'OMC4_DE') {
+               reloadMenuOmc2_de();
+       }
+       else if (language == 'OMC4_FR') {
+               reloadMenuOmc2_fr();
+       }
+       else if (language == 'OMC4_NO') {
+               reloadMenuOmc2_no();
+       }
+       else if (language == 'OMC4_NL') {
+               reloadMenuOmc2_nl();
+       }
+       else if (language == 'OMC4_PO') {
+               reloadMenuOmc2_po();
+       }
+       else if (language == 'OMC4_EN') {
+               reloadMenuOmc2_en();
+       }
        else if (language == 'BOKMAL') {
                reloadMenuBokmal();
        }
        else if (language == 'SAMI') {
                reloadMenuSami();
        }
+       else if (language == 'BUL') {
+               reloadMenuBul();
+       }
        else if (language == 'NOTA2') {
                reloadMenuNota();
        }
        else if (language == 'NOTA2') {
+               reloadMenuNota();
+       }
+       else if (language == 'UPUS') {
                reloadMenuNota();
        }
        else if (language == 'SAMNO_SAMISK') {

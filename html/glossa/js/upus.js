@@ -1,6 +1,6 @@
 var Menu;
-function reloadMenuBokmal() {
-Menu['BOKMAL'] = new Hash(     1, new Hash(
+function reloadMenuNota() {
+Menu['UPUS'] = new Hash(     1, new Hash(
         'contents', '<nobr>&nbsp;valg &#187;&nbsp;</nobr>',
   	1, new Hash(
        'contents', 'ord &#187;&nbsp;',
@@ -15,14 +15,14 @@ Menu['BOKMAL'] = new Hash(     1, new Hash(
 	      'uri', "addOpt('w','middle','midten av ordet')"
 	   ),
 	    3, new Hash(
+         'contents', 'skill store/smÃ¥ bokst.',
+	      'type', 'js',
+	      'uri', "addOpt('w','case','skill store/smÃ¥ bokst.')"
+	   ),
+	    4, new Hash(
          'contents', 'slutten av ordet',
 	      'type', 'js',
 	      'uri', "addOpt('w','end','slutten av ordet')"
-	   ),
-	    4, new Hash(
-         'contents', 'skill store/små bokst.',
-	      'type', 'js',
-	      'uri', "addOpt('w','case','skill store/små bokst.')"
 	   ),
 	    5, new Hash(
          'contents', 'starten av ordet',
@@ -30,7 +30,7 @@ Menu['BOKMAL'] = new Hash(     1, new Hash(
 	      'uri', "addOpt('w','start','starten av ordet')"
 	   ),
 	    6, new Hash(
-         'contents', 'utelukk',
+         'contents', 'utelukk ordet',
 	      'type', 'js',
 	      'uri', "addOpt('w','neg','utelukk')"
 	   ),
@@ -74,19 +74,19 @@ Menu['BOKMAL'] = new Hash(     1, new Hash(
 	      )
 	   ),
 	    2, new Hash(
-         'contents', 'null eller én',
+         'contents', 'null eller Ã©n',
 	      'type', 'js',
-	      'uri', "addOpt('occ','?','null eller én')"
+	      'uri', "addOpt('occ','?','null eller Ã©n')"
 ,
        1, new Hash(
             'contents', 'velg',
 	         'type', 'js',
-	         'uri', "addOpt('occ','?','null eller én')"
+	         'uri', "addOpt('occ','?','null eller Ã©n')"
 	      ),
 	      2, new Hash(
             'contents', 'utelukk',
 	         'type', 'js',
-	         'uri', "addOpt('occ','!?','!null eller én')"
+	         'uri', "addOpt('occ','!?','!null eller Ã©n')"
 	      )
 	   ),
 	    3, new Hash(
@@ -114,228 +114,228 @@ Menu['BOKMAL'] = new Hash(     1, new Hash(
 	    1, new Hash(
          'contents', 'adjektive',
 	      'type', 'js',
-	      'uri', "addOpt('ordkl','adj','adjektive')"
+	      'uri', "addOpt('pos','adj','adjektive')"
 ,
        1, new Hash(
             'contents', 'velg',
 	         'type', 'js',
-	         'uri', "addOpt('ordkl','adj','adjektive')"
+	         'uri', "addOpt('pos','adj','adjektive')"
 	      ),
 	      2, new Hash(
             'contents', 'utelukk',
 	         'type', 'js',
-	         'uri', "addOpt('ordkl','!adj','!adjektive')"
+	         'uri', "addOpt('pos','!adj','!adjektive')"
 	      )
 	   ),
 	    2, new Hash(
          'contents', 'adverb',
 	      'type', 'js',
-	      'uri', "addOpt('ordkl','adv','adverb')"
+	      'uri', "addOpt('pos','adv','adverb')"
 ,
        1, new Hash(
             'contents', 'velg',
 	         'type', 'js',
-	         'uri', "addOpt('ordkl','adv','adverb')"
+	         'uri', "addOpt('pos','adv','adverb')"
 	      ),
 	      2, new Hash(
             'contents', 'utelukk',
 	         'type', 'js',
-	         'uri', "addOpt('ordkl','!adv','!adverb')"
+	         'uri', "addOpt('pos','!adv','!adverb')"
 	      )
 	   ),
 	    3, new Hash(
          'contents', 'determinativ',
 	      'type', 'js',
-	      'uri', "addOpt('ordkl','det','determinativ')"
+	      'uri', "addOpt('pos','det','determinativ')"
 ,
        1, new Hash(
             'contents', 'velg',
 	         'type', 'js',
-	         'uri', "addOpt('ordkl','det','determinativ')"
+	         'uri', "addOpt('pos','det','determinativ')"
 	      ),
 	      2, new Hash(
             'contents', 'utelukk',
 	         'type', 'js',
-	         'uri', "addOpt('ordkl','!det','!determinativ')"
+	         'uri', "addOpt('pos','!det','!determinativ')"
 	      )
 	   ),
 	    4, new Hash(
          'contents', 'infinitivsmerke',
 	      'type', 'js',
-	      'uri', "addOpt('ordkl','infmerke','infinitivsmerke')"
+	      'uri', "addOpt('pos','infmerke','infinitivsmerke')"
 ,
        1, new Hash(
             'contents', 'velg',
 	         'type', 'js',
-	         'uri', "addOpt('ordkl','infmerke','infinitivsmerke')"
+	         'uri', "addOpt('pos','infmerke','infinitivsmerke')"
 	      ),
 	      2, new Hash(
             'contents', 'utelukk',
 	         'type', 'js',
-	         'uri', "addOpt('ordkl','!infmerke','!infinitivsmerke')"
+	         'uri', "addOpt('pos','!infmerke','!infinitivsmerke')"
 	      )
 	   ),
 	    5, new Hash(
          'contents', 'interjeksjon',
 	      'type', 'js',
-	      'uri', "addOpt('ordkl','interj','interjeksjon')"
+	      'uri', "addOpt('pos','interj','interjeksjon')"
 ,
        1, new Hash(
             'contents', 'velg',
 	         'type', 'js',
-	         'uri', "addOpt('ordkl','interj','interjeksjon')"
+	         'uri', "addOpt('pos','interj','interjeksjon')"
 	      ),
 	      2, new Hash(
             'contents', 'utelukk',
 	         'type', 'js',
-	         'uri', "addOpt('ordkl','!interj','!interjeksjon')"
+	         'uri', "addOpt('pos','!interj','!interjeksjon')"
 	      )
 	   ),
 	    6, new Hash(
          'contents', 'konjunksjon',
 	      'type', 'js',
-	      'uri', "addOpt('ordkl','konj','konjunksjon')"
+	      'uri', "addOpt('pos','konj','konjunksjon')"
 ,
        1, new Hash(
             'contents', 'velg',
 	         'type', 'js',
-	         'uri', "addOpt('ordkl','konj','konjunksjon')"
+	         'uri', "addOpt('pos','konj','konjunksjon')"
 	      ),
 	      2, new Hash(
             'contents', 'utelukk',
 	         'type', 'js',
-	         'uri', "addOpt('ordkl','!konj','!konjunksjon')"
+	         'uri', "addOpt('pos','!konj','!konjunksjon')"
 	      )
 	   ),
 	    7, new Hash(
          'contents', 'preposisjon',
 	      'type', 'js',
-	      'uri', "addOpt('ordkl','prep','preposisjon')"
+	      'uri', "addOpt('pos','prep','preposisjon')"
 ,
        1, new Hash(
             'contents', 'velg',
 	         'type', 'js',
-	         'uri', "addOpt('ordkl','prep','preposisjon')"
+	         'uri', "addOpt('pos','prep','preposisjon')"
 	      ),
 	      2, new Hash(
             'contents', 'utelukk',
 	         'type', 'js',
-	         'uri', "addOpt('ordkl','!prep','!preposisjon')"
+	         'uri', "addOpt('pos','!prep','!preposisjon')"
 	      )
 	   ),
 	    8, new Hash(
          'contents', 'pronomen',
 	      'type', 'js',
-	      'uri', "addOpt('ordkl','pron','pronomen')"
+	      'uri', "addOpt('pos','pron','pronomen')"
 ,
        1, new Hash(
             'contents', 'velg',
 	         'type', 'js',
-	         'uri', "addOpt('ordkl','pron','pronomen')"
+	         'uri', "addOpt('pos','pron','pronomen')"
 	      ),
 	      2, new Hash(
             'contents', 'utelukk',
 	         'type', 'js',
-	         'uri', "addOpt('ordkl','!pron','!pronomen')"
+	         'uri', "addOpt('pos','!pron','!pronomen')"
 	      )
 	   ),
 	    9, new Hash(
          'contents', 'subjunksjon',
 	      'type', 'js',
-	      'uri', "addOpt('ordkl','sbu','subjunksjon')"
+	      'uri', "addOpt('pos','sbu','subjunksjon')"
 ,
        1, new Hash(
             'contents', 'velg',
 	         'type', 'js',
-	         'uri', "addOpt('ordkl','sbu','subjunksjon')"
+	         'uri', "addOpt('pos','sbu','subjunksjon')"
 	      ),
 	      2, new Hash(
             'contents', 'utelukk',
 	         'type', 'js',
-	         'uri', "addOpt('ordkl','!sbu','!subjunksjon')"
+	         'uri', "addOpt('pos','!sbu','!subjunksjon')"
 	      )
 	   ),
 	    10, new Hash(
          'contents', 'substantiv',
 	      'type', 'js',
-	      'uri', "addOpt('ordkl','s','substantiv')"
+	      'uri', "addOpt('pos','s','substantiv')"
 ,
        1, new Hash(
             'contents', 'velg',
 	         'type', 'js',
-	         'uri', "addOpt('ordkl','s','substantiv')"
+	         'uri', "addOpt('pos','s','substantiv')"
 	      ),
 	      2, new Hash(
             'contents', 'utelukk',
 	         'type', 'js',
-	         'uri', "addOpt('ordkl','!s','!substantiv')"
+	         'uri', "addOpt('pos','!s','!substantiv')"
 	      )
 	   ),
 	    11, new Hash(
          'contents', 'tegnsetting',
 	      'type', 'js',
-	      'uri', "addOpt('ordkl','punkt','tegnsetting')"
+	      'uri', "addOpt('pos','punkt','tegnsetting')"
 ,
        1, new Hash(
             'contents', 'velg',
 	         'type', 'js',
-	         'uri', "addOpt('ordkl','punkt','tegnsetting')"
+	         'uri', "addOpt('pos','punkt','tegnsetting')"
 	      ),
 	      2, new Hash(
             'contents', 'utelukk',
 	         'type', 'js',
-	         'uri', "addOpt('ordkl','!punkt','!tegnsetting')"
+	         'uri', "addOpt('pos','!punkt','!tegnsetting')"
 	      )
 	   ),
 	    12, new Hash(
          'contents', 'ukjent',
 	      'type', 'js',
-	      'uri', "addOpt('ordkl','ukjent','ukjent')"
+	      'uri', "addOpt('pos','ukjent','ukjent')"
 ,
        1, new Hash(
             'contents', 'velg',
 	         'type', 'js',
-	         'uri', "addOpt('ordkl','ukjent','ukjent')"
+	         'uri', "addOpt('pos','ukjent','ukjent')"
 	      ),
 	      2, new Hash(
             'contents', 'utelukk',
 	         'type', 'js',
-	         'uri', "addOpt('ordkl','!ukjent','!ukjent')"
+	         'uri', "addOpt('pos','!ukjent','!ukjent')"
 	      )
 	   ),
 	    13, new Hash(
          'contents', 'verb',
 	      'type', 'js',
-	      'uri', "addOpt('ordkl','v','verb')"
+	      'uri', "addOpt('pos','v','verb')"
 ,
        1, new Hash(
             'contents', 'velg',
 	         'type', 'js',
-	         'uri', "addOpt('ordkl','v','verb')"
+	         'uri', "addOpt('pos','v','verb')"
 	      ),
 	      2, new Hash(
             'contents', 'utelukk',
 	         'type', 'js',
-	         'uri', "addOpt('ordkl','!v','!verb')"
+	         'uri', "addOpt('pos','!v','!verb')"
 	      )
 	   )
 ),
   	5, new Hash(
        'contents', 'tegnsetting &#187;&nbsp;',
 	    1, new Hash(
-         'contents', 'anførselstegn',
+         'contents', 'anfÃ¸rselstegn',
 	      'type', 'js',
-	      'uri', "addOpt('type','anf','anførselstegn')"
+	      'uri', "addOpt('type','anf','anfÃ¸rselstegn')"
 ,
        1, new Hash(
             'contents', 'velg',
 	         'type', 'js',
-	         'uri', "addOpt('type','anf','anførselstegn')"
+	         'uri', "addOpt('type','anf','anfÃ¸rselstegn')"
 	      ),
 	      2, new Hash(
             'contents', 'utelukk',
 	         'type', 'js',
-	         'uri', "addOpt('type','!anf','!anførselstegn')"
+	         'uri', "addOpt('type','!anf','!anfÃ¸rselstegn')"
 	      )
 	   ),
 	    2, new Hash(
@@ -355,6 +355,22 @@ Menu['BOKMAL'] = new Hash(     1, new Hash(
 	      )
 	   ),
 	    3, new Hash(
+         'contents', 'hÃ¸yreparentes',
+	      'type', 'js',
+	      'uri', "addOpt('type','par-s','hÃ¸yreparentes')"
+,
+       1, new Hash(
+            'contents', 'velg',
+	         'type', 'js',
+	         'uri', "addOpt('type','par-s','hÃ¸yreparentes')"
+	      ),
+	      2, new Hash(
+            'contents', 'utelukk',
+	         'type', 'js',
+	         'uri', "addOpt('type','!par-s','!hÃ¸yreparentes')"
+	      )
+	   ),
+	    4, new Hash(
          'contents', 'kolon',
 	      'type', 'js',
 	      'uri', "addOpt('type','kolon','kolon')"
@@ -370,7 +386,7 @@ Menu['BOKMAL'] = new Hash(     1, new Hash(
 	         'uri', "addOpt('type','!kolon','!kolon')"
 	      )
 	   ),
-	    4, new Hash(
+	    5, new Hash(
          'contents', 'komma',
 	      'type', 'js',
 	      'uri', "addOpt('type','komma','komma')"
@@ -384,22 +400,6 @@ Menu['BOKMAL'] = new Hash(     1, new Hash(
             'contents', 'utelukk',
 	         'type', 'js',
 	         'uri', "addOpt('type','!komma','!komma')"
-	      )
-	   ),
-	    5, new Hash(
-         'contents', 'høyreparentes',
-	      'type', 'js',
-	      'uri', "addOpt('type','par-s','høyreparentes')"
-,
-       1, new Hash(
-            'contents', 'velg',
-	         'type', 'js',
-	         'uri', "addOpt('type','par-s','høyreparentes')"
-	      ),
-	      2, new Hash(
-            'contents', 'utelukk',
-	         'type', 'js',
-	         'uri', "addOpt('type','!par-s','!høyreparentes')"
 	      )
 	   ),
 	    6, new Hash(
@@ -435,19 +435,19 @@ Menu['BOKMAL'] = new Hash(     1, new Hash(
 	      )
 	   ),
 	    8, new Hash(
-         'contents', 'spørsmålstegn',
+         'contents', 'spÃ¸rsmÃ¥lstegn',
 	      'type', 'js',
-	      'uri', "addOpt('type','spm','spørsmålstegn')"
+	      'uri', "addOpt('type','spm','spÃ¸rsmÃ¥lstegn')"
 ,
        1, new Hash(
             'contents', 'velg',
 	         'type', 'js',
-	         'uri', "addOpt('type','spm','spørsmålstegn')"
+	         'uri', "addOpt('type','spm','spÃ¸rsmÃ¥lstegn')"
 	      ),
 	      2, new Hash(
             'contents', 'utelukk',
 	         'type', 'js',
-	         'uri', "addOpt('type','!spm','!spørsmålstegn')"
+	         'uri', "addOpt('type','!spm','!spÃ¸rsmÃ¥lstegn')"
 	      )
 	   ),
 	    9, new Hash(
@@ -504,105 +504,79 @@ Menu['BOKMAL'] = new Hash(     1, new Hash(
          ),
   	7, new Hash(
        'contents', 'trekk (pronomen) &#187;&nbsp;',
-	    1, new Hash(
-         'contents', 'human',
-	      'type', 'js',
-	      'uri', "addOpt('type','hum','human')"
-,
-       1, new Hash(
-            'contents', 'velg',
-	         'type', 'js',
-	         'uri', "addOpt('type','hum','human')"
-	      ),
-	      2, new Hash(
-            'contents', 'utelukk',
-	         'type', 'js',
-	         'uri', "addOpt('type','!hum','!human')"
-	      )
-	   ),
-	    2, new Hash(
-         'contents', 'høflig',
-	      'type', 'js',
-	      'uri', "addOpt('type','hfl','høflig')"
-,
-       1, new Hash(
-            'contents', 'velg',
-	         'type', 'js',
-	         'uri', "addOpt('type','hfl','høflig')"
-	      ),
-	      2, new Hash(
-            'contents', 'utelukk',
-	         'type', 'js',
-	         'uri', "addOpt('type','!hfl','!høflig')"
-	      )
-	   ),
+	  1, new Hash(
+         'contents', '<br><center><b>KASUS</b></center>'
+         ),
+	  2, new Hash(
+         'contents', '<br><center><b>PERSON</b></center>'
+         ),
 	    3, new Hash(
-         'contents', 'personlig',
+         'contents', '',
 	      'type', 'js',
-	      'uri', "addOpt('type','pers','personlig')"
+	      'uri', "addOpt('pron','<kjÃ¸nn>','')"
 ,
        1, new Hash(
             'contents', 'velg',
 	         'type', 'js',
-	         'uri', "addOpt('type','pers','personlig')"
+	         'uri', "addOpt('pron','<kjÃ¸nn>','')"
 	      ),
 	      2, new Hash(
             'contents', 'utelukk',
 	         'type', 'js',
-	         'uri', "addOpt('type','!pers','!personlig')"
+	         'uri', "addOpt('pron','!<kjÃ¸nn>','!')"
 	      )
 	   ),
-	    4, new Hash(
-         'contents', 'refleksiv',
-	      'type', 'js',
-	      'uri', "addOpt('type','refl','refleksiv')"
-,
-       1, new Hash(
-            'contents', 'velg',
-	         'type', 'js',
-	         'uri', "addOpt('type','refl','refleksiv')"
-	      ),
-	      2, new Hash(
-            'contents', 'utelukk',
-	         'type', 'js',
-	         'uri', "addOpt('type','!refl','!refleksiv')"
-	      )
-	   ),
+	  4, new Hash(
+         'contents', '<br><center><b>TALL</b></center>'
+         ),
 	    5, new Hash(
-         'contents', 'resiprok',
+         'contents', '1. person',
 	      'type', 'js',
-	      'uri', "addOpt('type','resip','resiprok')"
+	      'uri', "addOpt('person~type2','1','1. person')"
 ,
        1, new Hash(
             'contents', 'velg',
 	         'type', 'js',
-	         'uri', "addOpt('type','resip','resiprok')"
+	         'uri', "addOpt('person~type2','1','1. person')"
 	      ),
 	      2, new Hash(
             'contents', 'utelukk',
 	         'type', 'js',
-	         'uri', "addOpt('type','!resip','!resiprok')"
+	         'uri', "addOpt('person~type2','!1','!1. person')"
 	      )
 	   ),
 	    6, new Hash(
-         'contents', 'spørrende',
+         'contents', '2. person',
 	      'type', 'js',
-	      'uri', "addOpt('type','spm','spørrende')"
+	      'uri', "addOpt('person~type2','2','2. person')"
 ,
        1, new Hash(
             'contents', 'velg',
 	         'type', 'js',
-	         'uri', "addOpt('type','spm','spørrende')"
+	         'uri', "addOpt('person~type2','2','2. person')"
 	      ),
 	      2, new Hash(
             'contents', 'utelukk',
 	         'type', 'js',
-	         'uri', "addOpt('type','!spm','!spørrende')"
+	         'uri', "addOpt('person~type2','!2','!2. person')"
 	      )
 	   ),
-	  7, new Hash(
-         'contents', '<br><center><b>KASUS</b></center>'
-         ),
+	    7, new Hash(
+         'contents', '3. person',
+	      'type', 'js',
+	      'uri', "addOpt('person~type2','3','3. person')"
+,
+       1, new Hash(
+            'contents', 'velg',
+	         'type', 'js',
+	         'uri', "addOpt('person~type2','3','3. person')"
+	      ),
+	      2, new Hash(
+            'contents', 'utelukk',
+	         'type', 'js',
+	         'uri', "addOpt('person~type2','!3','!3. person')"
+	      )
+	   ),
 	    8, new Hash(
          'contents', 'akkusativ',
 	      'type', 'js',
@@ -620,6 +594,86 @@ Menu['BOKMAL'] = new Hash(     1, new Hash(
 	      )
 	   ),
 	    9, new Hash(
+         'contents', 'entall',
+	      'type', 'js',
+	      'uri', "addOpt('tall','ent','entall')"
+,
+       1, new Hash(
+            'contents', 'velg',
+	         'type', 'js',
+	         'uri', "addOpt('tall','ent','entall')"
+	      ),
+	      2, new Hash(
+            'contents', 'utelukk',
+	         'type', 'js',
+	         'uri', "addOpt('tall','!ent','!entall')"
+	      )
+	   ),
+	    10, new Hash(
+         'contents', 'entall eller flertall',
+	      'type', 'js',
+	      'uri', "addOpt('tall','ent/fl','entall eller flertall')"
+,
+       1, new Hash(
+            'contents', 'velg',
+	         'type', 'js',
+	         'uri', "addOpt('tall','ent/fl','entall eller flertall')"
+	      ),
+	      2, new Hash(
+            'contents', 'utelukk',
+	         'type', 'js',
+	         'uri', "addOpt('tall','!ent/fl','!entall eller flertall')"
+	      )
+	   ),
+	    11, new Hash(
+         'contents', 'feminin ',
+	      'type', 'js',
+	      'uri', "addOpt('kjonn','f','feminin ')"
+,
+       1, new Hash(
+            'contents', 'velg',
+	         'type', 'js',
+	         'uri', "addOpt('kjonn','f','feminin ')"
+	      ),
+	      2, new Hash(
+            'contents', 'utelukk',
+	         'type', 'js',
+	         'uri', "addOpt('kjonn','!f','!feminin ')"
+	      )
+	   ),
+	    12, new Hash(
+         'contents', 'feminin eller maskulin',
+	      'type', 'js',
+	      'uri', "addOpt('kjonn','m/f','feminin eller maskulin')"
+,
+       1, new Hash(
+            'contents', 'velg',
+	         'type', 'js',
+	         'uri', "addOpt('kjonn','m/f','feminin eller maskulin')"
+	      ),
+	      2, new Hash(
+            'contents', 'utelukk',
+	         'type', 'js',
+	         'uri', "addOpt('kjonn','!m/f','!feminin eller maskulin')"
+	      )
+	   ),
+	    13, new Hash(
+         'contents', 'flertall',
+	      'type', 'js',
+	      'uri', "addOpt('tall','fl','flertall')"
+,
+       1, new Hash(
+            'contents', 'velg',
+	         'type', 'js',
+	         'uri', "addOpt('tall','fl','flertall')"
+	      ),
+	      2, new Hash(
+            'contents', 'utelukk',
+	         'type', 'js',
+	         'uri', "addOpt('tall','!fl','!flertall')"
+	      )
+	   ),
+	    14, new Hash(
          'contents', 'genitiv',
 	      'type', 'js',
 	      'uri', "addOpt('modus~kasus','gen','genitiv')"
@@ -635,90 +689,36 @@ Menu['BOKMAL'] = new Hash(     1, new Hash(
 	         'uri', "addOpt('modus~kasus','!gen','!genitiv')"
 	      )
 	   ),
-	    10, new Hash(
-         'contents', 'nominativ',
+	    15, new Hash(
+         'contents', 'hÃ¸flig',
 	      'type', 'js',
-	      'uri', "addOpt('modus~kasus','nom','nominativ')"
+	      'uri', "addOpt('type','hfl','hÃ¸flig')"
 ,
        1, new Hash(
             'contents', 'velg',
 	         'type', 'js',
-	         'uri', "addOpt('modus~kasus','nom','nominativ')"
+	         'uri', "addOpt('type','hfl','hÃ¸flig')"
 	      ),
 	      2, new Hash(
             'contents', 'utelukk',
 	         'type', 'js',
-	         'uri', "addOpt('modus~kasus','!nom','!nominativ')"
+	         'uri', "addOpt('type','!hfl','!hÃ¸flig')"
 	      )
 	   ),
-	  11, new Hash(
-         'contents', '<br><center><b>PERSON</b></center>'
-         ),
-	    12, new Hash(
-         'contents', '1. person',
-	      'type', 'js',
-	      'uri', "addOpt('person~type2','1','1. person')"
-,
-       1, new Hash(
-            'contents', 'velg',
-	         'type', 'js',
-	         'uri', "addOpt('person~type2','1','1. person')"
-	      ),
-	      2, new Hash(
-            'contents', 'utelukk',
-	         'type', 'js',
-	         'uri', "addOpt('person~type2','!1','!1. person')"
-	      )
-	   ),
-	    13, new Hash(
-         'contents', '2. person',
-	      'type', 'js',
-	      'uri', "addOpt('person~type2','2','2. person')"
-,
-       1, new Hash(
-            'contents', 'velg',
-	         'type', 'js',
-	         'uri', "addOpt('person~type2','2','2. person')"
-	      ),
-	      2, new Hash(
-            'contents', 'utelukk',
-	         'type', 'js',
-	         'uri', "addOpt('person~type2','!2','!2. person')"
-	      )
-	   ),
-	    14, new Hash(
-         'contents', '3. person',
-	      'type', 'js',
-	      'uri', "addOpt('person~type2','3','3. person')"
-,
-       1, new Hash(
-            'contents', 'velg',
-	         'type', 'js',
-	         'uri', "addOpt('person~type2','3','3. person')"
-	      ),
-	      2, new Hash(
-            'contents', 'utelukk',
-	         'type', 'js',
-	         'uri', "addOpt('person~type2','!3','!3. person')"
-	      )
-	   ),
-	  15, new Hash(
-         'contents', '<br><center><b>KJØNN</b></center>'
-         ),
 	    16, new Hash(
-         'contents', 'feminin ',
+         'contents', 'human',
 	      'type', 'js',
-	      'uri', "addOpt('kjonn','f','feminin ')"
+	      'uri', "addOpt('type','hum','human')"
 ,
        1, new Hash(
             'contents', 'velg',
 	         'type', 'js',
-	         'uri', "addOpt('kjonn','f','feminin ')"
+	         'uri', "addOpt('type','hum','human')"
 	      ),
 	      2, new Hash(
             'contents', 'utelukk',
 	         'type', 'js',
-	         'uri', "addOpt('kjonn','!f','!feminin ')"
+	         'uri', "addOpt('type','!hum','!human')"
 	      )
 	   ),
 	    17, new Hash(
@@ -738,92 +738,146 @@ Menu['BOKMAL'] = new Hash(     1, new Hash(
 	      )
 	   ),
 	    18, new Hash(
-         'contents', 'feminin eller maskulin',
+         'contents', 'nÃ¸ytrum',
 	      'type', 'js',
-	      'uri', "addOpt('kjonn','m/f','feminin eller maskulin')"
+	      'uri', "addOpt('kjonn','n','nÃ¸ytrum')"
 ,
        1, new Hash(
             'contents', 'velg',
 	         'type', 'js',
-	         'uri', "addOpt('kjonn','m/f','feminin eller maskulin')"
+	         'uri', "addOpt('kjonn','n','nÃ¸ytrum')"
 	      ),
 	      2, new Hash(
             'contents', 'utelukk',
 	         'type', 'js',
-	         'uri', "addOpt('kjonn','!m/f','!feminin eller maskulin')"
+	         'uri', "addOpt('kjonn','!n','!nÃ¸ytrum')"
 	      )
 	   ),
 	    19, new Hash(
-         'contents', 'nøytrum',
+         'contents', 'nominativ',
 	      'type', 'js',
-	      'uri', "addOpt('kjonn','n','nøytrum')"
+	      'uri', "addOpt('modus~kasus','nom','nominativ')"
 ,
        1, new Hash(
             'contents', 'velg',
 	         'type', 'js',
-	         'uri', "addOpt('kjonn','n','nøytrum')"
+	         'uri', "addOpt('modus~kasus','nom','nominativ')"
 	      ),
 	      2, new Hash(
             'contents', 'utelukk',
 	         'type', 'js',
-	         'uri', "addOpt('kjonn','!n','!nøytrum')"
+	         'uri', "addOpt('modus~kasus','!nom','!nominativ')"
 	      )
 	   ),
-	  20, new Hash(
-         'contents', '<br><center><b>TALL</b></center>'
-         ),
-	    21, new Hash(
-         'contents', 'entall',
+	    20, new Hash(
+         'contents', 'personlig',
 	      'type', 'js',
-	      'uri', "addOpt('tall','ent','entall')"
+	      'uri', "addOpt('type','pers','personlig')"
 ,
        1, new Hash(
             'contents', 'velg',
 	         'type', 'js',
-	         'uri', "addOpt('tall','ent','entall')"
+	         'uri', "addOpt('type','pers','personlig')"
 	      ),
 	      2, new Hash(
             'contents', 'utelukk',
 	         'type', 'js',
-	         'uri', "addOpt('tall','!ent','!entall')"
+	         'uri', "addOpt('type','!pers','!personlig')"
+	      )
+	   ),
+	    21, new Hash(
+         'contents', 'refleksiv',
+	      'type', 'js',
+	      'uri', "addOpt('type','refl','refleksiv')"
+,
+       1, new Hash(
+            'contents', 'velg',
+	         'type', 'js',
+	         'uri', "addOpt('type','refl','refleksiv')"
+	      ),
+	      2, new Hash(
+            'contents', 'utelukk',
+	         'type', 'js',
+	         'uri', "addOpt('type','!refl','!refleksiv')"
 	      )
 	   ),
 	    22, new Hash(
-         'contents', 'entall eller flertall',
+         'contents', 'resiprok',
 	      'type', 'js',
-	      'uri', "addOpt('tall','ent/fl','entall eller flertall')"
+	      'uri', "addOpt('type','resip','resiprok')"
 ,
        1, new Hash(
             'contents', 'velg',
 	         'type', 'js',
-	         'uri', "addOpt('tall','ent/fl','entall eller flertall')"
+	         'uri', "addOpt('type','resip','resiprok')"
 	      ),
 	      2, new Hash(
             'contents', 'utelukk',
 	         'type', 'js',
-	         'uri', "addOpt('tall','!ent/fl','!entall eller flertall')"
+	         'uri', "addOpt('type','!resip','!resiprok')"
 	      )
 	   ),
 	    23, new Hash(
-         'contents', 'flertall',
+         'contents', 'spÃ¸rrende',
 	      'type', 'js',
-	      'uri', "addOpt('tall','fl','flertall')"
+	      'uri', "addOpt('type','spm','spÃ¸rrende')"
 ,
        1, new Hash(
             'contents', 'velg',
 	         'type', 'js',
-	         'uri', "addOpt('tall','fl','flertall')"
+	         'uri', "addOpt('type','spm','spÃ¸rrende')"
 	      ),
 	      2, new Hash(
             'contents', 'utelukk',
 	         'type', 'js',
-	         'uri', "addOpt('tall','!fl','!flertall')"
+	         'uri', "addOpt('type','!spm','!spÃ¸rrende')"
 	      )
 	   )
 ),
   	8, new Hash(
-       'contents', 'trekk (substantiv) &#187;&nbsp;',
+       'contents', 'trekk (adjektiv)  &#187;&nbsp;',
 	    1, new Hash(
+         'contents', '',
+	      'type', 'js',
+	      'uri', "addOpt('adj','<kjÃ¸nn>','')"
+,
+       1, new Hash(
+            'contents', 'velg',
+	         'type', 'js',
+	         'uri', "addOpt('adj','<kjÃ¸nn>','')"
+	      ),
+	      2, new Hash(
+            'contents', 'utelukk',
+	         'type', 'js',
+	         'uri', "addOpt('adj','!<kjÃ¸nn>','!')"
+	      )
+	   ),
+	  2, new Hash(
+         'contents', '<br><center><b>BESTEMTHET</b></center>'
+         ),
+	  3, new Hash(
+         'contents', '<br><center><b>TALL</b></center>'
+         ),
+	  4, new Hash(
+         'contents', '<br><center><b>GRAD</b></center>'
+         ),
+	    5, new Hash(
+         'contents', '',
+	      'type', 'js',
+	      'uri', "addOpt('adj','<kjÃ¸nn>','')"
+,
+       1, new Hash(
+            'contents', 'velg',
+	         'type', 'js',
+	         'uri', "addOpt('adj','<kjÃ¸nn>','')"
+	      ),
+	      2, new Hash(
+            'contents', 'utelukk',
+	         'type', 'js',
+	         'uri', "addOpt('adj','!<kjÃ¸nn>','!')"
+	      )
+	   ),
+	    6, new Hash(
          'contents', 'appellativ',
 	      'type', 'js',
 	      'uri', "addOpt('type','a','appellativ')"
@@ -839,109 +893,7 @@ Menu['BOKMAL'] = new Hash(     1, new Hash(
 	         'uri', "addOpt('type','!a','!appellativ')"
 	      )
 	   ),
-	    2, new Hash(
-         'contents', 'proprium',
-	      'type', 'js',
-	      'uri', "addOpt('type','p','proprium')"
-,
-       1, new Hash(
-            'contents', 'velg',
-	         'type', 'js',
-	         'uri', "addOpt('type','p','proprium')"
-	      ),
-	      2, new Hash(
-            'contents', 'utelukk',
-	         'type', 'js',
-	         'uri', "addOpt('type','!p','!proprium')"
-	      )
-	   ),
-	    3, new Hash(
-         'contents', 'ingen bøyning',
-	      'type', 'js',
-	      'uri', "addOpt('type','ubøy','ingen bøyning')"
-,
-       1, new Hash(
-            'contents', 'velg',
-	         'type', 'js',
-	         'uri', "addOpt('type','ubøy','ingen bøyning')"
-	      ),
-	      2, new Hash(
-            'contents', 'utelukk',
-	         'type', 'js',
-	         'uri', "addOpt('type','!ubøy','!ingen bøyning')"
-	      )
-	   ),
-	  4, new Hash(
-         'contents', '<br><center><b>KJØNN</b></center>'
-         ),
-	    5, new Hash(
-         'contents', 'feminin',
-	      'type', 'js',
-	      'uri', "addOpt('kjonn','f','feminin')"
-,
-       1, new Hash(
-            'contents', 'velg',
-	         'type', 'js',
-	         'uri', "addOpt('kjonn','f','feminin')"
-	      ),
-	      2, new Hash(
-            'contents', 'utelukk',
-	         'type', 'js',
-	         'uri', "addOpt('kjonn','!f','!feminin')"
-	      )
-	   ),
-	    6, new Hash(
-         'contents', 'maskulin',
-	      'type', 'js',
-	      'uri', "addOpt('kjonn','m','maskulin')"
-,
-       1, new Hash(
-            'contents', 'velg',
-	         'type', 'js',
-	         'uri', "addOpt('kjonn','m','maskulin')"
-	      ),
-	      2, new Hash(
-            'contents', 'utelukk',
-	         'type', 'js',
-	         'uri', "addOpt('kjonn','!m','!maskulin')"
-	      )
-	   ),
 	    7, new Hash(
-         'contents', 'feminin or maskulin',
-	      'type', 'js',
-	      'uri', "addOpt('kjonn','m/f','feminin or maskulin')"
-,
-       1, new Hash(
-            'contents', 'velg',
-	         'type', 'js',
-	         'uri', "addOpt('kjonn','m/f','feminin or maskulin')"
-	      ),
-	      2, new Hash(
-            'contents', 'utelukk',
-	         'type', 'js',
-	         'uri', "addOpt('kjonn','!m/f','!feminin or maskulin')"
-	      )
-	   ),
-	    8, new Hash(
-         'contents', 'nøytrum',
-	      'type', 'js',
-	      'uri', "addOpt('kjonn','n','nøytrum')"
-,
-       1, new Hash(
-            'contents', 'velg',
-	         'type', 'js',
-	         'uri', "addOpt('kjonn','n','nøytrum')"
-	      ),
-	      2, new Hash(
-            'contents', 'utelukk',
-	         'type', 'js',
-	         'uri', "addOpt('kjonn','!n','!nøytrum')"
-	      )
-	   ),
-	  9, new Hash(
-         'contents', '<br><center><b>BESTEMTHET</b></center>'
-         ),
-	    10, new Hash(
          'contents', 'bestemt',
 	      'type', 'js',
 	      'uri', "addOpt('tid~bestemthet','be','bestemt')"
@@ -957,7 +909,7 @@ Menu['BOKMAL'] = new Hash(     1, new Hash(
 	         'uri', "addOpt('tid~bestemthet','!be','!bestemt')"
 	      )
 	   ),
-	    11, new Hash(
+	    8, new Hash(
          'contents', 'bestemt eller ubestemt',
 	      'type', 'js',
 	      'uri', "addOpt('tid~bestemthet','be/ub','bestemt eller ubestemt')"
@@ -973,26 +925,7 @@ Menu['BOKMAL'] = new Hash(     1, new Hash(
 	         'uri', "addOpt('tid~bestemthet','!be/ub','!bestemt eller ubestemt')"
 	      )
 	   ),
-	    12, new Hash(
-         'contents', 'ubestemt',
-	      'type', 'js',
-	      'uri', "addOpt('tid~bestemthet','ub','ubestemt')"
-,
-       1, new Hash(
-            'contents', 'velg',
-	         'type', 'js',
-	         'uri', "addOpt('tid~bestemthet','ub','ubestemt')"
-	      ),
-	      2, new Hash(
-            'contents', 'utelukk',
-	         'type', 'js',
-	         'uri', "addOpt('tid~bestemthet','!ub','!ubestemt')"
-	      )
-	   ),
-	  13, new Hash(
-         'contents', '<br><center><b>TALL</b></center>'
-         ),
-	    14, new Hash(
+	    9, new Hash(
          'contents', 'entall',
 	      'type', 'js',
 	      'uri', "addOpt('tall','ent','entall')"
@@ -1008,7 +941,7 @@ Menu['BOKMAL'] = new Hash(     1, new Hash(
 	         'uri', "addOpt('tall','!ent','!entall')"
 	      )
 	   ),
-	    15, new Hash(
+	    10, new Hash(
          'contents', 'entall eller flertall',
 	      'type', 'js',
 	      'uri', "addOpt('tall','ent/fl','entall eller flertall')"
@@ -1024,128 +957,7 @@ Menu['BOKMAL'] = new Hash(     1, new Hash(
 	         'uri', "addOpt('tall','!ent/fl','!entall eller flertall')"
 	      )
 	   ),
-	    16, new Hash(
-         'contents', 'flertall',
-	      'type', 'js',
-	      'uri', "addOpt('tall','fl','flertall')"
-,
-       1, new Hash(
-            'contents', 'velg',
-	         'type', 'js',
-	         'uri', "addOpt('tall','fl','flertall')"
-	      ),
-	      2, new Hash(
-            'contents', 'utelukk',
-	         'type', 'js',
-	         'uri', "addOpt('tall','!fl','!flertall')"
-	      )
-	   )
-),
-  	9, new Hash(
-       'contents', 'trekk (adjektiv)  &#187;&nbsp;',
-	    1, new Hash(
-         'contents', 'ordenstall',
-	      'type', 'js',
-	      'uri', "addOpt('type','ordenstall','ordenstall')"
-,
-       1, new Hash(
-            'contents', 'velg',
-	         'type', 'js',
-	         'uri', "addOpt('type','ordenstall','ordenstall')"
-	      ),
-	      2, new Hash(
-            'contents', 'utelukk',
-	         'type', 'js',
-	         'uri', "addOpt('type','!ordenstall','!ordenstall')"
-	      )
-	   ),
-	    2, new Hash(
-         'contents', 'perfektum partisipp',
-	      'type', 'js',
-	      'uri', "addOpt('type','perf~part','perfektum partisipp')"
-,
-       1, new Hash(
-            'contents', 'velg',
-	         'type', 'js',
-	         'uri', "addOpt('type','perf~part','perfektum partisipp')"
-	      ),
-	      2, new Hash(
-            'contents', 'utelukk',
-	         'type', 'js',
-	         'uri', "addOpt('type','!perf~part','!perfektum partisipp')"
-	      )
-	   ),
-	    3, new Hash(
-         'contents', 'presens partisipp',
-	      'type', 'js',
-	      'uri', "addOpt('type','pres~part','presens partisipp')"
-,
-       1, new Hash(
-            'contents', 'velg',
-	         'type', 'js',
-	         'uri', "addOpt('type','pres~part','presens partisipp')"
-	      ),
-	      2, new Hash(
-            'contents', 'utelukk',
-	         'type', 'js',
-	         'uri', "addOpt('type','!pres~part','!presens partisipp')"
-	      )
-	   ),
-	  4, new Hash(
-         'contents', '<br><center><b>GRAD</b></center>'
-         ),
-	    5, new Hash(
-         'contents', 'komparativ',
-	      'type', 'js',
-	      'uri', "addOpt('grad~dia','komp','komparativ')"
-,
-       1, new Hash(
-            'contents', 'velg',
-	         'type', 'js',
-	         'uri', "addOpt('grad~dia','komp','komparativ')"
-	      ),
-	      2, new Hash(
-            'contents', 'utelukk',
-	         'type', 'js',
-	         'uri', "addOpt('grad~dia','!komp','!komparativ')"
-	      )
-	   ),
-	    6, new Hash(
-         'contents', 'positiv',
-	      'type', 'js',
-	      'uri', "addOpt('grad~dia','pos','positiv')"
-,
-       1, new Hash(
-            'contents', 'velg',
-	         'type', 'js',
-	         'uri', "addOpt('grad~dia','pos','positiv')"
-	      ),
-	      2, new Hash(
-            'contents', 'utelukk',
-	         'type', 'js',
-	         'uri', "addOpt('grad~dia','!pos','!positiv')"
-	      )
-	   ),
-	    7, new Hash(
-         'contents', 'superlativ',
-	      'type', 'js',
-	      'uri', "addOpt('grad~dia','sup','superlativ')"
-,
-       1, new Hash(
-            'contents', 'velg',
-	         'type', 'js',
-	         'uri', "addOpt('grad~dia','sup','superlativ')"
-	      ),
-	      2, new Hash(
-            'contents', 'utelukk',
-	         'type', 'js',
-	         'uri', "addOpt('grad~dia','!sup','!superlativ')"
-	      )
-	   ),
-	  8, new Hash(
-         'contents', '<br><center><b>KJØNN</b></center>'
-         ),
-	    9, new Hash(
+	    11, new Hash(
          'contents', 'feminin',
 	      'type', 'js',
 	      'uri', "addOpt('kjonn','f','feminin')"
@@ -1161,7 +973,23 @@ Menu['BOKMAL'] = new Hash(     1, new Hash(
 	         'uri', "addOpt('kjonn','!f','!feminin')"
 	      )
 	   ),
-	    10, new Hash(
+	    12, new Hash(
+         'contents', 'feminin',
+	      'type', 'js',
+	      'uri', "addOpt('kjonn','f','feminin')"
+,
+       1, new Hash(
+            'contents', 'velg',
+	         'type', 'js',
+	         'uri', "addOpt('kjonn','f','feminin')"
+	      ),
+	      2, new Hash(
+            'contents', 'utelukk',
+	         'type', 'js',
+	         'uri', "addOpt('kjonn','!f','!feminin')"
+	      )
+	   ),
+	    13, new Hash(
          'contents', 'feminin eller maskulin',
 	      'type', 'js',
 	      'uri', "addOpt('kjonn','m/f','feminin eller maskulin')"
@@ -1177,7 +1005,71 @@ Menu['BOKMAL'] = new Hash(     1, new Hash(
 	         'uri', "addOpt('kjonn','!m/f','!feminin eller maskulin')"
 	      )
 	   ),
-	    11, new Hash(
+	    14, new Hash(
+         'contents', 'feminin or maskulin',
+	      'type', 'js',
+	      'uri', "addOpt('kjonn','m/f','feminin or maskulin')"
+,
+       1, new Hash(
+            'contents', 'velg',
+	         'type', 'js',
+	         'uri', "addOpt('kjonn','m/f','feminin or maskulin')"
+	      ),
+	      2, new Hash(
+            'contents', 'utelukk',
+	         'type', 'js',
+	         'uri', "addOpt('kjonn','!m/f','!feminin or maskulin')"
+	      )
+	   ),
+	    15, new Hash(
+         'contents', 'flertall',
+	      'type', 'js',
+	      'uri', "addOpt('tall','fl','flertall')"
+,
+       1, new Hash(
+            'contents', 'velg',
+	         'type', 'js',
+	         'uri', "addOpt('tall','fl','flertall')"
+	      ),
+	      2, new Hash(
+            'contents', 'utelukk',
+	         'type', 'js',
+	         'uri', "addOpt('tall','!fl','!flertall')"
+	      )
+	   ),
+	    16, new Hash(
+         'contents', 'ingen bÃ¸yning',
+	      'type', 'js',
+	      'uri', "addOpt('type','ubÃ¸y','ingen bÃ¸yning')"
+,
+       1, new Hash(
+            'contents', 'velg',
+	         'type', 'js',
+	         'uri', "addOpt('type','ubÃ¸y','ingen bÃ¸yning')"
+	      ),
+	      2, new Hash(
+            'contents', 'utelukk',
+	         'type', 'js',
+	         'uri', "addOpt('type','!ubÃ¸y','!ingen bÃ¸yning')"
+	      )
+	   ),
+	    17, new Hash(
+         'contents', 'komparativ',
+	      'type', 'js',
+	      'uri', "addOpt('grad~dia','komp','komparativ')"
+,
+       1, new Hash(
+            'contents', 'velg',
+	         'type', 'js',
+	         'uri', "addOpt('grad~dia','komp','komparativ')"
+	      ),
+	      2, new Hash(
+            'contents', 'utelukk',
+	         'type', 'js',
+	         'uri', "addOpt('grad~dia','!komp','!komparativ')"
+	      )
+	   ),
+	    18, new Hash(
          'contents', 'maskulin',
 	      'type', 'js',
 	      'uri', "addOpt('kjonn','m','maskulin')"
@@ -1193,24 +1085,184 @@ Menu['BOKMAL'] = new Hash(     1, new Hash(
 	         'uri', "addOpt('kjonn','!m','!maskulin')"
 	      )
 	   ),
-	    12, new Hash(
-         'contents', 'nøytrum',
+	    19, new Hash(
+         'contents', 'maskulin',
 	      'type', 'js',
-	      'uri', "addOpt('kjonn','n','nøytrum')"
+	      'uri', "addOpt('kjonn','m','maskulin')"
 ,
        1, new Hash(
             'contents', 'velg',
 	         'type', 'js',
-	         'uri', "addOpt('kjonn','n','nøytrum')"
+	         'uri', "addOpt('kjonn','m','maskulin')"
 	      ),
 	      2, new Hash(
             'contents', 'utelukk',
 	         'type', 'js',
-	         'uri', "addOpt('kjonn','!n','!nøytrum')"
+	         'uri', "addOpt('kjonn','!m','!maskulin')"
+	      )
+	   ),
+	    20, new Hash(
+         'contents', 'nÃ¸ytrum',
+	      'type', 'js',
+	      'uri', "addOpt('kjonn','n','nÃ¸ytrum')"
+,
+       1, new Hash(
+            'contents', 'velg',
+	         'type', 'js',
+	         'uri', "addOpt('kjonn','n','nÃ¸ytrum')"
+	      ),
+	      2, new Hash(
+            'contents', 'utelukk',
+	         'type', 'js',
+	         'uri', "addOpt('kjonn','!n','!nÃ¸ytrum')"
+	      )
+	   ),
+	    21, new Hash(
+         'contents', 'nÃ¸ytrum',
+	      'type', 'js',
+	      'uri', "addOpt('kjonn','n','nÃ¸ytrum')"
+,
+       1, new Hash(
+            'contents', 'velg',
+	         'type', 'js',
+	         'uri', "addOpt('kjonn','n','nÃ¸ytrum')"
+	      ),
+	      2, new Hash(
+            'contents', 'utelukk',
+	         'type', 'js',
+	         'uri', "addOpt('kjonn','!n','!nÃ¸ytrum')"
+	      )
+	   ),
+	    22, new Hash(
+         'contents', 'ordenstall',
+	      'type', 'js',
+	      'uri', "addOpt('type','ordenstall','ordenstall')"
+,
+       1, new Hash(
+            'contents', 'velg',
+	         'type', 'js',
+	         'uri', "addOpt('type','ordenstall','ordenstall')"
+	      ),
+	      2, new Hash(
+            'contents', 'utelukk',
+	         'type', 'js',
+	         'uri', "addOpt('type','!ordenstall','!ordenstall')"
+	      )
+	   ),
+	    23, new Hash(
+         'contents', 'perfektum partisipp',
+	      'type', 'js',
+	      'uri', "addOpt('type','perf~part','perfektum partisipp')"
+,
+       1, new Hash(
+            'contents', 'velg',
+	         'type', 'js',
+	         'uri', "addOpt('type','perf~part','perfektum partisipp')"
+	      ),
+	      2, new Hash(
+            'contents', 'utelukk',
+	         'type', 'js',
+	         'uri', "addOpt('type','!perf~part','!perfektum partisipp')"
+	      )
+	   ),
+	    24, new Hash(
+         'contents', 'positiv',
+	      'type', 'js',
+	      'uri', "addOpt('grad~dia','pos','positiv')"
+,
+       1, new Hash(
+            'contents', 'velg',
+	         'type', 'js',
+	         'uri', "addOpt('grad~dia','pos','positiv')"
+	      ),
+	      2, new Hash(
+            'contents', 'utelukk',
+	         'type', 'js',
+	         'uri', "addOpt('grad~dia','!pos','!positiv')"
+	      )
+	   ),
+	    25, new Hash(
+         'contents', 'presens partisipp',
+	      'type', 'js',
+	      'uri', "addOpt('type','pres~part','presens partisipp')"
+,
+       1, new Hash(
+            'contents', 'velg',
+	         'type', 'js',
+	         'uri', "addOpt('type','pres~part','presens partisipp')"
+	      ),
+	      2, new Hash(
+            'contents', 'utelukk',
+	         'type', 'js',
+	         'uri', "addOpt('type','!pres~part','!presens partisipp')"
+	      )
+	   ),
+	    26, new Hash(
+         'contents', 'proprium',
+	      'type', 'js',
+	      'uri', "addOpt('type','p','proprium')"
+,
+       1, new Hash(
+            'contents', 'velg',
+	         'type', 'js',
+	         'uri', "addOpt('type','p','proprium')"
+	      ),
+	      2, new Hash(
+            'contents', 'utelukk',
+	         'type', 'js',
+	         'uri', "addOpt('type','!p','!proprium')"
+	      )
+	   ),
+	    27, new Hash(
+         'contents', 'superlativ',
+	      'type', 'js',
+	      'uri', "addOpt('grad~dia','sup','superlativ')"
+,
+       1, new Hash(
+            'contents', 'velg',
+	         'type', 'js',
+	         'uri', "addOpt('grad~dia','sup','superlativ')"
+	      ),
+	      2, new Hash(
+            'contents', 'utelukk',
+	         'type', 'js',
+	         'uri', "addOpt('grad~dia','!sup','!superlativ')"
+	      )
+	   ),
+	    28, new Hash(
+         'contents', 'trekk (substantiv)',
+	      'type', 'js',
+	      'uri', "addOpt('grad~dia','# subst ','trekk (substantiv)')"
+,
+       1, new Hash(
+            'contents', 'velg',
+	         'type', 'js',
+	         'uri', "addOpt('grad~dia','# subst ','trekk (substantiv)')"
+	      ),
+	      2, new Hash(
+            'contents', 'utelukk',
+	         'type', 'js',
+	         'uri', "addOpt('grad~dia','!# subst ','!trekk (substantiv)')"
+	      )
+	   ),
+	    29, new Hash(
+         'contents', 'ubestemt',
+	      'type', 'js',
+	      'uri', "addOpt('tid~bestemthet','ub','ubestemt')"
+,
+       1, new Hash(
+            'contents', 'velg',
+	         'type', 'js',
+	         'uri', "addOpt('tid~bestemthet','ub','ubestemt')"
+	      ),
+	      2, new Hash(
+            'contents', 'utelukk',
+	         'type', 'js',
+	         'uri', "addOpt('tid~bestemthet','!ub','!ubestemt')"
 	      )
 	   )
 ),
-  	10, new Hash(
+  	9, new Hash(
        'contents', 'trekk (determinativ) &#187;&nbsp;',
 	    1, new Hash(
          'contents', 'demonstrativ',
@@ -1245,19 +1297,19 @@ Menu['BOKMAL'] = new Hash(     1, new Hash(
 	      )
 	   ),
 	    3, new Hash(
-         'contents', 'høflig',
+         'contents', 'hÃ¸flig',
 	      'type', 'js',
-	      'uri', "addOpt('type','hfl','høflig')"
+	      'uri', "addOpt('type','hfl','hÃ¸flig')"
 ,
        1, new Hash(
             'contents', 'velg',
 	         'type', 'js',
-	         'uri', "addOpt('type','hfl','høflig')"
+	         'uri', "addOpt('type','hfl','hÃ¸flig')"
 	      ),
 	      2, new Hash(
             'contents', 'utelukk',
 	         'type', 'js',
-	         'uri', "addOpt('type','!hfl','!høflig')"
+	         'uri', "addOpt('type','!hfl','!hÃ¸flig')"
 	      )
 	   ),
 	    4, new Hash(
@@ -1309,41 +1361,25 @@ Menu['BOKMAL'] = new Hash(     1, new Hash(
 	      )
 	   ),
 	    7, new Hash(
-         'contents', 'spørrende',
+         'contents', 'spÃ¸rrende',
 	      'type', 'js',
-	      'uri', "addOpt('type','spm','spørrende')"
+	      'uri', "addOpt('type','spm','spÃ¸rrende')"
 ,
        1, new Hash(
             'contents', 'velg',
 	         'type', 'js',
-	         'uri', "addOpt('type','spm','spørrende')"
+	         'uri', "addOpt('type','spm','spÃ¸rrende')"
 	      ),
 	      2, new Hash(
             'contents', 'utelukk',
 	         'type', 'js',
-	         'uri', "addOpt('type','!spm','!spørrende')"
+	         'uri', "addOpt('type','!spm','!spÃ¸rrende')"
 	      )
 	   )
 ),
-  	11, new Hash(
+  	10, new Hash(
        'contents', 'trekk (verb) &#187;&nbsp;',
 	    1, new Hash(
-         'contents', 'passiv',
-	      'type', 'js',
-	      'uri', "addOpt('grad~dia','pass','passiv')"
-,
-       1, new Hash(
-            'contents', 'velg',
-	         'type', 'js',
-	         'uri', "addOpt('grad~dia','pass','passiv')"
-	      ),
-	      2, new Hash(
-            'contents', 'utelukk',
-	         'type', 'js',
-	         'uri', "addOpt('grad~dia','!pass','!passiv')"
-	      )
-	   ),
-	    2, new Hash(
          'contents', 'imperativ',
 	      'type', 'js',
 	      'uri', "addOpt('modus~kasus','imp','imperativ')"
@@ -1359,7 +1395,7 @@ Menu['BOKMAL'] = new Hash(     1, new Hash(
 	         'uri', "addOpt('modus~kasus','!imp','!imperativ')"
 	      )
 	   ),
-	    3, new Hash(
+	    2, new Hash(
          'contents', 'infinitiv',
 	      'type', 'js',
 	      'uri', "addOpt('tid~bestemethet','inf','infinitiv')"
@@ -1375,39 +1411,23 @@ Menu['BOKMAL'] = new Hash(     1, new Hash(
 	         'uri', "addOpt('tid~bestemethet','!inf','!infinitiv')"
 	      )
 	   ),
+	    3, new Hash(
+         'contents', 'passiv',
+	      'type', 'js',
+	      'uri', "addOpt('grad~dia','pass','passiv')"
+,
+       1, new Hash(
+            'contents', 'velg',
+	         'type', 'js',
+	         'uri', "addOpt('grad~dia','pass','passiv')"
+	      ),
+	      2, new Hash(
+            'contents', 'utelukk',
+	         'type', 'js',
+	         'uri', "addOpt('grad~dia','!pass','!passiv')"
+	      )
+	   ),
 	    4, new Hash(
-         'contents', 'presens',
-	      'type', 'js',
-	      'uri', "addOpt('tid~bestemthet','pres','presens')"
-,
-       1, new Hash(
-            'contents', 'velg',
-	         'type', 'js',
-	         'uri', "addOpt('tid~bestemthet','pres','presens')"
-	      ),
-	      2, new Hash(
-            'contents', 'utelukk',
-	         'type', 'js',
-	         'uri', "addOpt('tid~bestemthet','!pres','!presens')"
-	      )
-	   ),
-	    5, new Hash(
-         'contents', 'preteritum',
-	      'type', 'js',
-	      'uri', "addOpt('tid~bestemthet','past','preteritum')"
-,
-       1, new Hash(
-            'contents', 'velg',
-	         'type', 'js',
-	         'uri', "addOpt('tid~bestemthet','past','preteritum')"
-	      ),
-	      2, new Hash(
-            'contents', 'utelukk',
-	         'type', 'js',
-	         'uri', "addOpt('tid~bestemthet','!past','!preteritum')"
-	      )
-	   ),
-	    6, new Hash(
          'contents', 'perfektum partisipp',
 	      'type', 'js',
 	      'uri', "addOpt('type','perf-part','perfektum partisipp')"
@@ -1423,20 +1443,52 @@ Menu['BOKMAL'] = new Hash(     1, new Hash(
 	         'uri', "addOpt('type','!perf-part','!perfektum partisipp')"
 	      )
 	   ),
-	    7, new Hash(
-         'contents', 'ubøyelig',
+	    5, new Hash(
+         'contents', 'presens',
 	      'type', 'js',
-	      'uri', "addOpt('type','ubøy','ubøyelig')"
+	      'uri', "addOpt('tid~bestemthet','pres','presens')"
 ,
        1, new Hash(
             'contents', 'velg',
 	         'type', 'js',
-	         'uri', "addOpt('type','ubøy','ubøyelig')"
+	         'uri', "addOpt('tid~bestemthet','pres','presens')"
 	      ),
 	      2, new Hash(
             'contents', 'utelukk',
 	         'type', 'js',
-	         'uri', "addOpt('type','!ubøy','!ubøyelig')"
+	         'uri', "addOpt('tid~bestemthet','!pres','!presens')"
+	      )
+	   ),
+	    6, new Hash(
+         'contents', 'preteritum',
+	      'type', 'js',
+	      'uri', "addOpt('tid~bestemthet','past','preteritum')"
+,
+       1, new Hash(
+            'contents', 'velg',
+	         'type', 'js',
+	         'uri', "addOpt('tid~bestemthet','past','preteritum')"
+	      ),
+	      2, new Hash(
+            'contents', 'utelukk',
+	         'type', 'js',
+	         'uri', "addOpt('tid~bestemthet','!past','!preteritum')"
+	      )
+	   ),
+	    7, new Hash(
+         'contents', 'ubÃ¸yelig',
+	      'type', 'js',
+	      'uri', "addOpt('type','ubÃ¸y','ubÃ¸yelig')"
+,
+       1, new Hash(
+            'contents', 'velg',
+	         'type', 'js',
+	         'uri', "addOpt('type','ubÃ¸y','ubÃ¸yelig')"
+	      ),
+	      2, new Hash(
+            'contents', 'utelukk',
+	         'type', 'js',
+	         'uri', "addOpt('type','!ubÃ¸y','!ubÃ¸yelig')"
 	      )
 	   )
 ) ));
