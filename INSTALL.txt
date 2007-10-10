@@ -37,12 +37,13 @@ DBI
 Spreadsheet/WriteExcel
 GD::Graph
 
+You may need to install the packages GD and GDTextUtil to satisfy GD::Graph dependencies.
  
 * MySQL
 
 This is probably installed on your system. If not, refer to www.mysql.com
 
-You can also use a mysql installatin on another machine; this is specified during
+You can also use a mysql installation on another machine; this is specified during
 configuration.
 
 
@@ -124,8 +125,20 @@ There are many ways to change Glossa by changing configuration files. The minimu
  subcorp_files = /home/httpd/html/glossa/dat/test/subcorp/
  hits_files = /home/httpd/html/glossa/dat/test/hits/
 
+The configuration options are described in the 'Glossa administrators manual'.
 
 
 ** Test installation:
 
 http://my.server/glossa/html/index_dev.php?corpus=test
+
+
+** If the interface does not work
+
+- check that you are using a "safe" browser (Netscape > 7.2, Konqueror and some other browsers may create problems).
+
+- check that you can query the test corpus using the cqp command line tool
+
+- check the log file
+
+- try adding "&debug=yes" to the url to index.php
