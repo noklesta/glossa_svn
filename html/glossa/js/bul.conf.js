@@ -1,7 +1,7 @@
 var conf = new Array;
 
 var languageOpts = new Array;
-languageOpts = [['Bul', 'Bulgarian']];
+languageOpts = [['BUL', 'Bulgarian']];
 
 conf['type'] = 'monolingual';
 conf['charset'] = 'UTF-8';
@@ -30,23 +30,21 @@ shortcut("Ctrl+Shift+C",function() {
     addOpt('w','case','case sensitive')
 });
 
-// 
-// adj, adv, det, inf, int, konj, prep, pron, subj, subst, tegn, verb, ukjent
 
 shortcut("Ctrl+Shift+A",function() {
-    addOpt('ordkl','adj','adjective')
+    addOpt('pos','adj','adjective')
 });
 
 shortcut("Ctrl+Shift+D",function() {
-    addOpt('ordkl','adv','adverb')
+    addOpt('pos','adv','adverb')
 });
 
 shortcut("Ctrl+Shift+N",function() {
-    addOpt('ordkl','s','noun')
+    addOpt('pos','n','noun')
 });
 
 shortcut("Ctrl+Shift+V",function() {
-    addOpt('ordkl','v','verb')
+    addOpt('pos','v','verb')
 });
 
 
