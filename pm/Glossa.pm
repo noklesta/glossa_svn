@@ -288,8 +288,8 @@ sub create_tid_list {
     
     my $select= " $text_table_name.tid,$text_table_name.startpos,$text_table_name.endpos";
 
-    # FIXME: UPUS-hack; må generaliseres
-    if ($base_corpus =~ m/UPUS/i) {
+    # for UPUS, NOTA etc.
+    if ($conf{'bounds_type'} eq 'multiple') {
         $select= " $text_table_name.tid,$text_table_name.bounds";
     }
 
@@ -337,8 +337,8 @@ sub create_tid_list {
     while (my ($tid,$s,$e) = $sth->fetchrow_array) {
 	$texts_allowed{$tid}=1;
 
-	# FIXME: UPUS-hack; må generaliseres
-	if ($base_corpus =~ m/UPUS/i) {
+	# for UPUS, NOTA etc.
+	if ($conf{'bounds_type'} eq 'multiple') {
 	    
 	    my @bounds = split(/\t/, $s);
 	    foreach my $b (@bounds) {
@@ -356,8 +356,8 @@ sub create_tid_list {
 
     }
 
-    # FIXME: UPUS-hack; må generaliseres
-    if ($base_corpus =~ m/UPUS/i) {
+    # for UPUS, NOTA etc.
+    if ($conf{'bounds_type'} eq 'multiple') {
 	my @dumpstring_ary_sorted = sort { $a <=> $b } @dumpstring_ary;
 	$dumpstring = join("\n", @dumpstring_ary);
     }
