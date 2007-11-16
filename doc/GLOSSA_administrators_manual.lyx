@@ -738,6 +738,30 @@ neg     exclude
 \end_layout
 
 \begin_layout LyX-Code
+word    add word
+\end_layout
+
+\begin_layout LyX-Code
+!word   add negated word
+\end_layout
+
+\begin_layout LyX-Code
+lemma   add lemma
+\end_layout
+
+\begin_layout LyX-Code
+!lemma  add negated lemma
+\end_layout
+
+\begin_layout LyX-Code
+# ADDSTRING     additional string
+\end_layout
+
+\begin_layout LyX-Code
+
+\end_layout
+
+\begin_layout LyX-Code
 *       zero or more
 \end_layout
 
@@ -914,15 +938,18 @@ CWB files
 \end_layout
 
 \begin_layout Standard
-Reg 
+For the creation of CWB registry and data files, you should refer to the
+ CWB documentation.
+ There are some extra things to consider, however:
 \end_layout
 
-\begin_layout Standard
-cwb_data
-\end_layout
-
-\begin_layout Standard
+\begin_layout Itemize
 s_id should be unique over entire corpus
+\end_layout
+
+\begin_layout Itemize
+tags should be converted into columns (jf.
+ NLP::Tag2Cols)
 \end_layout
 
 \begin_layout Section
@@ -930,114 +957,51 @@ Metadata database
 \end_layout
 
 \begin_layout Standard
-Tables.
- Named with the project-name in capitals: BOKMALtext.
-\end_layout
-
-\begin_layout Standard
-Content
-\end_layout
-
-\begin_layout Standard
-NOTATER:
-\end_layout
-
-\begin_layout Standard
-
-\family typewriter
-Både author og class kan brukes.
- Det kommer an på hva slags data du har, hva som er hensiktsmessig.
- Author/class er laget for situasjoner der man har et en-til-mange-forhold,
- for eksempel der man har flere forfattere for en tekst, eller der en tekst
- kan være medlem av flere "klasser" (for eksempel genre, emne ...).
-\end_layout
-
-\begin_layout Standard
-
-\family typewriter
-Hvis man vil bruke author/class-tabellene, må man passe på at den første
- kolonnen heter "tid" og er en lenke til "tid" i tabellen "text".
- Så er det bare å bruke meta.conf og "corpus".inc til å spesifisere innholdet.
-\end_layout
-
-\begin_layout Standard
----
-\end_layout
-
-\begin_layout Standard
-
-\family typewriter
-There are one main table, called <CORPUSNAME>text (if the corpus is
-\end_layout
-
-\begin_layout Standard
-
-\family typewriter
-called "TEST", the table is called "TESTtext".
- The first column is an
-\end_layout
-
-\begin_layout Standard
-
-\family typewriter
-integer called "tid" (for "text id").
- There must be an integer colum
-\end_layout
-
-\begin_layout Standard
-
-\family typewriter
-called "startpos" and one called "endpos".
- Apart from that, you can fill
-\end_layout
-
-\begin_layout Standard
-
-\family typewriter
-it with whatever columns you prefer (for example "title", "genre",
-\end_layout
-
-\begin_layout Standard
-
-\family typewriter
-"register" etc.)
-\end_layout
-
-\begin_layout Standard
-
-\family typewriter
-In addition, for one-to-many-relationships, you may (or may not) want to
-\end_layout
-
-\begin_layout Standard
-
-\family typewriter
-have two additional tables: <CORPUSNAME>author and <CORPUSNAME>class
-\end_layout
-
-\begin_layout Standard
-
-\family typewriter
-Again, the first column must be an integer called "tid", but the other
-\end_layout
-
-\begin_layout Standard
-
-\family typewriter
-columns are "free".
-\end_layout
-
-\begin_layout Standard
-
-\family typewriter
-In addition, there are tables for lexical statistics, and an alignment
-\end_layout
-
-\begin_layout Standard
-
-\family typewriter
-table for parallelll corpora.
+The metadata database is optional, but has many possibilities.
  
+\end_layout
+
+\begin_layout Standard
+All tablenames are prepended with the project name (in capital letters).
+ Thus 'BOKMALtext' is the main table of the 'bokmal' project.
+ The minimal text table contains three columns: 
+\end_layout
+
+\begin_layout Description
+tid The text id used to connect other tables (must be the first column)
+\end_layout
+
+\begin_layout Description
+startpos The token number in the corpus of the first token in the text (ie.
+ the line number in the cwb intput file).
+\end_layout
+
+\begin_layout Description
+endpos The token number in the corpus of the last token in the text
+\end_layout
+
+\begin_layout Standard
+In addition, you can have all kinds of other columns (title, publisher,
+ publication date etc.).
+ 
+\end_layout
+
+\begin_layout Standard
+You can create two additional metadata tables, for one-to-many relationships:
+ author and class (named BOKMALauthor and BOKMALclass in this example).
+ The first column of those tables must also be 'tid'.
+\end_layout
+
+\begin_layout Subsection
+Multiple start/stop-positions per text
+\end_layout
+
+\begin_layout Standard
+For some corpora, particularly spoken language corpora, it's desirable to
+ have multiple start/stop-positions.
+ To do this, use a 'bounds_type=multiple' line in the configuration file,
+ and populate the column 'bounds' with a tab-separated list of all the start-sto
+p-positions (start/stop separated by a hyphen).
 \end_layout
 
 \begin_layout Section
@@ -1045,15 +1009,48 @@ Lexical statistics
 \end_layout
 
 \begin_layout Standard
-Tables
+Glossa can access two kinds of sources for precompiled lexical statistics.
+ 
 \end_layout
 
 \begin_layout Standard
-Content
+Firstly, the table called <projectname>_<corpusname>lexstat.
+ This contains a column called 'form' and one column for each of the CWB
+ positional attributes (lemma, POS etc.), and finally a column 'freq' with
+ the frequency.
+ The column will be used for the separate lexical statistics interface,
+ and for the collocation interface (the 'Use global statistics' option,
+ which will improve performance dramatically).
 \end_layout
 
 \begin_layout Standard
-stats/*.gs files
+Secondly, a set of gzipped files, one for each text in the corpus, containing
+ (at each line) lemma<tab>pos<tab>frequency.
+ The name should be the 'tid' from the metadata table +"dat.gz".
+ The files are used whan computing tables of words that are typical of a
+ category (for terminology extraction etc.), in the lexical statistics interface.
+\end_layout
+
+\begin_layout Section
+Alignment table
+\end_layout
+
+\begin_layout Standard
+For multilingual corpora, an alignment table is needed to show the clickable
+ id to the left of the aligned corpus line.
+ The table should be named <projectname>s_align, and contain
+\end_layout
+
+\begin_layout Description
+source sentence id
+\end_layout
+
+\begin_layout Description
+target sentence id
+\end_layout
+
+\begin_layout Description
+lang language (abbreviation)
 \end_layout
 
 \begin_layout Chapter
@@ -1097,53 +1094,8 @@ Alignment
 Metadata
 \end_layout
 
-\begin_layout Chapter
-\start_of_appendix
-Terminology
-\end_layout
-
 \begin_layout Standard
-"corpus": project name (bokmal, nota, test, omc, sami)
-\end_layout
 
-\begin_layout Standard
-"base_corpus":
-\end_layout
-
-\begin_layout Standard
-for monolingual: 
-\end_layout
-
-\begin_layout Standard
-- name of acutal files (ILN_LEKS, TEST, NOTA3)
-\end_layout
-
-\begin_layout Standard
-- useful for versioning etc.
-\end_layout
-
-\begin_layout Standard
-for multilingual: 
-\end_layout
-
-\begin_layout Standard
-- the corpus searched "first"
-\end_layout
-
-\begin_layout Standard
-- the other corpora are aligned to it
-\end_layout
-
-\begin_layout Standard
-- changes from query to query
-\end_layout
-
-\begin_layout Standard
-"subcorpus":
-\end_layout
-
-\begin_layout Standard
-- selection of texts (in the base corpus)
 \end_layout
 
 \end_body
