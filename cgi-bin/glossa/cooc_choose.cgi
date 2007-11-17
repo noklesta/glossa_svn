@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/bin/env perl
 
 use CGI;
 use lib("/home/httpd/html/glossa/pm");
