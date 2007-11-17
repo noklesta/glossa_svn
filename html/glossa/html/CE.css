@@ -61,7 +61,7 @@ div.domMenu_menuElement {
     font-family: Arial, sans-serif; 
     font-size: 11px;
     border: solid #000000;  
-    border-width: 0 1px 1px 0;
+    border-width: 0px 1px 1px 0px;
     background-color: #FFFFFF; 
     color: #000000;
     text-align: center;
@@ -71,7 +71,7 @@ div.domMenu_menuElementHover {
 }
 div.domMenu_subMenuBar {
     border: solid #000000;  
-    border-width: 1px 1px 2px 1px;
+    border-width: 1px 1px 1px 1px;
     opacity: .95;
     filter: alpha(opacity=70);
 }
@@ -79,9 +79,9 @@ div.domMenu_subMenuElement {
     font-family: Arial, sans-serif; 
     font-size: 11px;
     border: solid #000000;  
-    border-width: 1px 1px 0 1px;
-    background-color: #000000; 
-    color: #FFFFFF;
+    border-width: 0px 0px 0 0px;
+    background-color: #FFFFFF; 
+    color: #000000;
     padding-left: 2px;
 }
 div.domMenu_subMenuElementHeading {
