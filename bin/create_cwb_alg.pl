@@ -24,7 +24,9 @@ while (<CES>) {
     if(/\<link/) {
 
 	s/.*xtargets=\'//;
-	s/\'>//;
+	s/\' \/>//;
+
+
 
 	my ($from, $to) = split(/;/);
 	my @from = split(/ /, $from);
