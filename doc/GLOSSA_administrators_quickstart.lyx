@@ -1,0 +1,269 @@
+#LyX 1.5.1 created this file. For more info see http://www.lyx.org/
+\lyxformat 276
+\begin_document
+\begin_header
+\textclass article
+\language english
+\inputencoding auto
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+\graphics default
+\paperfontsize default
+\papersize default
+\use_geometry false
+\use_amsmath 1
+\use_esint 1
+\cite_engine basic
+\use_bibtopic false
+\paperorientation portrait
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\defskip medskip
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\author "" 
+\end_header
+
+\begin_body
+
+\begin_layout Title
+
+\noun on
+Glossa
+\noun default
+ Administrator's Quickstart
+\end_layout
+
+\begin_layout Author
+Lars Nygaard, Anders Nøklestad
+\end_layout
+
+\begin_layout Abstract
+This is a brief introduction to making a corpus searchable with the 
+\noun on
+Glossa
+\noun default
+ interface.
+ For further information, refer to the 
+\emph on
+\noun on
+Glossa
+\noun default
+ Administrators Manual
+\emph default
+.
+ 
+\end_layout
+
+\begin_layout Section
+CWB files
+\end_layout
+
+\begin_layout Standard
+The corpus input files must be encoded in the CWB input format:
+\end_layout
+
+\begin_layout Itemize
+one token per line, with token annotation in tab-separated columns
+\end_layout
+
+\begin_layout Itemize
+structural annotation in XML-like format, always starting on a new line
+\end_layout
+
+\begin_layout Standard
+For example:
+\end_layout
+
+\begin_layout LyX-Code
+<text id=
+\begin_inset Quotes erd
+\end_inset
+
+text1
+\begin_inset Quotes erd
+\end_inset
+
+>
+\end_layout
+
+\begin_layout LyX-Code
+<s id=
+\begin_inset Quotes erd
+\end_inset
+
+s1
+\begin_inset Quotes erd
+\end_inset
+
+>
+\end_layout
+
+\begin_layout LyX-Code
+I      I      pron     pers
+\end_layout
+
+\begin_layout LyX-Code
+am     be     verb     pres
+\end_layout
+
+\begin_layout LyX-Code
+a      a      art
+\end_layout
+
+\begin_layout LyX-Code
+fish   fish   noun     sg
+\end_layout
+
+\begin_layout LyX-Code
+</s>
+\end_layout
+
+\begin_layout Standard
+It is recommended that you use the 'text' and 's' structural attributes,
+ with ids.
+ You can use any structural annotations, but that will require some more
+ configuration.
+\end_layout
+
+\begin_layout Standard
+This file must be converted into CWB binary format using cwb-encode and
+ cwb-makeall.
+ 
+\noun on
+Glossa
+\noun default
+ has a utility script that simplifies this process: bin/cqpify_monoling.pl
+ (but it must be modified to each corpus).
+\end_layout
+
+\begin_layout Subsection
+Alignment
+\end_layout
+
+\begin_layout Standard
+CWBs input format for alignment data consists of a file (for each language
+ pair) containing tab-separated pairs of token start-stop positions of aligned
+ regions regions.
+ For example:
+\end_layout
+
+\begin_layout LyX-Code
+SAMNO_NORSK     s       SAMNO_SAMISK    s 
+\end_layout
+
+\begin_layout LyX-Code
+2       11      4       11      2:1 
+\end_layout
+
+\begin_layout LyX-Code
+12      16      12      16      1:1 
+\end_layout
+
+\begin_layout LyX-Code
+17      28      17      31      1:2 
+\end_layout
+
+\begin_layout Standard
+This means that the region 2-11 in the corpus SAMNO_NORSK is aligned with
+ the region 4-11 in the corpus SAMNO_SAMISK, and that this is an alignment
+ of 2 s-regions to 1 s-region.
+\end_layout
+
+\begin_layout Standard
+The program bin/create_cwb_alg.pl can create the CWB input file from an CES
+ alignment file.
+\end_layout
+
+\begin_layout Section
+MySQL database
+\end_layout
+
+\begin_layout Standard
+The MySQL database is optional.
+\end_layout
+
+\begin_layout Standard
+You can create three bibliographic tables.
+ Firstly, the main table: <projectname>text, and secondly the two subsidiary
+ table <projectname>author and <projectname>class, for encoding one-to-many
+ relationships.
+\end_layout
+
+\begin_layout Standard
+In addition, you can precompile lexical statistics, in the table <projectname>_<
+corpusname>lexstat, and allow user annotation with the tables <projectname>annot
+ations.
+\end_layout
+
+\begin_layout Section
+Configuration files
+\end_layout
+
+\begin_layout Standard
+To make a new Glossa project (ie.
+ a new interface), you need to go through several steps, some of them fairly
+ complex.
+ However, the easiest way to approach it is to simply find another existing
+ project that is similar to yours, copy the configuration, and make a few
+ changes.
+\end_layout
+
+\begin_layout Subsection
+PHP
+\end_layout
+
+\begin_layout Itemize
+Add some lines to index_dev.php.
+\end_layout
+
+\begin_layout Itemize
+Create the <projectname>.inc (and optinally <projectname>_cred.inc php files.
+\end_layout
+
+\begin_layout Subsection
+Config files
+\end_layout
+
+\begin_layout Itemize
+Create the js/<projectname>.conf.js file
+\end_layout
+
+\begin_layout Itemize
+Create the $GLOSSA/dat/<projectname>/cgi.conf file
+\end_layout
+
+\begin_layout Itemize
+(Optionally:) Create the $GLOSSA/dat/<projectname>/meta.conf file
+\end_layout
+
+\begin_layout Subsection
+Menu file
+\end_layout
+
+\begin_layout Itemize
+Create the menu definition javascript file: js/<projectname>.js file
+\end_layout
+
+\begin_layout Itemize
+Edit js/dynamic_form_dev.js
+\end_layout
+
+\begin_layout Standard
+The meny definition file can either be copied from another corpus with similar
+ annotation, or created with the bin/create_menu_item.pl program.
+\end_layout
+
+\end_body
+\end_document

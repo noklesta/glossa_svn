@@ -1,5 +1,5 @@
-#LyX 1.4.1 created this file. For more info see http://www.lyx.org/
-\lyxformat 245
+#LyX 1.5.1 created this file. For more info see http://www.lyx.org/
+\lyxformat 276
 \begin_document
 \begin_header
 \textclass article
@@ -8,13 +8,21 @@
 \end_preamble
 \language english
 \inputencoding auto
-\fontscheme default
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
 \graphics default
 \paperfontsize default
 \spacing single
 \papersize default
 \use_geometry false
 \use_amsmath 1
+\use_esint 0
 \cite_engine basic
 \use_bibtopic false
 \paperorientation portrait
@@ -28,6 +36,7 @@
 \paperpagestyle default
 \tracking_changes false
 \output_changes false
+\author "" 
 \end_header
 
 \begin_body
@@ -37,7 +46,7 @@ Glossa Developer's Guide
 \end_layout
 
 \begin_layout Author
-Lars Nygaard
+Lars Nygaard, Anders NÃ¸klestad
 \end_layout
 
 \begin_layout Abstract
@@ -55,7 +64,7 @@ Overview
 \end_layout
 
 \begin_layout Standard
-Glossa concists of three «clusters» of functions:
+Glossa concists of three Â«clustersÂ» of functions:
 \end_layout
 
 \begin_layout Itemize
@@ -233,6 +242,7 @@ status collapsed
 \begin_inset Graphics
 	filename dia.neat.ps
 	height 100col%
+	scaleBeforeRotation
 	rotateAngle 270
 
 \end_inset
@@ -240,9 +250,17 @@ status collapsed
 
 \end_layout
 
-\begin_layout Caption
+\begin_layout Standard
+\begin_inset Caption
+
+\begin_layout Standard
 Overview of the Glossa system.
  Blue boxes are source code.
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \end_inset

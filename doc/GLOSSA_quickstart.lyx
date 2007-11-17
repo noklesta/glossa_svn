@@ -1,5 +1,5 @@
-#LyX 1.4.1 created this file. For more info see http://www.lyx.org/
-\lyxformat 245
+#LyX 1.5.1 created this file. For more info see http://www.lyx.org/
+\lyxformat 276
 \begin_document
 \begin_header
 \textclass article
@@ -8,13 +8,21 @@
 \end_preamble
 \language english
 \inputencoding auto
-\fontscheme default
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
 \graphics default
 \paperfontsize default
 \spacing single
 \papersize default
 \use_geometry false
 \use_amsmath 1
+\use_esint 0
 \cite_engine basic
 \use_bibtopic false
 \paperorientation portrait
@@ -28,68 +36,121 @@
 \paperpagestyle default
 \tracking_changes false
 \output_changes false
+\author "" 
 \end_header
 
 \begin_body
 
 \begin_layout Title
-Glossa Quickstart
+
+\noun on
+Glossa
+\noun default
+ Quickstart
 \end_layout
 
 \begin_layout Author
-Lars Nygaard
-\end_layout
-
-\begin_layout Standard
-- og/eller koblinger
-\end_layout
-
-\begin_layout Standard
-- dobbeltklikk
-\end_layout
-
-\begin_layout Standard
-- resultater er midlertidige til de lagres
-\end_layout
-
-\begin_layout Standard
-- "!" betyr negering
-\end_layout
-
-\begin_layout Standard
-- søk-i-søk betyr *match*, ikke *context*
+Lars Nygaard, Anders NÃ¸klestad
 \end_layout
 
 \begin_layout Section
-Introduction
+Words
 \end_layout
 
 \begin_layout Standard
-Can and cannot do with Glossa.
+The simplest way to search 
+\emph on
+Glossa
+\emph default
+ is to type in a word in the first text box (next to 'Add token') and clicking
+ 'Search corpus' (or pressing the Enter key).
+ A new window will now appear with the concordance lines for the word you
+ searched for.
+ You will only get the first 200 hits, but you can change this with the
+ 'max results' field in the search page.
+\end_layout
+
+\begin_layout Standard
+You should remember to close the results window after a search (unless you
+ would like to go back to it later) to avoid cluttering the display with
+ many open browser windows.
+ You can close it using the Ctrl+W or Alt+F4 key combinations.
+\end_layout
+
+\begin_layout Standard
+More complex queries can be created by clicking on the 'options' button
+ under the search field.
+ This will give you a menu of annotation options, depending on which corpus
+ you are using.
+ Some examples of common options would be Word \SpecialChar \menuseparator
+Lemma and Part-of-Speech\SpecialChar \menuseparator
+Noun.
+ If those are selected, a new field appears, showing that you have chosen
+ to search for the lemma form, and restricted the search to only nouns.
+\end_layout
+
+\begin_layout Standard
+The options can be removed by double clicking on them.
+\end_layout
+
+\begin_layout Standard
+All options can be negated (using a submenu for each item in the menu).
+ Negated options will appear with an exclamation mark prepended.
+\end_layout
+
+\begin_layout Standard
+Options are combined with OR, while negated options are combined with AND.
 \end_layout
 
 \begin_layout Section
-Words and phrases
+Phrases
 \end_layout
 
 \begin_layout Standard
-- add option
+To search for phrases, i.e.
+ more than one word, you can use the 'Add token' and 'Delete token' buttons.
+ Phrases also have an 'interval' field, which allows the user to specify
+ any number of unspecified tokens between the tokens you search for.
+\end_layout
+
+\begin_layout Section
+Multilingual searches
 \end_layout
 
 \begin_layout Standard
-- double click to remove options
+Multilingual corpora have some additional choices.
+ Firstly, you can select the language to search in.
+ Secondly, to show aligned regions, you can click on the 'Add phrase' button,
+ and select a language for the aligned regions (you may also select multiple
+ languages).
 \end_layout
 
 \begin_layout Standard
-- add token
+You can restrict the search by the content of the aligned regions, using
+ the same methods as in the first phrase.
 \end_layout
 
 \begin_layout Standard
-- for multilingual: add phrase
+An aligned region can be marked as optional or not.
+ If it is optional, the line will be displayed whether there is an aligned
+ region or not.
 \end_layout
 
 \begin_layout Section
 Bibliographic information
+\end_layout
+
+\begin_layout Standard
+If the corpus supports it, the search can be restricted according to bibliograph
+ic criteria.
+ To display the bibliographic options, click on the +-button next to the
+ bibliographic category you're interested in.
+ You can then select and unselect the options by double-clicking them, or
+ clicking first on the options, and then on the arrow buttons.
+\end_layout
+
+\begin_layout Standard
+The selection can be inversed by changing from 'choose' to 'exclude'.
 \end_layout
 
 \begin_layout Section
@@ -97,47 +158,36 @@ Viewing results
 \end_layout
 
 \begin_layout Standard
-Show grammatical annotations.
+The results window, with the the concordance lines, has several other features.
+\end_layout
+
+\begin_layout Itemize
+Show grammatical annotations: Point the mouse to any token, and the grammatical
+ information about it is displayed.
+\end_layout
+
+\begin_layout Itemize
+Show additonal information about the hit: Click on the link to the left
+ of the concordance line.
+\end_layout
+
+\begin_layout Itemize
+Use various postprocessing functions: Select from the list named 'actions'.
 \end_layout
 
 \begin_layout Standard
-Postprocessing options.
+
 \end_layout
 
 \begin_layout Section
-Other functions
+Other interfaces
 \end_layout
 
 \begin_layout Standard
-Regexp.
-\end_layout
-
-\begin_layout Standard
-Stored results.
-\end_layout
-
-\begin_layout Standard
-Edit results.
-\end_layout
-
-\begin_layout Standard
-Overview of corpus/subcorpus.
-\end_layout
-
-\begin_layout Standard
-More advanced queries.
-\end_layout
-
-\begin_layout Standard
-Change display.
-\end_layout
-
-\begin_layout Standard
-Search within search.
-\end_layout
-
-\begin_layout Standard
-Lexial statistics.
+There are separate interfaces for lexical statistics and for full (free)
+ queries.
+ They can be found by clicking on the links 'lexical statistics' and 'fullquery'
+, respectively, in the main search page.
 \end_layout
 
 \end_body

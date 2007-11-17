@@ -198,6 +198,10 @@ sentences
 lexical statistics
 \end_layout
 
+\begin_layout Itemize
+annotation
+\end_layout
+
 \end_deeper
 \begin_layout Chapter
 Configuration
@@ -703,7 +707,7 @@ It is a tab-separated file, where each line describes the content of a metadata
 \begin_layout Description
 identifier the string used in HTML/PHP to create the widget.
 \begin_inset Foot
-status open
+status collapsed
 
 \begin_layout Standard
 All identifiers ending with "-alle" will be created as sub-menues if there
@@ -1047,7 +1051,7 @@ Rule of Thumb:
  For maximum usability, try to find a balance between depth and breadth
  of the menu.
  In other words, neither the main menu or any of the submenues should contain
- more than seven items.
+ more than about seven items.
  If long menues cannot be avoided, try to use line breaks or headings.
 \end_layout
 
@@ -1069,6 +1073,10 @@ Files created by Glossa
 
 \begin_layout Standard
 Files created by users.
+\end_layout
+
+\begin_layout Standard
+Debugging.
 \end_layout
 
 \begin_layout Standard
@@ -1225,6 +1233,10 @@ target sentence id
 
 \begin_layout Description
 lang language (abbreviation)
+\end_layout
+
+\begin_layout Section
+Annotation
 \end_layout
 
 \begin_layout Chapter
