@@ -1060,11 +1060,41 @@ Tagset conversion
 \end_layout
 
 \begin_layout Standard
-From tagger.
+Because of a bug in CWB, there is a limit to how many positional attributes
+ one may use.
+\begin_inset Foot
+status collapsed
+
+\begin_layout Standard
+The exact number depends on the lenght of the longest sentence in the corpus.
+\end_layout
+
+\end_inset
+
+ Therefore, one may compress several non-overlapping categories in a single
+ positional attribute, for example 'mood' and 'case' (which never apply
+ to the same token).
+ The name must contain an underscore.
 \end_layout
 
 \begin_layout Standard
-Categories (for display): "multitags.dat".
+The compressed categories can then be expanded with the file $GLOSSA/dat/<projec
+tname>/multitags.dat.
+ The format is (tab separated):
+\end_layout
+
+\begin_layout Itemize
+name of compressed attribute (mood_case)
+\end_layout
+
+\begin_layout Itemize
+a value (e.g.
+ 'Nominative')
+\end_layout
+
+\begin_layout Itemize
+the new attribute name (e.g.
+ 'mood')
 \end_layout
 
 \begin_layout Section
@@ -1072,19 +1102,11 @@ Files created by Glossa
 \end_layout
 
 \begin_layout Standard
-Files created by users.
-\end_layout
-
-\begin_layout Standard
-Debugging.
-\end_layout
-
-\begin_layout Standard
-Log files.
-\end_layout
-
-\begin_layout Standard
-Temporary search data.
+Each search creates a set of results files, and various configuration files
+ for the search.
+ These are very useful for debugging.
+ They are placed in a directory specified by the cgi.conf file, and start
+ with the query id (can be found in the urls of the result page).
 \end_layout
 
 \begin_layout Chapter
@@ -1237,6 +1259,24 @@ lang language (abbreviation)
 
 \begin_layout Section
 Annotation
+\end_layout
+
+\begin_layout Standard
+To allow user annotation of corpus positions, three tables must be created:
+\end_layout
+
+\begin_layout Description
+<projectname>annotation_sets Lists the various possible annotations.
+\end_layout
+
+\begin_layout Description
+<projectname>annotation_values Lists the various possibilities for the various
+ sets.
+\end_layout
+
+\begin_layout Description
+<projectname>annotations User data about positions, using the sets and values
+ of the other tables.
 \end_layout
 
 \begin_layout Chapter
