@@ -14,12 +14,12 @@ encode corpora etc. But these are not strictly necessary.
 
 * CWB
 
-Install CWB package.
+1) Install CWB package.
 ftp://ftp.ims.uni-stuttgart.de/pub/outgoing/cwb-beta/index.html
 
-Install perl modules
+2) Install perl modules.
 
-Copy extern/pm/Query_dev.pm to the directory where Query.pm is found.
+3) Copy extern/pm/Query_dev.pm to the directory where Query.pm is found.
 
 There are some other files in the "extern" directory. These are only
 necessary if you run into trouble with the next step (Text::NSP).
