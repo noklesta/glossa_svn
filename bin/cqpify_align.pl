@@ -1,3 +1,5 @@
+#!/usr/bin/env perl
+
 my @langs1 = ("en","fr", "de","nl","no","po");
 
 
