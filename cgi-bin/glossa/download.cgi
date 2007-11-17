@@ -20,6 +20,20 @@ $dbh = DBI->connect($dsn, $conf{'db_uname'}, $conf{'db_pwd'}, {RaiseError => 1})
 
 my $query_id = CGI::param('query_id');
 
+my $annotation_set = CGI::param('annotationset');
+
+my %annotation_value;
+if ($annotation_set) {
+    my $annotation_values_table = uc($corpus) . "annotation_values";
+
+    my $sth = $dbh->prepare(qq{ SELECT id,value_name FROM $annotation_values_table where set_id = '$annotation_set';});
+    $sth->execute  || die "Error fetching data: $DBI::errstr";
+    while (my ($id,$value) = $sth->fetchrow_array) {
+	$annotation_value{$id}=$value;
+    }    
+}
+
+
 my $format = CGI::param('format');
 my $out = $query_id . "." . $format;
 
@@ -66,6 +80,11 @@ if (CGI::param('head')) {
     }
 
     if (CGI::param('aform') or CGI::param('apos') or CGI::param('alexeme')) { push @head, "Aligned region" }
+
+    if ($annotation_set) {
+	push @head, "Annotation";
+    }
+
 
     foreach my $h (@head) {
 	$h = uc($h);
@@ -114,6 +133,8 @@ foreach my $f (@files) {
 	my $source = shift @lines;
 
 	my ($c,$s_id,$sts_string,$left,$match,$right) = split(/\t/, $source);
+
+
 
 	my @sts = split(/\|\|/, $sts_string);
 	my %sts;
@@ -216,6 +237,18 @@ foreach my $f (@files) {
 		push @n, $a2;
 
 	    }
+	}
+
+	
+	# annotations
+
+	if ($annotation_set) {
+	    	my $annotation_table = uc($corpus) . "annotations";
+		my $sth = $dbh->prepare(qq{ SELECT value_id FROM $annotation_table where s_id = '$s_id' and set_id = '$annotation_set';});
+		$sth->execute  || die "Error fetching data: $DBI::errstr";
+		my ($stored_value) = $sth->fetchrow_array;
+		
+		push @n, $annotation_value{$stored_value};
 	}
 
         if ($format eq "html") { print OUT "<tr><td>", join ("</td><td>", @n), "</td></tr>"; }

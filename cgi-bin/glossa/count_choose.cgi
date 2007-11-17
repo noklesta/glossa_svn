@@ -18,6 +18,7 @@ my $query_id = CGI::param('query_id');
 print "<html><head></head><body>";
 print "<form action=\"", $conf{'cgiRoot'}, "/count.cgi\" method=\"get\">";
 print "<input type=\"hidden\" name=\"query_id\" value=\"$query_id\">";
+print "<input type=\"hidden\" name=\"corpus\" value=\"$corpus\">";
 
 print "<input type=\"checkbox\" name=\"case\" checked></input> Case sensitive<br>";
 print "<input type=\"checkbox\" name=\"head\" checked></input> Create headings<br>";

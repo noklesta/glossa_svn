@@ -11,16 +11,19 @@ my $corpus = CGI::param('corpus');
 my $conf = Glossa::get_conf_file($corpus);
 my %conf = %$conf;
 
+my $dsn = "DBI:mysql:database=$conf{'db_name'};host=$conf{'db_host'}";
+$dbh = DBI->connect($dsn, $conf{'db_uname'}, $conf{'db_pwd'}, {RaiseError => 0}) || die $DBI::errstr;
 
 my $query_id = CGI::param('query_id');
 
 print "<html><head></head><body>";
 print "<form action=\"", $conf{'cgiRoot'}, "/download.cgi\" method=\"get\">";
 print "<input type=\"hidden\" name=\"query_id\" value=\"$query_id\">";
+print "<input type=\"hidden\" name=\"corpus\" value=\"$corpus\">";
 
 print "<input type=\"checkbox\" name=\"head\" checked></input> Create headings<br>";
 
-print "<table cellspacing=\"20\"><tr><td valign=\"top\">";
+print "<table cellspacing=\"10\"><tr><td valign=\"top\">";
 
 print "<b>Token data (all):</b><br>";
 print "<input type=\"checkbox\" name=\"form\" checked></input> Word form<br>";
@@ -41,6 +44,7 @@ print "<input type=\"checkbox\" name=\"author\"></input> Author<br>";
 print "<input type=\"checkbox\" name=\"language\"></input> Language<br>";
 print "<input type=\"checkbox\" name=\"date\"></input> Publication date<br>";
 
+if ($conf{'type'} eq 'multilingual') {
 print "</tr><tr><td valign=\"top\">";
 print "<b><font size=\"+1\"><I>Alignments:</I></font></b><br>";
 print "<input type=\"checkbox\" name=\"align\" checked></input> Include aligmnents";
@@ -58,10 +62,28 @@ print "<input type=\"checkbox\" name=\"asent_id\" checked></input> Sentence id<b
 print "<input type=\"checkbox\" name=\"aauthor\"></input> Author<br>";
 print "<input type=\"checkbox\" name=\"alanguage\"></input> Language<br>";
 print "<input type=\"checkbox\" name=\"adate\"></input> Publication date<br>";
+}
+
+print "</td></tr><tr><td valign=\"top\">";
+print "<b>Annotation:</b><br>";
+print "<select name=\"annotationset\">";
+print "<option value=\"\" selected></option>";
+print "<option value=\"__FREE__\">** free annotation **</option>";
+
+my $sets_table = uc($corpus) . "annotation_sets";
+
+# get sets
+my $sth = $dbh->prepare(qq{ SELECT id, name FROM $sets_table;});
+$sth->execute  || die "Error fetching data: $DBI::errstr";
+while (my ($id, $name) = $sth->fetchrow_array) {
+    print "<option value=\"$id\">$name</option>";
+}
+print "</select>";
+
 
 print "</td></tr></table>";
 
-print "Format: <select name=\"format\"><option value=\"tsv\">Tab separated values</option><option value=\"csv\">Comma separated values</option><option value=\"xls\">Excel spreadsheet</option><option value=\"html\">HTML</option></select><br>";
+print "<br>Format: <select name=\"format\"><option value=\"tsv\">Tab separated values</option><option value=\"csv\">Comma separated values</option><option value=\"xls\">Excel spreadsheet</option><option value=\"html\">HTML</option></select><br>";
 print "<input type=\"submit\"></input>";
 print "</form>";
 print "</body></html>";

@@ -9,7 +9,7 @@ use DBI;
 use WebCqp::Query_dev; # this is the modified version of the module
 use File::Copy;
 use Text::Iconv;
-
+use Encode;
 
 
 
@@ -39,10 +39,17 @@ use Glossa;
 my $cgi = CGI->new;
 
 # FIXME: this should be done in module
+
+my $test = 0;
+
 my %cgi_hash;
 my @prms = $cgi->param();
 foreach my $p (@prms) {
+
     my @vals = $cgi->param($p);
+
+    if($test){print $p."-".@vals."<br />";}
+
     $cgi_hash{$p}=\@vals;
 }
 
@@ -116,7 +123,7 @@ close LANG;
 
 ## start the HTTP session and HTML file
 print "Content-type: text/html; charset=$conf{'charset'}\n\n";
-print "<html><head><title>$lang{'title'}</title><link href=\"", $conf{'htmlRoot'}, "/html/tags.css\" rel=\"stylesheet\" type=\"text/css\"></link></head><body>";
+print "<html><head><link rel=\"shortcut icon\" href=\"http://omilia.uio.no/favicon.ico\" type=\"image/ico\" />\n<title>$lang{'title'}</title><link href=\"", $conf{'htmlRoot'}, "/html/tags.css\" rel=\"stylesheet\" type=\"text/css\"></link></head><body>";
 
 
 # FIXME: temporary message
@@ -172,12 +179,12 @@ if ($conf{'groupfile'}) {
 
 # set up charset conversion
 
-my $iconv;
-my $iconvr;
-if ($conf{'charsetfrom'}) {
-    $iconv= Text::Iconv->new($conf{'charsetfrom'}, $conf{'charset'});
-    $iconvr= Text::Iconv->new($conf{'charset'}, $conf{'charsetfrom'});
-} 
+#my $iconv;
+#my $iconvr;
+#if ($conf{'charsetfrom'}) {
+#    $iconv= Text::Iconv->new($conf{'charsetfrom'}, $conf{'charset'});
+#    $iconvr= Text::Iconv->new($conf{'charset'}, $conf{'charsetfrom'});
+#} 
 
 
 ## Set query id
@@ -259,7 +266,8 @@ foreach my $row (@$phrases) {
 	my $string_string=$token->{'string'}->[0];  # the word sting
 
 	if ($conf{'charsetfrom'}) {
-	    $string_string = $iconvr->convert($string_string);
+#	    $string_string = $iconvr->convert($string_string);
+	    Encode::from_to($string_string, $conf{'charset'}, $conf{'charsetfrom'});
 	} 
 
 	# escape special character unless the user wants to use
@@ -284,7 +292,8 @@ foreach my $row (@$phrases) {
 	    $val =~ s/ /_/g; # for multi-word-expressions
 
 	    if ($conf{'charsetfrom'}) {
-		$val = $iconvr->convert($val);
+#		$val = $iconvr->convert($val);
+		Encode::from_to($val, $conf{'charset'}, $conf{'charsetfrom'});
 	    } 
 
 	    # the attributes in the "word" submenu
@@ -299,7 +308,7 @@ foreach my $row (@$phrases) {
 		    $string_string = $string_string . ".*";
 		}
 		elsif ($val eq 'middle') {
-		    $string_string = ".*" . $string_string . ".*";
+		    $string_string = ".+" . $string_string . ".+";
 		}
 		elsif ($val eq 'case') {
 		    $string_case = "";
@@ -532,7 +541,8 @@ if ($sql_query_nl) {
 # print search expression
 my $cqp_query_source2print = $cqp_all;
 if ($conf{'charsetfrom'}) {
-    $cqp_query_source2print = $iconv->convert($cqp_query_source2print);
+#    $cqp_query_source2print = $iconv->convert($cqp_query_source2print);
+    Encode::from_to($cqp_query_source2print, $conf{'charsetfrom'}, $conf{'charset'});
 } 
 $cqp_query_source2print =~ s/</\&lt;/g;
 $cqp_query_source2print =~ s/>/\&gt;/g;
@@ -898,7 +908,8 @@ for (my $i = 0; $i < $nr_result; $i++) {
     # convert the charset of the matches and context
     if ($conf{'charsetfrom'}) {
 	foreach my $textstring ($res_l,$ord,$res_r) {
-	    $textstring = $iconv->convert($textstring);
+#	    $textstring = $iconv->convert($textstring);
+	    Encode::from_to($textstring, $conf{'charsetfrom'}, $conf{'charset'});
 	}
     } 
 
@@ -928,7 +939,8 @@ for (my $i = 0; $i < $nr_result; $i++) {
 	# project. (But: Future versions of CQP is supposed to support 
 	# unicode ...
 	if ($conf{'charsetfrom'}) {
-	    $al = $iconv->convert($al);
+#	    $al = $iconv->convert($al);
+	    Encode::from_to($al, $conf{'charsetfrom'}, $conf{'charset'});
 	} 
 
 
@@ -1037,7 +1049,7 @@ for (my $i = 0; $i < $nr_result; $i++) {
 
     if ($hits < $results_page) {
 
-	my $ex_url = "?corpus=" . $in{'query'}->{'corpus'}->[0] . "&line_key=" . $sts{'who_line_key'} . "&size=1&video=0&nested=0";
+	my $ex_url = "?corpus=" . $in{'query'}->{'corpus'}->[0] . "&line_key=" . $sts{'who_line_key'} . "&size=1&nested=0";
 
 	my $sts_url = "?corpus=" . $in{'query'}->{'corpus'}->[0] . "&subcorpus=" . $base_corpus;
 	while (my ($k,$v)=each %sts) {
@@ -1048,9 +1060,13 @@ for (my $i = 0; $i < $nr_result; $i++) {
 	$source_line.=sprintf("<font size=\"-2\"><a href=\"#\" onClick=\"window.open('$conf{'cgiRoot'}/show_context.cgi$sts_url&cs=3',");
 	$source_line.=sprintf("'mywindow','height=500,width=650,status,scrollbars,resizable');\">$sts{'s_id'}</a> \n&nbsp;</font>");
 
+	if($CORPUS eq 'upus'){ $ex_url .= "&db=upus&table=segments";  }
+
 	if ($CORPUS eq 'nota' or $CORPUS eq 'upus') {
-	    $source_line.=sprintf("<font size=\"-2\"><a href=\"#\" onClick=\"window.open('http://omilia.uio.no/cgi-bin/nota/expand.pl$ex_url',");
+	    $source_line.=sprintf("<font size=\"-2\"><a href=\"#\" onClick=\"window.open('http://omilia.uio.no/cgi-bin/glossa/expand.pl$ex_url&video=0',");
 	    $source_line.=sprintf("'mywindow','height=400,width=1000,status,scrollbars,resizable,screenX=0,screenY=5');\"><img style='border-style:none' src='http://omilia.uio.no/glossa/html/img/mov.gif'></a> \n&nbsp;</font>");
+	    $source_line.=sprintf("<font size=\"-2\"><a href=\"#\" onClick=\"window.open('http://omilia.uio.no/cgi-bin/glossa/expand.pl$ex_url&video=audio',");
+	    $source_line.=sprintf("'mywindow','height=400,width=1000,status,scrollbars,resizable,screenX=0,screenY=5');\"><img style='border-style:none' src='http://omilia.uio.no/glossa/html/img/sound.gif'></a> \n&nbsp;</font>");
 
 	}
 	$source_line.="<i>" . $sts{$display_struct} . "</i>";
@@ -1189,7 +1205,9 @@ sub print_tokens {
 	    next if ($att_token eq "__UNDEF__");
 	    next unless ($att_token);
 	    if ($a =~ m/_/) {
+
 		my $new_a = $multitags{$a}->{$att_token};
+#		print $a, "::", $att_token, "->", $new_a, "<br>";
 		$token_atts .= "<b>" . $new_a . ": </b>" . $att_token . "<br>";		
 	    }
 	    else {
@@ -1225,7 +1243,9 @@ sub print_tokens_target {
 	    next if ($att_token eq "__UNDEF__");
 	    next unless ($att_token);
 	    if ($a =~ m/_/) {
+
 		my $new_a = $multitags{$a}->{$att_token};
+
 		$token_atts .= "<b>" . $new_a . ": </b>" . $att_token . "<br>";		
 	    }
 	    else {

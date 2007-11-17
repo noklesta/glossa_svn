@@ -7,12 +7,19 @@ use Glossa;
 use Spreadsheet::WriteExcel;
 use Data::Dumper;
 
+
+
 select(STDOUT);
 $|=1;
 
 print "Content-type: text/html; charset=$conf{'charset'}\n\n";
 print "<html><head></head><body>";
 
+$ENV{'PATH'} = "/usr/etc/yp:/etc/yp:/local/sbin:/bin:/usr/bin:/usr/ucb:/etc:/usr/etc:/sbin:/usr/sbin:/usr/kerberos/bin:/usr/local/bin:/bin:/usr/bin:/usr/X11R6/bin:/local/X11R6/bin:/usr/bin/X11:/usr/ccs/bin:/local/bin:/local/etc/bin:/usr/bsd:/local/etc:/local/gnu/bin:/site/share/perl5/5.8.8/Text/NSP/Measures/2D/Dice:/site/share/perl5/5.8.8/Text/NSP/Measures/2D:/site/share/perl5/5.8.8/Text/NSP/Measures:/site/share/perl5/5.8.8/Text/NSP:/site/share/perl5/5.8.8/Text:/site/share/perl5/5.8.8";
+
+#print "<pre>";
+#print Dumper $ENV{'PATH'};
+#print "</pre>";
 
 my $case = CGI::param('case');
 my $query_id = CGI::param('query_id');
@@ -202,8 +209,10 @@ if ($lib eq "freq") {
     `cp $cnt $stat`;
 }
 else {
-    my $r = `statistic.pl $opts_n $lib $stat $cnt`;
 
+#    my $r = `statistic.pl $opts_n $lib $stat $cnt`;
+#    print "$r";
+    system("statistic.pl $opts_n $lib $stat $cnt");
 #    print "statistic.pl $opts_n $lib $stat $cnt<br>";
 
 }
@@ -228,6 +237,8 @@ print "<input type=\"hidden\" name=\"lib\" value=\"$lib\"></input>";
 print "<input type=\"hidden\" name=\"cut_max\" value=\"$cut_max\"></input>";
 print "<input type=\"hidden\" name=\"cut_min\" value=\"$cut_min\"></input>";
 print "<input type=\"hidden\" name=\"cut_occ\" value=\"$cut_occ\"></input>";
+
+#print "FILE: $stat<br>";
 
 open (STAT, $stat);
 my $right;

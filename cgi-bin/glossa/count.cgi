@@ -19,6 +19,8 @@ my $corpus = CGI::param('corpus');
 my $conf = Glossa::get_conf_file($corpus);
 my %conf = %$conf;
 
+
+
 my $format = CGI::param('format');
 my $cutoff = CGI::param('cutoff');
 my $out = $query_id . "." . $format;
@@ -28,6 +30,8 @@ if ($format eq "hbars") { $out =~ s/\.hbars$/_\.png/ }
 
 $query_id = $query_id."_";
 my @files = <$conf{'tmp_dir'}/$query_id*>;
+
+
 
 unless (($format eq "html") or ($format eq "bars") or ($format eq "pie") or ($format eq "hbars")) {
     print "<a href=\"", $conf{'download_url'}, "/";
@@ -41,7 +45,7 @@ if (($format eq "bars") or ($format eq "pie") or ($format eq "hbars")) {
 
 
 $out = $conf{'dat_files'} . "/" . $out;
-
+unlink($out);
 
 my %data;
 
@@ -162,7 +166,7 @@ elsif (($format eq "bars") or ($format eq "pie") or ($format eq "hbars")) {
 		     y_label           => 'Occurences',
 		     y_max_value           => $max_y,
 		     x_labels_vertical => $vertical,
-		     title             => 'OMC Lexical Statistics'
+		     title             => "Lexical Statistics"
 		     ) or die $graph->error;
 
     }
@@ -176,7 +180,7 @@ elsif (($format eq "bars") or ($format eq "pie") or ($format eq "hbars")) {
 		     y_label           => 'Occurences',
 		     y_max_value           => $max_y,
 		     x_labels_vertical => $vertical,
-		     title             => 'OMC Lexical Statistics'
+		     title             => "Lexical Statistics"
 		     ) or die $graph->error;
 
     }
@@ -187,7 +191,7 @@ elsif (($format eq "bars") or ($format eq "pie") or ($format eq "hbars")) {
 #		     y_label           => 'Occurences',
 #		     y_max_value           => $max_y,
 #		     x_labels_vertical => $vertical,
-		     title             => 'OMC Lexical Statistics'
+		     title             => "Lexical Statistics"
 		     ) or die $graph->error;
 
     }
@@ -229,6 +233,6 @@ elsif ($format eq "html") {
 
 }
 
-
+chmod(0755,$out);
 
 print "</body></html>";

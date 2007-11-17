@@ -171,7 +171,8 @@ foreach my $el (keys %conf_file) {
     while (<IN>) {
 
 	chomp;
-	s/\'/\\'/g;
+	s/\'/\\'/g; #'
+
 	my ($name, $value) = split(/\t+/);
 
 #	$name =~ s/^\s.*//;
