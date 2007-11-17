@@ -19,7 +19,7 @@ ftp://ftp.ims.uni-stuttgart.de/pub/outgoing/cwb-beta/index.html
 
 Install perl modules
 
-Copy extern/Query_dev.pm to the directory where Query.pm is found.
+Copy extern/pm/Query_dev.pm to the directory where Query.pm is found.
 
 There are some other files in the "extern" directory. These are only
 necessary if you run into trouble with the next step (Text::NSP).
