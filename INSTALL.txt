@@ -17,93 +17,99 @@ encode corpora etc. But these are not strictly necessary.
 1) Install CWB package.
 ftp://ftp.ims.uni-stuttgart.de/pub/outgoing/cwb-beta/index.html
 
-2) Install perl modules.
+2) Install the perl modules that come with the CWB package (listed under 
+"contributed software" on the CWB webpage).
 
-3) Copy extern/pm/Query_dev.pm to the directory where Query.pm is found.
+3) Copy extern/pm/Query_dev.pm to the directory where the Query.pm CWB module 
+is found.
 
 There are some other files in the "extern" directory. These are only
 necessary if you run into trouble with the next step (Text::NSP).
 
 * Text::NSP
 
-Perl v5.8.5 required--this is only v5.8.0, stopped at Makefile.PL line 1.
-
-Patched versions of necessary files are found under $GLOSSADIR/extern
-In bin/statistic.pl (and some pm-files) contains hard links.
+The latest version of Text::NSP requires Perl 5.8.5, but Glossa comes with 
+patched versions of necessary files that can be used with Perl 5.8.0. Thus, 
+if you get the following message:
+"Perl v5.8.5 required--this is only v5.8.0, stopped at Makefile.PL line 1.",
+try using the patched versions instead. They are found under $GLOSSADIR/extern.
+If you still experience problems, contact the Text Laboratory at 
+tekstlab-post@iln.uio.no.
 
 * Misc modules
 
 DBI
-Spreadsheet/WriteExcel
+Spreadsheet::WriteExcel
 GD::Graph
 
-You may need to install the packages GD and GDTextUtil to satisfy GD::Graph dependencies.
+You may need to install the packages GD and GDTextUtil to satisfy GD::Graph 
+dependencies.
  
 * MySQL
 
-This is probably installed on your system. If not, refer to www.mysql.com
+This is probably installed on your system. If not, refer to www.mysql.com.
 
-You can also use a mysql installation on another machine; this is specified during
-configuration.
+You can also use a mysql installation on another machine; this is specified 
+during configuration.
 
 
 ** Install Glossa
 
 * cgi programs
 
-Copy the files in $GLOSSADIR/cgi-bin to a cgi-enabled folder. For exampel:
+Copy the files in $GLOSSADIR/cgi-bin to a cgi-enabled folder. For example:
 
-cp $GLOSSADIR/cgi-bin/* $HTTPDIR/cgi-bin/glossa/
+sudo cp -R $GLOSSADIR/cgi-bin/glossa/ $HTTPDIR/cgi-bin/
 
 Remember that these files need to be executable. 
-
-You may have to adjust the "shebang" line in the start of each script 
-to point to your perl executable.
 
 If you want the cgi-programs to access perl modules outside the default 
 system directories, you must edit the "use lib"-line at the start of each 
 program. This is useful if you don't have access to a root account.
 
 
-* PM file
-
-Glossa.pm
- 
- # read configuration file
- my $conf_file = "/hom/larsnyg/glossa-0.7/dat/" . $corpus . "/cgi.conf";
-
-
 * Html and Javascript
 
-cp -R html/* $HTTPDIR/glossa/
+sudo cp -R $GLOSSADIR/html/glossa $HTTPDIR/htdocs/
 
-In the file html/glossa_text.inc, change the value to the directory of your data files:
+In the file html/glossa_text.inc, change the value to the directory of 
+your data and configuration files:
 
-  <input name="query_root" type="hidden" value="/home/httpd/html/glossa/dat/"></input>
+  <input name="query_root" type="hidden" value="/var/www/glossa/conf/"></input>
 
-Also, change the values of $cgiRoot and $htmlRoot in index_dev.php and stats.php.
+Also, change the values of $cgiRoot and $htmlRoot in index_dev.php and 
+stats.php as well as cgiRoot in conf.js-files.
 
-cgiRoot in conf.js-files.
+* Data and configuration files
 
-* Data files
+Configuration files need to be kept in a directory that the httpd user has 
+access to, but it does not need to be accessible via http (i.e. not in the 
+directories from which the http server will display files to the public).
 
-Files in $GLOSSADIR/dat/ are configuration files. They need to be kept in a directory that the httpd user has access to, but it does not need to be accessible via http (i.e. not in the directories from which the http server will display files to the public).
-
-The directories dat/hits and dat/subcorp also need to be writable by the httpd user.
+The configuration file directory should contain two subdirectories, "hits"
+and "subcorp", which need to be writable by the httpd user.
 
 * CWB files
 
-$GLOSSADIR/reg and $GLOSSADIR/cwb_dat must also be accesible by the http user. If you already have directories for CWB registry and CWB data, these files should probably go there. But the CWB registry used by Glossa for each corpus is specified in the configuration files, and the directory for CWB data is specified in the CWB registry file (this must be edited to point to the appropriate directory).  
+The directories "reg" and "cwb_dat" must also be accesible by the http user. 
+If you already have directories for CWB registry and CWB data, these files 
+should probably go there. But the CWB registry used by Glossa for each corpus 
+is specified in the configuration files, and the directory for CWB data is 
+specified in the CWB registry file (this must be edited to point to the 
+appropriate directory).  
 
-The database must be created, named, for instance "glossa". You can then run the 
+The database must be created, named, for instance "glossa". You can then run 
+the 
 
 ** Minimal configuration
 
-There are many ways to change Glossa by changing configuration files. The minimum, however, to get the test corpus running is:
+There are many ways to change Glossa by changing configuration files. The 
+minimum, however, to get the test corpus running is:
 
 - change the htmlRoot and cgiRoot variables in html/index_dev.php
 - change the htmlRoot and cgiRoot variables in js/test.conf.js
-- edit the dat/test/cgi.conf file. The following entries should probably be changed:
+- create the a cgi.conf file. The following entries should be included and
+  adjusted to your setup:
 
  # username, password and database name for the database
  db_pwd = 
@@ -112,30 +118,31 @@ There are many ways to change Glossa by changing configuration files. The minimu
  db_host = 
 
  # urls
- htmlRoot = http://corp.hum.sdu.dk/glossa/
- cgiRoot = http://corp.hum.sdu.dk/cgi-bin/glossa/
- download_url = http://corp.hum.sdu.dk/glossa/download/
+ htmlRoot = http://www.example.org/glossa/
+ cgiRoot = http://www.example.org/cgi-bin/glossa/
+ download_url = http://www.example.org/glossa/download/
 
  # various directories
  logfile = /tmp/glossalog
- cwb_registry = /home/larsnyg/reg/
+ cwb_registry = /var/www/htdocs/glossa/reg/
  tmp_dir = /tmp/
- dat_files = /home/httpd/html/glossa/download/
- config_dir = /home/httpd/html/glossa/dat/
- subcorp_files = /home/httpd/html/glossa/dat/test/subcorp/
- hits_files = /home/httpd/html/glossa/dat/test/hits/
+ dat_files = /var/www/htdocs/glossa/download/
+ config_dir = /var/www/htdocs/glossa/conf/
+ subcorp_files = /var/www/htdocs/glossa/conf/test/subcorp/
+ hits_files = /var/www/htdocs/glossa/conf/test/hits/
 
 The configuration options are described in the 'Glossa administrators manual'.
 
 
 ** Test installation:
 
-http://my.server/glossa/html/index_dev.php?corpus=test
+http://www.example.org/glossa/html/index_dev.php?corpus=test
 
 
 ** If the interface does not work
 
-- check that you are using a "safe" browser (Netscape > 7.2, Konqueror and some other browsers may create problems).
+- check that you are using a "safe" browser (Netscape > 7.2, Konqueror and 
+some other browsers may create problems).
 
 - check that you can query the test corpus using the cqp command line tool
 
