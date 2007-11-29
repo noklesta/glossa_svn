@@ -1,4 +1,4 @@
-#!/usr/bin/env perl
+#!/usr/bin/perl
 
 print "Content-type: text/html\n\n";
 
@@ -20,6 +20,12 @@ my $conf = Glossa::get_conf_file($corpus);
 my %conf = %$conf;
 
 
+my $user = $ENV{'REMOTE_USER'}; 
+# FIXME: this is a silly way of doing things
+my $conf= $conf{'tmp_dir'} . "/" . $query_id . ".conf"; 
+unless (-e $conf) {
+  $conf{'tmp_dir'} = $conf{'config_dir'}  . "/" . $corpus . "/hits/"  . $user . "/";
+}
 
 
 my $query_id2 = $query_id."_";

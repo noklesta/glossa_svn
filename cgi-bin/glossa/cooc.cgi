@@ -1,4 +1,4 @@
-#!/usr/bin/env perl
+#!/usr/bin/perl
 
 use CGI;
 use Spreadsheet::WriteExcel;
@@ -23,11 +23,18 @@ unless ($lib =~ m/^\w+\d*$/) { die("illegal value") };
 
 
 my $corpus_name = CGI::param('corpus_name');
-
+my $user = $ENV{'REMOTE_USER'}; 
 
 
 my $conf=Glossa::get_conf_file($corpus_name);
 my %conf = %$conf;
+
+# FIXME: this is a silly way of doing things
+my $conf= $conf{'tmp_dir'} . "/" . $query_id . ".conf"; 
+unless (-e $conf) {
+  $conf{'tmp_dir'} = $conf{'config_dir'}  . "/" . $corpus_name . "/hits/"  . $user . "/";
+}
+
 
 print "Content-type: text/html; charset=$conf{'charset'}\n\n";
 print "<html><head></head><body>";

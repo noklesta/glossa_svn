@@ -1,4 +1,4 @@
-#!/usr/bin/env perl
+#!/usr/bin/perl
 
 use CGI;
 use DBI;
@@ -42,6 +42,7 @@ my $CORPUS = $in{'query'}->{'corpus'}->[0];
 
 my $conf = Glossa::get_conf_file($CORPUS);
 my %conf = %$conf;
+
 
 
 my $dsn = "DBI:mysql:database=$conf{'db_name'};host=$conf{'db_host'}";

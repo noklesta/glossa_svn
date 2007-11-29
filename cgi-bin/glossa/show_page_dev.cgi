@@ -1,4 +1,4 @@
-#!/usr/bin/env perl
+#!/usr/bin/perl
 
 use CGI;
 use DBI;
@@ -24,11 +24,61 @@ my $user = $ENV{'REMOTE_USER'};
 my $conf=Glossa::get_conf_file($corpus);
 my %conf = %$conf;
 
+
+print "Content-type: text/html; charset=$conf{'charset'}\n\n";
+print "<html>\n<head><title>Resultater</title><link href=\"", $conf{'htmlRoot'}, "/html/tags.css\" rel=\"stylesheet\" type=\"text/css\"></link>";
+print "<script language=\"JavaScript\" src=\"", $conf{'htmlRoot'}, "/js/showtag.js\"></script></head>\n<body>";
+print "<script language=\"JavaScript\" src=\"", $conf{'htmlRoot'}, "/js/", $corpus, ".conf.js\"></script>";
+
+
+my $set_id = CGI::param('set');
+my $annotation_in_conf_file;
+
+my $context_type;
+my $hlight;
+my $conf= $conf{'tmp_dir'} . "/" . $query_id . ".conf"; 
+
+# FIXME: this is a silly way of doing things
+unless (-e $conf) {
+  $conf{'tmp_dir'} = $conf{'config_dir'}  . "/" . $corpus . "/hits/"  . $user . "/";
+}
+
+if ($hits_name) {
+  $conf{'tmp_dir'} = $conf{'config_dir'}  . "/" . $corpus . "/hits/"  . $user . "/";
+}
+
+
+$conf= $conf{'tmp_dir'} . "/" . $query_id . ".conf"; 
+
+
+
+open (CONF, "$conf");
+while (<CONF>) {
+    chomp;
+    if (/^context_type=(.*)/) { $context_type=$1 }
+    if (/^hlight=(.*)/) { $hlight=$1 }
+    if (/^name=(.*)/) { $hits_name=$1 }
+    if (/^annotation_set=(.*)/) { 
+	unless ($set_id) {
+	    $set_id=$1;
+	    $annotation_in_conf_file=1; # if the annotation set isn't specified here, it will be set later
+	                                # (or it will be overridden if it differs from the CGI input)
+	}
+    }
+}
+close CONF;
+
+
+
+
+my $annotation_select;
+
+
+
 my $dsn = "DBI:mysql:database=$conf{'db_name'};host=$conf{'db_host'}";
 my $dbh = DBI->connect($dsn, $conf{'db_uname'}, $conf{'db_pwd'}, {RaiseError => 1});
 
 
-print "Content-type: text/html; charset=$conf{'charset'}\n\n";
 
 
 
@@ -67,14 +117,8 @@ if ($corpus) { $corpus_string = "&corpus=" . $corpus }
 
 
 my $n = CGI::param('n');
-
-
-
-
 my $del = CGI::param('del');
 
-my $set_id = CGI::param('set');
-my $annotation_select;
 
 
 my $sets_table = uc($corpus) . "annotation_sets";
@@ -96,25 +140,31 @@ if ($set_id) {
 	push @values, [$id, $name];
  
     }
-}
 
-
-print "<html>\n<head><title>Resultater</title><link href=\"", $conf{'htmlRoot'}, "/html/tags.css\" rel=\"stylesheet\" type=\"text/css\"></link>";
-print "<script language=\"JavaScript\" src=\"", $conf{'htmlRoot'}, "/js/showtag.js\"></script></head>\n<body>";
-print "<script language=\"JavaScript\" src=\"", $conf{'htmlRoot'}, "/js/", $corpus, ".conf.js\"></script>";
-
-
-
-if ($hits_name) {
-    my $data_files = $conf{'config_dir'} . "/" . $corpus . "/hits/"  . $user . "/" . $query_id . "*";	
-    `cp $data_files $conf{'tmp_dir'}`;
+    unless ($annotation_in_conf_file) {
+	print "appending to $conf<br>";
+	open (CONF, ">>$conf");
+	print CONF "\n", "annotation_set=", $set_id, "\n";
+    }
 
 }
+
+
+
+
+
+#if ($hits_name) {
+#    my $data_files = $conf{'config_dir'} . "/" . $corpus . "/hits/"  . $user . "/" . $query_id . "*";	
+#    `cp $data_files $conf{'tmp_dir'}`;
+#}
 
 my $top= $conf{'tmp_dir'} . "/" . $query_id . ".top"; 
+
+
 open (TOP, "$top");
 while (<TOP>) {
 
+    # FIXME
     if ($set_id) {
 	$_ =~ s/(\">\d+<\/a>)/\&set=$set_id$1/g;
     }
@@ -145,20 +195,14 @@ if ($del) {
     print "<br><input type=\"submit\" value=\"Delete selection\"></input>";
 }
 
+
+
 my $filename= $conf{'tmp_dir'} . "/" . $query_id . "_" . $n . ".dat"; 
+
 
 open (DATA, "$filename");
 
 
-my $context_type;
-my $hlight;
-my $conf= $conf{'tmp_dir'} . "/" . $query_id . ".conf"; 
-open (CONF, "$conf");
-while (<CONF>) {
-    chomp;
-    if (/^context_type=(.*)/) { $context_type=$1 }
-    if (/^hlight=(.*)/) { $hlight=$1 }
-}
 
 
 my %tags;

@@ -1,4 +1,4 @@
-#!/usr/bin/env perl
+#!/usr/bin/perl
 
 use CGI;
 use Spreadsheet::WriteExcel;
@@ -10,6 +10,17 @@ my $corpus=CGI::param('corpus');
 my $conf = Glossa::get_conf_file($corpus);
 my %conf = %$conf;
 
+my $user = $ENV{'REMOTE_USER'}; 
+my $query_id = CGI::param('query_id');
+
+# FIXME: this is a silly way of doing things
+my $conf= $conf{'tmp_dir'} . "/" . $query_id . ".conf"; 
+unless (-e $conf) {
+  $conf{'tmp_dir'} = $conf{'config_dir'}  . "/" . $corpus . "/hits/"  . $user . "/";
+}
+
+
+
 print "Content-type: text/html\n\n";
 
 print "<html><head></head><body>";
@@ -18,7 +29,7 @@ print "Result: ";
 my $dsn = "DBI:mysql:database=$conf{'db_name'};host=$conf{'db_host'}";
 $dbh = DBI->connect($dsn, $conf{'db_uname'}, $conf{'db_pwd'}, {RaiseError => 1})          ||              die $DBI::errstr;
 
-my $query_id = CGI::param('query_id');
+
 
 my $annotation_set = CGI::param('annotationset');
 
@@ -244,11 +255,20 @@ foreach my $f (@files) {
 
 	if ($annotation_set) {
 	    	my $annotation_table = uc($corpus) . "annotations";
+#		print "SELECT value_id FROM $annotation_table where s_id = '$s_id' and set_id = '$annotation_set';\m";
 		my $sth = $dbh->prepare(qq{ SELECT value_id FROM $annotation_table where s_id = '$s_id' and set_id = '$annotation_set';});
 		$sth->execute  || die "Error fetching data: $DBI::errstr";
 		my ($stored_value) = $sth->fetchrow_array;
-		
-		push @n, $annotation_value{$stored_value};
+
+		my $displayed_value;
+		if ($annotation_set eq '__FREE__') {
+		    $displayed_value = $stored_value;
+		}
+		else {
+		    $displayed_value = $annotation_value{$stored_value};
+		}
+	
+		push @n, $displayed_value;
 	}
 
         if ($format eq "html") { print OUT "<tr><td>", join ("</td><td>", @n), "</td></tr>"; }

@@ -1,4 +1,4 @@
-#!/usr/bin/env perl
+#!/usr/bin/perl
 
 use CGI;
 use locale;
@@ -12,16 +12,22 @@ use lib("/home/httpd/html/glossa/pm");
 use Glossa;
 
 my $corpus=CGI::param('corpus');
-
+my $user = $ENV{'REMOTE_USER'}; 
+my $query_id = CGI::param('query_id');
 my $conf=Glossa::get_conf_file($corpus);
 my %conf = %$conf;
 
+# FIXME: this is a silly way of doing things
+my $conf= $conf{'tmp_dir'} . "/" . $query_id . ".conf"; 
+unless (-e $conf) {
+  $conf{'tmp_dir'} = $conf{'config_dir'}  . "/" . $corpus . "/hits/"  . $user . "/";
+}
 
 
 print "Content-type: text/html\n\n";
 
 
-my $query_id = CGI::param('query_id');
+
 my $query_id2 = $query_id."_";
 my @files = <$conf{'tmp_dir'}/$query_id2*>;
 
