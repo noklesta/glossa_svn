@@ -31,6 +31,7 @@ my $corpus = CGI::param('corpus');
 my $globalstats = CGI::param('globalstats');
 
 my $conf = Glossa::get_conf_file($corpus);
+my %conf = %$conf;
 
 
 # FIXME: this is a silly way of doing things
@@ -39,6 +40,8 @@ unless (-e $conf) {
   $conf{'tmp_dir'} = $conf{'config_dir'}  . "/" . $corpus . "/hits/"  . $user . "/";
 }
 $conf= $conf{'tmp_dir'} . "/" . $query_id . ".conf"; 
+
+
 
 
 
@@ -69,7 +72,8 @@ if ($ngram eq "3") {
 }
 
 
-my %conf = %$conf;
+
+
 
 
 
@@ -93,6 +97,7 @@ $string = $query_id."_";
 my @files = <$conf{'tmp_dir'}/$string*.dat>;
 
 #print "F: $conf{'tmp_dir'}/$string<br>";
+
 
 
 my $output = "$conf{'tmp_dir'}/" . $string. ".tocnt";
