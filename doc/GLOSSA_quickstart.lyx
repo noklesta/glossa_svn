@@ -1,5 +1,5 @@
-#LyX 1.5.1 created this file. For more info see http://www.lyx.org/
-\lyxformat 276
+#LyX 1.4.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 245
 \begin_document
 \begin_header
 \textclass article
@@ -8,21 +8,13 @@
 \end_preamble
 \language english
 \inputencoding auto
-\font_roman default
-\font_sans default
-\font_typewriter default
-\font_default_family default
-\font_sc false
-\font_osf false
-\font_sf_scale 100
-\font_tt_scale 100
+\fontscheme default
 \graphics default
 \paperfontsize default
 \spacing single
 \papersize default
 \use_geometry false
 \use_amsmath 1
-\use_esint 0
 \cite_engine basic
 \use_bibtopic false
 \paperorientation portrait
@@ -36,7 +28,6 @@
 \paperpagestyle default
 \tracking_changes false
 \output_changes false
-\author "" 
 \end_header
 
 \begin_body
@@ -50,7 +41,7 @@ Glossa
 \end_layout
 
 \begin_layout Author
-Lars Nygaard, Anders NÃ¸klestad
+Lars Nygaard, Anders Nøklestad
 \end_layout
 
 \begin_layout Section
@@ -188,6 +179,7 @@ There are separate interfaces for lexical statistics and for full (free)
  queries.
  They can be found by clicking on the links 'lexical statistics' and 'fullquery'
 , respectively, in the main search page.
+ 
 \end_layout
 
 \end_body
