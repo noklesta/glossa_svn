@@ -289,7 +289,9 @@ sub create_tid_list {
     my $select= " $text_table_name.tid,$text_table_name.startpos,$text_table_name.endpos";
 
     # for UPUS, NOTA etc.
-    if ($conf{'bounds_type'} eq 'multiple') {
+    #if ($conf{'bounds_type'} eq 'multiple') {
+    # [AN 08.12.07]
+    if (defined($conf{'bounds_type'}) and $conf{'bounds_type'} eq 'multiple') {
         $select= " $text_table_name.tid,$text_table_name.bounds";
     }
 
@@ -337,8 +339,11 @@ sub create_tid_list {
     while (my ($tid,$s,$e) = $sth->fetchrow_array) {
 	$texts_allowed{$tid}=1;
 
-	# for UPUS, NOTA etc.
-	if ($conf{'bounds_type'} eq 'multiple') {
+        # for UPUS, NOTA etc.
+        #if ($conf{'bounds_type'} eq 'multiple') {
+        # [AN 08.12.07]
+        if (defined($conf{'bounds_type'}) and
+            $conf{'bounds_type'} eq 'multiple') {
 	    
 	    my @bounds = split(/\t/, $s);
 	    foreach my $b (@bounds) {
@@ -357,9 +362,11 @@ sub create_tid_list {
     }
 
     # for UPUS, NOTA etc.
-    if ($conf{'bounds_type'} eq 'multiple') {
-	my @dumpstring_ary_sorted = sort { $a <=> $b } @dumpstring_ary;
-	$dumpstring = join("\n", @dumpstring_ary);
+    #if ($conf{'bounds_type'} eq 'multiple') {
+    # [AN 08.07]
+    if (defined($conf{'bounds_type'}) and $conf{'bounds_type'} eq 'multiple') {
+#       my @dumpstring_ary_sorted = sort { $a <=> $b } @dumpstring_ary;
+        $dumpstring = join("\n", @dumpstring_ary);
     }
 
     my $dumpfile = $conf{'tmp_dir'} . "/" . $conf{'query_id'} . ".dump";
