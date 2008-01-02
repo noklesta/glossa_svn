@@ -1,4 +1,4 @@
-#LyX 1.4.3 created this file. For more info see http://www.lyx.org/
+#LyX 1.4.1 created this file. For more info see http://www.lyx.org/
 \lyxformat 245
 \begin_document
 \begin_header
@@ -597,7 +597,7 @@ Metadata configuration
 \end_layout
 
 \begin_layout Standard
-The matadata interface is controlled by several configuration files.
+The metadata interface is controlled by several configuration files.
  The main file, "meta.conf", is illustrated below:
 \end_layout
 
@@ -810,6 +810,14 @@ innhold i db-tabell for at check-typen skal virke?
 \end_inset
 
 
+\end_layout
+
+\begin_layout Standard
+If your Glossa installation is going to handle multiple corpora, you would
+ normally put the widget creation code for different corpora into different
+ files (e.g.
+ sami.inc, omc.inc etc.) and select which file to include at runtime depending
+ on the selected corpus.
 \end_layout
 
 \begin_layout Subsection
