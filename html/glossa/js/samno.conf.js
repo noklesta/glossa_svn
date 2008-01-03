@@ -1,5 +1,5 @@
 var languageOpts = new Array;
-languageOpts = [['SAMNO_SAMISK', 'Sami', 'sa'], ['SAMNO_NORSK', 'Norwegian', 'no']];
+languageOpts = [['SAMNO_SAMISK', 'Sami', 'sme'], ['SAMNO_NORSK', 'Norwegian', 'nob']];
 
 var conf = new Array;
 conf['type'] = 'multilingual';
