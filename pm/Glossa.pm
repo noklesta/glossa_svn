@@ -39,12 +39,40 @@ sub get_conf_file {
     return \%conf;
 
 }
-
-sub create_cgi_hash2 {
-
+sub create_cgi_hash0 {
+    #FIXED (joel 20071221) uses hash_string to recursively build perl code, then evals it.. or so we thought:-/
     my $cgi_hash=shift;
     my %cgi_hash=%$cgi_hash;
+    my %in = ();
+    while (my ($prm,$vvv) = each %cgi_hash ) {
 
+        my @vals = @$vvv;
+
+        my @prms=split(/_/, $prm);
+        my $hash_string = "\$in".hash_string(\@prms, $vvv);
+        eval $hash_string;
+    }
+    return (\%in);
+}
+sub hash_string{
+    my $array = shift;
+    my $val = shift;
+    my @arr = @$array;
+    my $car;
+    my @cdr;
+
+    ($car, @cdr) = @arr;
+
+    my $string = "{$car}";
+
+    if(!@cdr){ return "$string = \\\@vals;"; }
+
+    else{ return $string."->".hash_string(\@cdr, $val);  }
+
+}
+sub create_cgi_hash2 {
+    my $cgi_hash=shift;
+    my %cgi_hash=%$cgi_hash;
     # put form information into a hash
     my %in;
     while (my ($prm,$vvv) = each %cgi_hash ) {
@@ -70,11 +98,31 @@ sub create_cgi_hash2 {
 #	    print "<br>";
 	    $in{$prm[0]}->{$prm[1]}->{$prm[2]}->{$prm[3]}=\@vals;	    
 	}
+    }
+    return (\%in);
+}
+
+sub create_cgi_hash3 {
+
+    my $cgi_hash=shift;
+    my %cgi_hash=%$cgi_hash;
+
+    # put form information into a hash
+    my %in;
+    while (my ($prm,$vvv) = each %cgi_hash ) {
+
+	my @vals = @$vvv;
+	
+	my @prm=split(/_/, $prm);
+
+	my $strip;
+	my @rest;
+
+	($strip, @rest) = @prm;
+	$in{$prm[0]}=%{hash_tree(\@rest, $vvv)};
 
     }
-
     return (\%in);
-
 
 }
 
@@ -281,6 +329,16 @@ sub create_tid_list {
 	    push @lang_restr, "$text_table_name.lang='$lang'";
 	}
     }
+
+
+    if ($base_corpus eq 'SAMNO_SAMISK') {  
+	push @lang_restr, "$text_table_name.lang='sme'";
+    }
+    if ($base_corpus eq 'SAMNO_NORSK') {  
+	push @lang_restr, "$text_table_name.lang='nob'";
+    }
+
+
     my $lang_restr;
     if (@lang_restr > 0) {
 	$lang_restr = " (" . join(" OR ", @lang_restr) . ") ";
@@ -339,11 +397,11 @@ sub create_tid_list {
     while (my ($tid,$s,$e) = $sth->fetchrow_array) {
 	$texts_allowed{$tid}=1;
 
-        # for UPUS, NOTA etc.
-        #if ($conf{'bounds_type'} eq 'multiple') {
-        # [AN 08.12.07]
-        if (defined($conf{'bounds_type'}) and
-            $conf{'bounds_type'} eq 'multiple') {
+	# for UPUS, NOTA etc.
+	#if ($conf{'bounds_type'} eq 'multiple') {
+	# [AN 08.12.07]
+	if (defined($conf{'bounds_type'}) and 
+	    $conf{'bounds_type'} eq 'multiple') {
 	    
 	    my @bounds = split(/\t/, $s);
 	    foreach my $b (@bounds) {
@@ -365,8 +423,8 @@ sub create_tid_list {
     #if ($conf{'bounds_type'} eq 'multiple') {
     # [AN 08.07]
     if (defined($conf{'bounds_type'}) and $conf{'bounds_type'} eq 'multiple') {
-#       my @dumpstring_ary_sorted = sort { $a <=> $b } @dumpstring_ary;
-        $dumpstring = join("\n", @dumpstring_ary);
+#	my @dumpstring_ary_sorted = sort { $a <=> $b } @dumpstring_ary;
+	$dumpstring = join("\n", @dumpstring_ary);
     }
 
     my $dumpfile = $conf{'tmp_dir'} . "/" . $conf{'query_id'} . ".dump";
