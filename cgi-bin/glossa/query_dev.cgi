@@ -134,6 +134,7 @@ that we can show results from. If you would like to know more about Glossa, and 
     die;
 }
 
+$debug = 0;
 
 ## for debugging
 if ($debug) {
@@ -638,7 +639,9 @@ else { $query->context('1 s', '1 s'); }
 
 # execute cqp command to restrict to subcorpus
 if ($subcorpus) {
-    my $dumpfile = $conf{'tmp_dir'} . "/" . $conf{'query_id'} . ".dump";
+    my $dumpfile = $conf{'tmp_dir'} . "" . $conf{'query_id'} . ".dump";
+#    print "DUMPFILE: $dumpfile<br>";
+
     $query->exec("undump QUERY < \"$dumpfile\";");
     $query->exec("QUERY;");
 }
@@ -965,8 +968,8 @@ for (my $i = 0; $i < $nr_result; $i++) {
 
 	# FIXME: should be general
 	if ($CORPUS eq 'samno') {
-	    if ($base_corpus eq 'SAMNO_SAMISK') {  $lang = "sa" }
-	    if ($base_corpus eq 'SAMNO_NORSK') {  $lang = "no" }
+	    if ($base_corpus eq 'SAMNO_SAMISK') {  $lang = "sme" }
+	    if ($base_corpus eq 'SAMNO_NORSK') {  $lang = "nob" }
 	}
 
 
