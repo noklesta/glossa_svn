@@ -30,10 +30,10 @@ elsif ($c =~ m/^BOKMAL$/) {
  `/usr/local/bin/cwb-encode -xsB -f $tab -d $dat_dir -s -D -P lemma -P ordkl -P type -P grad_dia -P tid_bestemthet -P modus_kasus -P person_type2 -P tall -P kjonn -S s:O+id -S text:O+id`;
 }
 elsif ($c =~ m/^SAMNO_NORSK$/) {
- `/usr/local/bin/cwb-encode -xsB -f $tab -d $dat_dir -s -D -P lemma -P pos -P type -P grad_dia -P tense_defin -P case_mood -P person_type2 -P number -P gender -P polarity -P syntax -S s:O+id -S text:O+id`;
+ `/usr/local/bin/cwb-encode -xsB -f $tab -d $dat_dir -s -D -P lemma -P pos -P case -P type -P poss_dia_defin -P tense_grade_gender -P person_inf -P number_mood -P derivation -P clitic -P polarity_attributive -P syntax -S s:O+id -S text:O+id`;
 }
 elsif ($c =~ m/^SAMNO_SAMISK$/) {
- `/usr/local/bin/cwb-encode -xsB -f $tab -d $dat_dir -s -D -P lemma -P pos -P type -P grad_dia -P tense_defin -P case_mood -P person_type2 -P number -P gender -P polarity -P syntax -S s:O+id -S text:O+id`;
+ `/usr/local/bin/cwb-encode -xsB -f $tab -d $dat_dir -s -D -P lemma -P pos -P case -P type -P poss_dia_defin -P tense_grade_gender -P person_inf -P number_mood -P derivation -P clitic -P polarity_attributive -P syntax -S s:O+id -S text:O+id`;
 }
 elsif ($c =~ m/^NOTA2$/) {
  `/usr/local/bin/cwb-encode -xsB -f $tab -d $dat_dir -s -D -P lemma -P pos -P sex -P num -P type -P defn -P temp -P pers -P case -P degr -P descr -P pron -P id -S sync:O+time+end -S turn:O+endtime+speaker+starttime -S who:O+nb+name+line_key -S episode:O+circumstance -S trans`;
