@@ -43,6 +43,12 @@ elsif ($name eq 'OMC3_PO') {
 elsif ($name eq 'OMC3_NL') {
     $subname="reloadMenuOmc2_nl";
 }
+elsif ($name eq 'SAMNO_SAMISK') {
+    $subname="reloadMenuSamNoSamisk";
+}
+elsif ($name eq 'SAMNO_NORSK') {
+    $subname="reloadMenuSamNoNorsk";
+}
 
 unless ($name and $subname) {
     die("You must specify both corpus name and JavaScrip function name.\n");
