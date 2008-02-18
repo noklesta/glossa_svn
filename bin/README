@@ -1,0 +1,50 @@
+count_slength.pl
+	
+	look for very long sentences (will cause CWB modules 
+	to chrash if there are many P-attributest)
+
+
+create_menu_item.pl
+     
+	create javascript menu files. Use:
+
+        $ create_manu_item.pl --names=<corpusname1>,<corpusname2> \
+          (--language=en|no) menu-file1 menu-file2 > javascript-file
+	
+mk_lex_stats_TID.pl
+
+	create compressed files of lexical statistics (for use with stats.php)
+
+populate_db_tab.pl
+
+
+cqpify_align.pl
+
+	example script for running alignment encoding
+
+mk_wordcount_from_tab_file.pl
+
+	set wordcounts in text-tables
+
+positions_from_tab.pl
+
+	set startpos and endpos in text-tables
+
+cqpify_monoling.pl
+
+	manage cwb encoding
+
+create_cwb_alg.pl
+
+	create a cwb aligmnent file form tab-files and CES aligmnet files
+
+mk_lex_stats.pl
+
+	populate a lexical statistics table
+
+ 
+populate_db_meta_mak.pl
+samisk_conv.pl
+xml2db_xpath.pl
+populate_db.pl
+mak_conv.pl

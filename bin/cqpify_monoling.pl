@@ -7,7 +7,7 @@ my $tab = shift;
 
 unless ($c and $tab) { die('you must specify tab file and corpus name (upper case)') }
 
-my $dat_dir = "/hf/omilia/site/corpora/cwb_data/" . $c;
+my $dat_dir = "/home/larsnyg/cwb_data/" . $c;
 
 print "removing old files ...\n";
 `rm -f $dat_dir/*`;
@@ -19,9 +19,18 @@ if ($c =~ m/^TEST$/) {
  `/usr/local/bin/cwb-encode -xsB -f $tab -d $dat_dir -s -U "_" -D -P lex -P extra -P pos -P degr -P dia -P tense_defin -P case -P mood -P person_type2 -P number -P gender -P func -S s:O+id -S text:O+id -S sect:0+id`;
 
 }
-if ($c =~ m/^OMC3_/) {
+elsif ($c =~ m/^BOOK/) {
+
+ `/usr/local/bin/cwb-encode -xsB -f $tab -d $dat_dir -s -U "_" -D -P lex -P pos -P morph -P extra -P func -P dep -P wid -P walign -S s:O+id -S text:O+id -S sect:0+id`;
+
+}
+elsif ($c =~ m/^OMC3_/) {
   #pos type degr+dia tense+defin mood+case person+type2 number gender
  `/usr/local/bin/cwb-encode -xsB -f $tab -d $dat_dir -s -D -P lemma -P pos -P type -P degr_dia -P tense_defin -P mood_case -P person_type2 -P number -P gender -S s:O+id -S text:O+id`;
+}
+elsif ($c =~ m/^DAKA/) {
+  #pos type degr+dia tense+defin mood+case person+type2 number gender
+ `/usr/local/bin/cwb-encode -xsB -f $tab -d $dat_dir -s -D -S s:O+id -S text:O+id`;
 }
 elsif ($c =~ m/^ILN_LEKS$/) {
  `/usr/local/bin/cwb-encode -xsB -f $tab -d $dat_dir -s -D -P lemma -P ordkl -P type -P grad_dia -P tid_bestemthet -P modus_kasus -P person_type2 -P tall -P kjonn -S s:O+id -S text:O+id`;
@@ -49,7 +58,7 @@ elsif ($c =~ m/^BUL$/) {
 print "running makeall ...\n";
 `/usr/local/bin/cwb-makeall -V $c`;
 
-unless ($c eq 'BUL') { # the corpus is to large, and we run out of address space on omilia
+unless ($c eq 'BUL') { # the corpus is too large, and we run out of address space on omilia
 
     print "compressing ...\n";
     `/usr/local/bin/cwb-huffcode -T -A $c`;

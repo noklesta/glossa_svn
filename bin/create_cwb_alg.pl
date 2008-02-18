@@ -23,12 +23,15 @@ while (<CES>) {
 
     if(/\<link/) {
 
-	s/.*xtargets=\'//;
-	s/\' \/>//;
+	s/.*xtargets=[\'\"]//;
+	s/[\'\"] *\/>//;
 
 
 
 	my ($from, $to) = split(/;/);
+
+#	print "F: $from T: $to\n";
+
 	my @from = split(/ /, $from);
 	my @to = split(/ /, $to);
 
@@ -76,6 +79,7 @@ print "$name1\ts\t$name2\ts\n";
 foreach my $a (@alg) {
 
     my @a = @$a;
+    next if (grep(/\-/, @a)); 
     print join("\t", @a), "\n";
 
 }
