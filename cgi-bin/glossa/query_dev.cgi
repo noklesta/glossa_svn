@@ -8,7 +8,7 @@ use Data::Dumper;
 use DBI;
 use WebCqp::Query_dev; # this is the modified version of the module
 use File::Copy;
-use Text::Iconv;
+#use Text::Iconv;
 use Encode;
 
 
@@ -83,7 +83,7 @@ my %conf;
 open (CONF, $conf_file);
 while (<CONF>) {
     chomp;
-    next if (/^#/);
+    next if (/^\#/);
     s/\s*$//;
     my ($k,$v)=split(/\s*=\s*/);
     $conf{$k}=$v;
@@ -92,7 +92,16 @@ close CONF;
 
 $conf{'base_corpus'}=$CORPUS;
 
+## postprocessing of configuration
+my %atts_hide;
+foreach my $a (split(/ +/, $conf{'corpus_attributes_hide'})) {
+    $atts_hide{$a}=1;
+}
 
+my %atts_mult;
+foreach my $a (split(/ +/, $conf{'corpus_attributes_multiple'})) {
+    $atts_mult{$a}=1;
+}
 
 # multitag file
 my $file = $conf{'config_dir'} . "/" . $CORPUS . "/multitags.dat";
@@ -125,15 +134,16 @@ close LANG;
 print "Content-type: text/html; charset=$conf{'charset'}\n\n";
 print "<html><head><link rel=\"shortcut icon\" href=\"http://omilia.uio.no/favicon.ico\" type=\"image/ico\" />\n<title>$lang{'title'}</title><link href=\"", $conf{'htmlRoot'}, "/html/tags.css\" rel=\"stylesheet\" type=\"text/css\"></link></head><body>";
 
+print "<div style='display:none' id='tagwidget' class='tag'></div>";
 
 # FIXME: temporary message
-if ($CORPUS eq 'test') {
-    print "<script language=\"JavaScript\">stopWait()</script>";
-    print "<strong><font color='red'>Sorry!<br><br>We don't currently have a completely free corpus 
-that we can show results from. If you would like to know more about Glossa, and actually see how it displays results, please contact lars.nygaard\@iln.uio.no</strong><font color='grey'>'";
-    die;
-}
-
+#if ($CORPUS eq 'test') {
+#    print "<script language=\"JavaScript\">stopWait()</script>";
+#    print "<strong><font color='red'>Sorry!<br><br>We don't currently have a completely free corpus 
+#that we can show results from. If you would like to know more about Glossa, and actually see how it displays results, please contact lars.nygaard\@iln.uio.no</strong><font color='grey'>'";
+#    die;
+#}
+ 
 $debug = 0;
 
 ## for debugging
@@ -213,6 +223,8 @@ my $dbh = DBI->connect($dsn, $conf{'db_uname'}, $conf{'db_pwd'}, {RaiseError => 
 
 ## define some entities
 my $apostr = chr(0x60);
+
+
 
 
 
@@ -301,6 +313,9 @@ foreach my $row (@$phrases) {
 	    if ($cat eq 'w') {
 		if ($val eq 'lemma') {
 		    $string_class = "lemma";
+		}
+		elsif ($val eq 'lex') {
+		    $string_class = "lex";
 		}
 		elsif ($val eq 'end') {
 		    $string_string = ".*" . $string_string;
@@ -526,10 +541,13 @@ if ($debug) {
 # with the rest of the files pertaining to the query.
 my ($subcorpus,$sql_query_nl,$list) = Glossa::create_tid_list(\%conf, \%in, $CORPUS, \%aligned_corpora, \%aligned_corpora_opt, $base_corpus);
 
+
+
 # print natural language version
 if ($sql_query_nl) {
     print "$lang{'metaquery'}: $sql_query_nl<br>";
 }
+
 
 
 
@@ -784,6 +802,7 @@ print "<table border=\"0\">";
 
 
 
+my $delayedprint_all;
 
 my $source_line;
 my $target_line;
@@ -949,7 +968,7 @@ for (my $i = 0; $i < $nr_result; $i++) {
 
 	# Start the alignment output.
 	if ($hits < $results_page) {
-	    $target_line.=sprintf("<tr bgcolor=\"#ffffff\"><td>");  # Aligned regions are gray.
+	    $target_line.="<tr bgcolor=\"#ffffff\"><td>";  # Aligned regions are gray.
 	}
 	$target_line .= "<tr style='color:gray'><td>";
 
@@ -1008,8 +1027,8 @@ for (my $i = 0; $i < $nr_result; $i++) {
 
 		# Print links for context/metadata for the aligned regions.
 		# FIXME: generaliser
-		$target_line.=sprintf("<font size=\"-2\"><a href=\"#\" onClick=\"window.open('$conf{'cgiRoot'}/show_context.cgi?s_id=$target&text_id=$t2&cs=3&corpus=$in{'query'}->{'corpus'}->[0]&subcorpus=$a',");
-		$target_line.=sprintf("'mywindow','height=500,width=650,status,scrollbars,resizable');\">$target</a> </font>");
+		$target_line.="<font size=\"-2\"><a href=\"#\" onClick=\"window.open('$conf{'cgiRoot'}/show_context.cgi?s_id=$target&text_id=$t2&cs=3&corpus=$in{'query'}->{'corpus'}->[0]&subcorpus=$a',";
+		$target_line.="'mywindow','height=500,width=650,status,scrollbars,resizable');\">$target</a> </font>";
 		    
 		    
 	    }
@@ -1029,7 +1048,8 @@ for (my $i = 0; $i < $nr_result; $i++) {
 	    # Output of the aligned regions. handling tags etc.
 	    # (does not actually print, but adds to the "$target_line" variable,
 	    # which will be printed later).
-	    print_tokens_target($al), "<br>";		
+	    my ($print) = Glossa::print_tokens($al, \@atts, $a, $i);
+	    $target_line .= $print . "<br>";		
 
 	    $target_line .= "</td></tr>";
 	    
@@ -1059,39 +1079,45 @@ for (my $i = 0; $i < $nr_result; $i++) {
 	    $sts_url .= "&" . $k . "=" . $v;
 	}
 
-	$source_line=sprintf("<tr bgcolor=\"#ffffff\"><td colspan=\"2\" height=\"10\"></td></tr><tr><td><nobr>");
-	$source_line.=sprintf("<font size=\"-2\"><a href=\"#\" onClick=\"window.open('$conf{'cgiRoot'}/show_context.cgi$sts_url&cs=3',");
-	$source_line.=sprintf("'mywindow','height=500,width=650,status,scrollbars,resizable');\">$sts{'s_id'}</a> \n&nbsp;</font>");
+	$source_line="<tr bgcolor=\"#ffffff\"><td colspan=\"2\" height=\"10\"></td></tr><tr><td><nobr>";
+	$source_line.="<font size=\"-2\"><a href=\"#\" onClick=\"window.open('$conf{'cgiRoot'}/show_context.cgi$sts_url&cs=3',";
+	$source_line.="'mywindow','height=500,width=650,status,scrollbars,resizable');\">$sts{'s_id'}</a> \n&nbsp;</font>";
 
 	if($CORPUS eq 'upus'){ $ex_url .= "&db=upus&table=segments";  }
 
 	if ($CORPUS eq 'nota' or $CORPUS eq 'upus') {
-	    $source_line.=sprintf("<font size=\"-2\"><a href=\"#\" onClick=\"window.open('http://omilia.uio.no/cgi-bin/glossa/expand.pl$ex_url&video=0',");
-	    $source_line.=sprintf("'mywindow','height=400,width=1000,status,scrollbars,resizable,screenX=0,screenY=5');\"><img style='border-style:none' src='http://omilia.uio.no/glossa/html/img/mov.gif'></a> \n&nbsp;</font>");
-	    $source_line.=sprintf("<font size=\"-2\"><a href=\"#\" onClick=\"window.open('http://omilia.uio.no/cgi-bin/glossa/expand.pl$ex_url&video=audio',");
-	    $source_line.=sprintf("'mywindow','height=400,width=1000,status,scrollbars,resizable,screenX=0,screenY=5');\"><img style='border-style:none' src='http://omilia.uio.no/glossa/html/img/sound.gif'></a> \n&nbsp;</font>");
+	    $source_line.="<font size=\"-2\"><a href=\"#\" onClick=\"window.open('http://omilia.uio.no/cgi-bin/glossa/expand.pl$ex_url&video=0',";
+	    $source_line.="'mywindow','height=400,width=1000,status,scrollbars,resizable,screenX=0,screenY=5');\"><img style='border-style:none' src='http://omilia.uio.no/glossa/html/img/mov.gif'></a> \n&nbsp;</font>";
+	    $source_line.="<font size=\"-2\"><a href=\"#\" onClick=\"window.open('http://omilia.uio.no/cgi-bin/glossa/expand.pl$ex_url&video=audio',";
+	    $source_line.="'mywindow','height=400,width=1000,status,scrollbars,resizable,screenX=0,screenY=5');\"><img style='border-style:none' src='http://omilia.uio.no/glossa/html/img/sound.gif'></a> \n&nbsp;</font>";
 
 	}
 	$source_line.="<i>" . $sts{$display_struct} . "</i>";
-	$source_line.=sprintf("</nobr></td><td");
-	if ($context_type eq "chars") { $source_line.=sprintf(" align=\"right\""); }
-	$source_line.=sprintf(">");
+	$source_line.="</nobr></td><td";
+	if ($context_type eq "chars") { $source_line.=" align=\"right\""; }
+	$source_line.=">";
 
 	foreach my $a ($res_l, $res_r, $ord) {
             # temporary fixes (should be cleverer in corpus) ...
-            $a =~ s/'/$apostr/g;
-             $a =~ s/\&amp;quot;/\&quot;/g;
+            $a =~ s/'/$apostr/g; # '
+	    $a =~ s/\&amp;quot;/\&quot;/g;
 	}
 
 
-	print_tokens($res_l);
-	if ($context_type eq "chars") {$source_line.=sprintf("</td><td>"); }
-	$source_line.=sprintf("<b> &nbsp;");
-	print_tokens($ord);
-	$source_line.=sprintf(" &nbsp;</b>");
-	if ($context_type eq "chars") { $source_line.=sprintf("</td><td>"); }
-	print_tokens($res_r);
-	$source_line.=sprintf("</td></tr>");
+	my ($print) = Glossa::print_tokens($res_l,\@atts, $base_corpus, $i);
+ 	$source_line .= $print;
+	if ($context_type eq "chars") {$source_line.="</td><td>"; }
+ 	$source_line .= "<b> &nbsp;";
+
+	my ($print,$delayedprint) = Glossa::print_tokens($ord,\@atts, $base_corpus, $i,"match");
+ 	$source_line .= $print;
+	$delayedprint_all .= $delayedprint;
+
+ 	$source_line .= " &nbsp;</b>";
+ 	if ($context_type eq "chars") { $source_line.="</td><td>"; }
+	my ($print) = Glossa::print_tokens($res_l,\@atts, $base_corpus, $i);
+	$source_line .= $print;
+ 	$source_line .= "</td></tr>";
 
 
 
@@ -1115,6 +1141,7 @@ for (my $i = 0; $i < $nr_result; $i++) {
 
 print "</table>";
 
+print $delayedprint_all;
 
     ##########################################
     #
@@ -1189,81 +1216,6 @@ copy($dumpfile, $dumpfile2);
 
 
 
-
-sub print_tokens {
-
-    my $in = shift;
-    my @t = split (/ /, $in);
-
-    foreach my $t (@t) {
-
-	my (@atts_token) = split(/\//, $t);
-	my $token_string = shift @atts_token;
-
-	my $token_atts;
-
-	foreach my $a (@atts) {
-	    my $att_token = shift @atts_token;
-	    next if ($att_token eq "_");
-	    next if ($att_token eq "__UNDEF__");
-	    next unless ($att_token);
-	    if ($a =~ m/_/) {
-
-		my $new_a = $multitags{$a}->{$att_token};
-#		print $a, "::", $att_token, "->", $new_a, "<br>";
-		$token_atts .= "<b>" . $new_a . ": </b>" . $att_token . "<br>";		
-	    }
-	    else {
-		$token_atts .= "<b>" . $a . ": </b>" . $att_token . "<br>";		
-	    }
-
-	}
-
-	$tag_i++;
-	$source_line.=sprintf("<span onMouseOver=\"showTag(arguments[0], \'$tag_i\')\" onMouseOut=\"hideTag(\'$tag_i\')\">\n");
-	$source_line.=sprintf("%s </span>",$token_string); 
-	$tags{$tag_i}=$token_atts;
-
-    }
-    
-}
-
-sub print_tokens_target {
-
-    my $in = shift;
-    my @t = split (/ /, $in);
-
-    foreach my $t (@t) {
-
-	my (@atts_token) = split(/\//, $t);
-	my $token_string = shift @atts_token;
-
-	my $token_atts;
-
-	foreach my $a (@atts) {
-	    my $att_token = shift @atts_token;
-	    next if ($att_token eq "_");
-	    next if ($att_token eq "__UNDEF__");
-	    next unless ($att_token);
-	    if ($a =~ m/_/) {
-
-		my $new_a = $multitags{$a}->{$att_token};
-
-		$token_atts .= "<b>" . $new_a . ": </b>" . $att_token . "<br>";		
-	    }
-	    else {
-		$token_atts .= "<b>" . $a . ": </b>" . $att_token . "<br>";		
-	    }
-	}
-
-	$tag_i++;
-	$target_line.=sprintf("<span onMouseOver=\"showTag(arguments[0], \'$tag_i\')\" onMouseOut=\"hideTag(\'$tag_i\')\">\n");
-	$target_line.=sprintf("%s </span>",$token_string); 
-	$tags{$tag_i}=$token_atts;
-
-    }
-    
-}
 
 
 
