@@ -238,7 +238,13 @@ function writeWidgetToken(row) {
 
 
     ReloadMenu(languageSel);
-    domMenu_data.set(menuName, Menu[languageSel]);
+
+    if (Menu[languageSel]) {
+	    domMenu_data.set(menuName, Menu[languageSel]);
+    }
+    else {
+	    domMenu_data.set(menuName, Menu['PLAINMENU']);
+    }
     
     domMenu_settings.set(menuName, new Hash(
     					    'menuBarWidth', '0%'
@@ -280,12 +286,14 @@ function changeMenu (row,languageName) {
 
 	var menuAnch = document.getElementById(menuName);
 	menuAnch.innerHTML="";
-	
-	 
-
 
 	ReloadMenu(languageName);
-	domMenu_data.set(menuName, Menu[languageName]);
+	if (Menu[languageName]) {
+	    domMenu_data.set(menuName, Menu[languageName]);
+	}
+	else {
+	    domMenu_data.set(menuName, Menu['PLAINMENU']);
+	}
         domMenu_activate(menuName);
 	
     }
@@ -297,76 +305,9 @@ function changeMenu (row,languageName) {
 function ReloadMenu(language) {
 
     delete Menu[language];
-
-	// FIXME: this should be dynamic ...
-       if (language == 'TEST') {
-               reloadMenuTest();
-       }
-       else if (language == 'OMC3_DE') {
-               reloadMenuOmc2_de();
-       }
-       else if (language == 'OMC3_FR') {
-               reloadMenuOmc2_fr();
-       }
-       else if (language == 'OMC3_NO') {
-               reloadMenuOmc2_no();
-       }
-       else if (language == 'OMC3_NL') {
-               reloadMenuOmc2_nl();
-       }
-       else if (language == 'OMC3_PO') {
-               reloadMenuOmc2_po();
-       }
-       else if (language == 'OMC3_EN') {
-               reloadMenuOmc2_en();
-       }
-       else if (language == 'OMC4_DE') {
-               reloadMenuOmc2_de();
-       }
-       else if (language == 'OMC4_FR') {
-               reloadMenuOmc2_fr();
-       }
-       else if (language == 'OMC4_NO') {
-               reloadMenuOmc2_no();
-       }
-       else if (language == 'OMC4_NL') {
-               reloadMenuOmc2_nl();
-       }
-       else if (language == 'OMC4_PO') {
-               reloadMenuOmc2_po();
-       }
-       else if (language == 'OMC4_EN') {
-               reloadMenuOmc2_en();
-       }
-       else if (language == 'BOKMAL') {
-               reloadMenuBokmal();
-       }
-       else if (language == 'SAMI') {
-               reloadMenuSami();
-       }
-       else if (language == 'BUL') {
-               reloadMenuBul();
-       }
-       else if (language == 'NOTA2') {
-               reloadMenuNota();
-       }
-       else if (language == 'NOTA2') {
-               reloadMenuNota();
-       }
-       else if (language == 'UPUS') {
-               reloadMenuNota();
-       }
-       else if (language == 'SAMNO_SAMISK') {
-               reloadMenuSamNoSamisk();
-       }
-       else if (language == 'SAMNO_NORSK') {
-               reloadMenuSamNoNorsk();
-       }
-       else if (language == 'BUL') {
-	   alert("BUL!");
-               reloadMenuBul();
-       }
-
+    delete Menu['PLAINMENU'];
+    reloadMenu();
+    reloadMenuPlain();
 
     
     
