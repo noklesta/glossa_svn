@@ -1115,7 +1115,7 @@ for (my $i = 0; $i < $nr_result; $i++) {
 
  	$source_line .= " &nbsp;</b>";
  	if ($context_type eq "chars") { $source_line.="</td><td>"; }
-	my ($print) = Glossa::print_tokens($res_l,\@atts, $base_corpus, $i);
+	my ($print) = Glossa::print_tokens($res_r,\@atts, $base_corpus, $i);
 	$source_line .= $print;
  	$source_line .= "</td></tr>";
 
