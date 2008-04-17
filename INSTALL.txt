@@ -77,7 +77,7 @@ your data and configuration files:
 
   <input name="query_root" type="hidden" value="/var/www/glossa/conf/"></input>
 
-Also, change the values of $cgiRoot and $htmlRoot in index_dev.php and 
+Also, change the values of $cgiRoot and $htmlRoot in index.php and 
 stats.php as well as cgiRoot in conf.js-files.
 
 * Data and configuration files
@@ -106,7 +106,7 @@ the
 There are many ways to change Glossa by changing configuration files. The 
 minimum, however, to get the test corpus running is:
 
-- change the htmlRoot and cgiRoot variables in html/index_dev.php
+- change the htmlRoot and cgiRoot variables in html/index.php
 - change the htmlRoot and cgiRoot variables in js/test.conf.js
 - create the a cgi.conf file. The following entries should be included and
   adjusted to your setup:
@@ -136,7 +136,7 @@ The configuration options are described in the 'Glossa administrators manual'.
 
 ** Test installation:
 
-http://www.example.org/glossa/html/index_dev.php?corpus=test
+http://www.example.org/glossa/html/index.php?corpus=test
 
 
 ** If the interface does not work
