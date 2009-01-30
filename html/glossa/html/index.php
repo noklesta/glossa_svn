@@ -1,25 +1,20 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN"
             "http://www.w3.org/TR/REC-html40/strict.dtd">
+<!-- $Id$ -->
 <html>
  <head>
 
-
-
-
-
 <?php
   // ** initialize Glossa ** //  
-  $htmlRoot = 'http://corp.hum.sdu.dk/glossa/';
-  $cgiRoot = 'http://corp.hum.sdu.dk/cgi-bin/glossa/';
+  $htmlRoot = 'http://isissb.spraakdata.gu.se/glossa/';
+  $cgiRoot = 'http://isissb.spraakdata.gu.se/cgi-bin/glossa/';
   $corpus = $_GET['corpus'];
   $corpus = ereg_replace("[^A-Za-z0-9]", "", $corpus); # for safety
   $def_base_corpus = strtoupper($corpus);
   $subcorpus = $_GET['subcorpus'];
-  $corpus = ereg_replace("[^A-Za-z0-9]", "", $corpus); # for safety
+  $subcorpus = ereg_replace("[^A-Za-z0-9]", "", $subcorpus); # for safety
   include("glossa.inc");
 ?>
-
-
 
  <link rel="stylesheet" type="text/css" href="
 
@@ -40,30 +35,16 @@
  
 // * get menus * // 
 
-
   echo "<script language='javascript' src='" . $htmlRoot . "/js/plainmenu.js'></script>";
   echo "<script language='javascript' src='" . $htmlRoot . "/js/" . $corpus . ".js'></script>";
 
-
 ?>
 
-
-
-
-
-
- <script language="javascript">
+<script language="javascript">
   var title = "<title>" + conf['title'] + "</title>";
   document.write(title);
 
-
  </script>
-
-
-
-
-
-
 
 </head>
 <body>
@@ -77,28 +58,41 @@
 </b> </td>
  <td>
  Glossa (  
- <?php echo "<a href='" . $cgiRoot . "/get_hits.cgi?corpus=" . $_GET['corpus'] . "'>stored results</a> | "; ?>
- <?php echo "<a href='" . $htmlRoot . "/html/stats.php?corpus=" . $corpus . "&base_corpus=" . $def_base_corpus . "'>statistics</a> | "; ?>
- <?php echo "<a href='" . $htmlRoot . "/html/index_dev.php?fullQuery=yes&corpus=" . $_GET['corpus'] . "'>fullquery</a> | "; ?>
- <?php echo "<a target='_new' href='" . $htmlRoot . "/html/GLOSSA_manual.html'>help</a>"; ?> 
- )
+	 <?php echo "<a href='" . $cgiRoot . "/get_hits.cgi?corpus=" . $_GET['corpus'] . "'>"; ?>
+	 
+	 <script language="javascript">
+	 document.write(strings[language]['stored_results']);
+	 </script>
+	 <?php echo "</a> | "; ?>
+	 <?php echo "<a href='" . $htmlRoot . "/html/stats.php?corpus=" . $corpus . "&base_corpus=" . $def_base_corpus . "'>"; ?>
+	 <script language="javascript">
+	 document.write(strings[language]['statistics']);
+	 </script>
+	 <?php echo "</a> | "; ?>
+	 <?php echo "<a href='" . $htmlRoot . "/html/index_dev.php?fullQuery=yes&corpus=" . $_GET['corpus'] . "'>"; ?>
+	 <script language="javascript">
+	 document.write(strings[language]['full_query']);
+	 </script>
+         <?php echo "</a> | "; ?>
+	 <?php echo "<a target='_new' href='" . $htmlRoot . "/html/GLOSSA_manual.html'>"; ?>
+	 <script language="javascript">
+	 document.write(strings[language]['help']);
+	 </script>
+	 <?php echo "</a>"; ?> 
+	   )
  </td>
 </tr>
 </table>
 
 </div>
 
-
-
  <table>
 <tr>
 <td>
 
-
 <form action="
  <?php echo $cgiRoot ?>
 /query_dev.cgi" method="POST" onSubmit='submitForm(); return false'  onReset="hideAll()">
-
 
 <!-- 
         !!!!  tabellstrukturen i glossa_text.inc bør være uavhengig .... 
@@ -143,8 +137,8 @@
 
 <?php 
 
-if (file_exists($corpus.ing)) {
-  include($corpus.inc);
+if (file_exists($corpus . ".inc")) {
+  include($corpus . ".inc");
 }
 ?>
 
@@ -156,29 +150,31 @@ if (file_exists($corpus.ing)) {
 
  <!-- felles --> 
 <td valign='top' style="background-color:#efefef;border-width:1px;border-style:solid;border-color:#afaeae">
-<?php 
- $lang['en']['show_texts']='Show texts'; 
- $lang['en']['save_subcorpus']='Save subcorpus'; 
- $lang['en']['choose_subcorpus']='Choose subcorpus'; 
-?>
-<input type="button" onClick="setAction('<?php echo $cgiRoot ?>/meta_direct.cgi');" value="<?php echo $lang['en']['show_texts'] ?>" /><br><br>
-<input type="button" onClick="setAction('<?php echo $cgiRoot ?>/meta_save_choose.cgi');" value="<?php echo $lang['en']['save_subcorpus'] ?>" />
-<br><br>
 
-<?php 
+ <script language="javascript">
+   document.write("<input type=\"button\" onClick=\"setAction('<?php echo $cgiRoot ?>/meta_direct.cgi');\" value=\"");
+   document.write(strings[language]['show_text_list']);
+   document.write("\" /><br /><br />");
 
-echo "<a href='" . $cgiRoot . "subcorpus_choose.cgi?corpus=" . $corpus . "'>";
-echo $lang['en']['choose_subcorpus'];
-echo "</a>";
+   document.write("<input type=\"button\" onClick=\"setAction('<?php echo $cgiRoot ?>/meta_save_choose.cgi');\" value=\"");
+   document.write(strings[language]['save_subcorpus']);
+   document.write("\" /> <br /><br />");
 
-?>
+   document.write("<a href='<?php echo $cgiRoot ?>/subcorpus_choose.cgi?corpus=<?php echo $corpus ?>'>");
+
+   document.write(strings[language]['choose_subcorpus']);
+   document.write("</a>");
+ </script>
 
 
 
 </td></tr>
 <tr><td valign='top' style="background-color:#efefef;border-width:1px;border-style:solid;border-color:#afaeae">
 <span class="txt">
-Display: 
+<script language="javascript">
+   document.write(strings[language]['display']);
+   document.write(":");
+</script>
 <select name='structDisplay'>
 <option></option>
 <script language='javascript'>printDisplayOptions()</script>
@@ -187,10 +183,19 @@ Display:
 
 
 &nbsp; &nbsp; &nbsp;
-Search within: 
+<script language="javascript">
+   document.write(strings[language]['search_within']);
+   document.write(":");
+</script>
 <select name='searchWithin'>
 <option></option>
- <option value="last"> - last search - </option>
+ <option value="last">
+   <script language="javascript">
+     document.write("- ");
+     document.write(strings[language]['last_search']);
+     document.write(" -");
+   </script>
+ </option>
 </select>
 
 </span>
@@ -202,13 +207,17 @@ Search within:
 <tr><td><font color='red'><b>
 
 <script language='javascript'>
-if (domLib_isOpera) { document.write("The Glossa interface has some minor problems with The Opera browser.<br> We recommend using Firefox (or Internet Explorer).") }
-if (domLib_isSafari) { document.write("The Glossa interface has some problems with The Safari browser. <br>We recommend using Firefox (or Internet Explorer).") }
-if (domLib_isKonq) { document.write("The Glossa interface has significant problems with The Konqueror browser. <br>We recommend using Firefox (or Internet Explorer).") }
+  if (domLib_isOpera) { document.write(strings[language]['dom_opera']) }
+  if (domLib_isSafari) { document.write(strings[language]['dom_safari']) }
+  if (domLib_isKonq) { document.write(strings[language]['dom_konqueror']) }
 </script>
 
 
-<p>Caution: This page is currently undergoing development. <br>Some things will be broken.</td></tr>
+<p>
+<script language="javascript">
+  document.write(strings[language]['bfw']);
+</script>
+</td></tr>
 
 
 </table>
