@@ -1,3 +1,4 @@
+/* $Id$ */
 var tableCounter = new Array;
 var curRow=-1;
 var fullQuery;
@@ -70,8 +71,8 @@ function writeWidgetTokenRow() {
 
     if (fullQuery != 'yes') {
 	Html += "<tr><td></td>"
-	    + "<td style='float:left'><nobr><input type='button' value='add token' onClick='writeWidgetToken(" + curRow + ")'></input><br>"
-	    + "<input type='button' id='delbutton_" + curRow + "'  value='delete token' onClick='delWidgetToken(" + curRow + ")'></input></nobr></td>"
+	    + "<td style='float:left'><nobr><input type='button' value='" + strings[language]['add_token'] + "' onClick='writeWidgetToken(" + curRow + ")'></input><br>"
+	    + "<input type='button' id='delbutton_" + curRow + "'  value='" + strings[language]['delete_token'] + "' onClick='delWidgetToken(" + curRow + ")'></input></nobr></td>"
 	    + "</tr></table>"
 	    + "<input type='hidden' name='phrase_number' value='" + curRow + "'></input>";
 
@@ -306,8 +307,9 @@ function ReloadMenu(language) {
 
     delete Menu[language];
     delete Menu['PLAINMENU'];
+    delete Menu['KONKPLUS'];
+    //reloadMenuPlain();
     reloadMenu();
-    reloadMenuPlain();
 
     
     

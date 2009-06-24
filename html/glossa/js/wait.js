@@ -1,6 +1,7 @@
-var Html='searching ';
+/* $Id$ */
+var Html = lang['query_searching'];
 var i = 0;
-var Finished=0;
+var Finished = 0;
 
 Print();
 
@@ -16,7 +17,7 @@ function doIt() {
 	else if (i < 10) { Print() } 
 	else { 
 		i=0; 
-		Html='searching ';
+		Html = lang['query_searching'];
 		Print()
 	}
 

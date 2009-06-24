@@ -1,6 +1,7 @@
+/* $Id$ */
 showList(2,'heisann');
 
-function showList(No,String,Hits,Corpus,Max) {
+function showList(No,String,Hits,Corpus,Max, Html) {
 
 	Object=document.getElementById("placeholder");
 
@@ -8,7 +9,7 @@ function showList(No,String,Hits,Corpus,Max) {
 	var HTML;
 	// FIXME
 	if (Corpus == 'bokmal') {HTML="Antall treff: <b>" + Hits + "</b>" + Max + "<br>Resultatsider: ";}
-	else {HTML="Hits found: <b>" + Hits + "</b>" + Max + "<br>Results pages: ";}
+	else {HTML=Html;}
 
 	for (var i = 1;i<=No;i++) {
 

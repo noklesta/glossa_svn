@@ -1,3 +1,4 @@
+/* $Id$ */
 var strings = new Array;
 
 strings['no'] = new Array;
@@ -168,3 +169,9 @@ strings['swe']['dom_konqueror']='Glossa-gränssnittet har stora problem med Konq
 strings['no']['bfw']='Caution: This page is currently undergoing development. <br>Some things will be broken.';
 strings['en']['bfw']='Caution: This page is currently undergoing development. <br>Some things will be broken.';
 strings['swe']['bfw']='Tjänsten är under utveckling och kan inte hänvisas till<br /> då den inte är stabil och vi ej ännu kan garantera samma resultat vid upprepad användning.';
+
+// query_dev.cgi är i $confdir/lang/swe.dat
+
+strings['no']['query_searching']='searching';
+strings['en']['query_searching']='searching';
+strings['swe']['query_searching']='söker';
