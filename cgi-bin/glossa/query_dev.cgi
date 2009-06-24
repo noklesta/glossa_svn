@@ -1,4 +1,5 @@
 #!/usr/bin/perl
+# $Id$
 
 use CGI::Carp qw(fatalsToBrowser);
 use strict;
@@ -42,6 +43,8 @@ my $cgi = CGI->new;
 
 my $test = 0;
 
+my $attribute_type = $cgi->param('atttype');
+
 my %cgi_hash;
 my @prms = $cgi->param();
 foreach my $p (@prms) {
@@ -78,19 +81,10 @@ my $display_struct = CGI::param('structDisplay');
 # FIXME: standard file format
 
 # main configuration file
-my $conf_file = $ROOT . "/" . $CORPUS . "/cgi.conf";
-my %conf;
-open (CONF, $conf_file);
-while (<CONF>) {
-    chomp;
-    next if (/^\#/);
-    s/\s*$//;
-    my ($k,$v)=split(/\s*=\s*/);
-    $conf{$k}=$v;
-}
-close CONF;
-
-$conf{'base_corpus'}=$CORPUS;
+#my $conf_file = $ROOT . "/" . $CORPUS . "/cgi.conf";
+my $conf_file = "/export/res/lb/glossa/dat/" . $CORPUS . "/cgi.conf";
+my $conf = Glossa::get_conf_file($CORPUS, $conf_file);
+my %conf = %$conf;
 
 ## postprocessing of configuration
 my %atts_hide;
@@ -103,36 +97,17 @@ foreach my $a (split(/ +/, $conf{'corpus_attributes_multiple'})) {
     $atts_mult{$a}=1;
 }
 
-# multitag file
-my $file = $conf{'config_dir'} . "/" . $CORPUS . "/multitags.dat";
-my %multitags;
-open (M, $file);
-while (<M>) {
-    chomp;
-    next if (/^#/);
-    s/\s*$//;
-    my ($a,$b,$c)=split(/\t/);
-    next unless ($a and $b and $c);
-    $multitags{$a}->{$b}=$c;
-}
-close M;
+# multitags file
+my $multitags= Glossa::get_multitags_file($conf{'config_dir'}, $CORPUS);
+my %multitags = %$multitags;
 
-# language file
-my $lang_file = $conf{'config_dir'} . "/lang/" . $conf{'lang'} . ".dat";
-my %lang;
-open (LANG, $lang_file);
-while (<LANG>) {
-    chomp;
-    s/\s*$//;
-    my ($k,$v)=split(/\s*=\s*/);
-    $lang{$k}=$v;
-}
-close LANG;
-
+# language locale file
+my $lang = Glossa::get_lang_file($conf{'config_dir'}, $conf{'lang'});
+my %lang = %$lang;
 
 ## start the HTTP session and HTML file
 print "Content-type: text/html; charset=$conf{'charset'}\n\n";
-print "<html><head><link rel=\"shortcut icon\" href=\"http://omilia.uio.no/favicon.ico\" type=\"image/ico\" />\n<title>$lang{'title'}</title><link href=\"", $conf{'htmlRoot'}, "/html/tags.css\" rel=\"stylesheet\" type=\"text/css\"></link></head><body>";
+print "<html><head><link rel=\"shortcut icon\" href=\"$conf{'favicon'}\" type=\"image/ico\" />\n<title>$lang{'query_title'}</title><link href=\"", $conf{'htmlRoot'}, "/html/tags.css\" rel=\"stylesheet\" type=\"text/css\"></link></head><body>";
 
 print "<div style='display:none' id='tagwidget' class='tag'></div>";
 
@@ -196,16 +171,6 @@ if ($conf{'groupfile'}) {
 #    $iconv= Text::Iconv->new($conf{'charsetfrom'}, $conf{'charset'});
 #    $iconvr= Text::Iconv->new($conf{'charset'}, $conf{'charsetfrom'});
 #} 
-
-
-## Set query id
-# This id is used to identify the files resulting from a query, so 
-# they can be processed by other functions (collocations, annotation etc.)
-my $starttime=time();
-my $rand = int(rand 100000);
-$conf{'query_id'} = $starttime . "_" . $rand;
-
-#print "ID: $conf{'query_id'}<br>";
 
 ## open log file
 open (LOG, ">>$conf{'logfile'}");
@@ -519,7 +484,7 @@ while (my ($k,$v) = each %aligned_corpora) {
 # end it
     $cqp_all .= ";";
 
-
+$debug = 0;
 if ($debug) {
     print "CQP: ", $cqp_all, "\n";
 }
@@ -545,7 +510,7 @@ my ($subcorpus,$sql_query_nl,$list) = Glossa::create_tid_list(\%conf, \%in, $COR
 
 # print natural language version
 if ($sql_query_nl) {
-    print "$lang{'metaquery'}: $sql_query_nl<br>";
+    print "$lang{'query_metaquery'}: $sql_query_nl<br>";
 }
 
 
@@ -569,7 +534,7 @@ my $top_text = "$lang{'query_string'}: <b>\"$cqp_query_source2print\"</b><br>";
 
 
 # start waiting ticker
-print "<div id='waiting'>searching </div>";
+print "<div id='waiting'>$lang{'query_searching'}</div>";
 print "<script language=\"JavaScript\" src=\"", $conf{'htmlRoot'}, "/js/wait.js\"></script>";
 print "<script language=\"JavaScript\" src=\"", $conf{'htmlRoot'}, "/js/", $CORPUS, ".conf.js\"></script>";
 
@@ -627,7 +592,7 @@ if (($CORPUS eq 'nota') or ($CORPUS eq 'upus') or ($CORPUS eq 'taus')) {
     $sentence_context='who';
 }
 else {
-    $sentence_context='s';
+    $sentence_context= 's';
 }
 
 if ($debug) {
@@ -675,6 +640,7 @@ if (CGI::param('searchWithin') eq 'last') {
     $query->exec("QUERY;");
 }
 
+$debug = 0;
 if ($debug) {
     print "8";
     print "<pre>";
@@ -683,8 +649,9 @@ if ($debug) {
 }
 
 
+
 # finally, execute the query
-my ($result,$size) = $query->query("$cqp_all");    
+my ($result,$size) = $query->query("$cqp_all");
 
 my @result;
 if ($result) {
@@ -754,23 +721,23 @@ my $actionurl =
 # Create a select widget. The onchange event redirects to the selected url. (The onclick event sets 
 # the selected value to 0, ensureing that even when selecting the same action twice 
 # the "onchange" event will still fire.) 
-$top_text .= "$lang{'action'}: <select id='actionselect' onClick=\"this.options.selectedIndex=0\" onChange=\"window.location.href=(this.options[this.selectedIndex].value)\"><option></option>";
-$top_text .= "<option value='" . $conf{'cgiRoot'} . "/count_choose.cgi?$actionurl'>$lang{'count'}</option> ";
-$top_text .= "<option value='" . $conf{'cgiRoot'} . "/download_choose.cgi?$actionurl'>$lang{'download'}</option> ";
-$top_text .= "<option value='" . $conf{'cgiRoot'} . "/sort_choose.cgi?$actionurl'>$lang{'sort'}</option> ";
-$top_text .= "<option value='" . $conf{'cgiRoot'} . "/coll_choose.cgi?$actionurl'>$lang{'collocations'}</option> ";
+$top_text .= "$lang{'query_action'}: <select id='actionselect' onClick=\"this.options.selectedIndex=0\" onChange=\"window.location.href=(this.options[this.selectedIndex].value)\"><option></option>";
+$top_text .= "<option value='" . $conf{'cgiRoot'} . "/count_choose.cgi?$actionurl'>$lang{'query_count'}</option> ";
+$top_text .= "<option value='" . $conf{'cgiRoot'} . "/download_choose.cgi?$actionurl'>$lang{'query_download'}</option> ";
+$top_text .= "<option value='" . $conf{'cgiRoot'} . "/sort_choose.cgi?$actionurl'>$lang{'query_sort'}</option> ";
+$top_text .= "<option value='" . $conf{'cgiRoot'} . "/coll_choose.cgi?$actionurl'>$lang{'query_collocations'}</option> ";
                                                                                                
 # only relevant for multilingual corpora
 if ($conf{'type'} eq 'multilingual') {
-    $top_text .= "<option value='" . $conf{'cgiRoot'} . "/cooc_choose.cgi?$actionurl'>$lang{'co-occurence'}</option> ";
+    $top_text .= "<option value='" . $conf{'cgiRoot'} . "/cooc_choose.cgi?$actionurl'>$lang{'query_co-occurrence'}</option> ";
 }
 
 
-$top_text .= "<option value='" . $conf{'cgiRoot'} . "/annotate_choose.cgi?$actionurl'>$lang{'annotate'}</option> ";
-$top_text .= "<option value='" . $conf{'cgiRoot'} . "/meta.cgi?$actionurl'>$lang{'metadata'}</option> ";
-$top_text .= "<option value='" . $conf{'cgiRoot'} . "/meta-dist.cgi?$actionurl'>$lang{'meta-dist'}</option> ";
-$top_text .= "<option value='" . $conf{'cgiRoot'} . "/show_page_dev.cgi?$actionurl&n=1&del=yes'>$lang{'delete'}</option> ";
-$top_text .= "<option value='" . $conf{'cgiRoot'} . "/save_hits_choose.cgi?$actionurl'>$lang{'save_hits'}</option> ";
+$top_text .= "<option value='" . $conf{'cgiRoot'} . "/annotate_choose.cgi?$actionurl'>$lang{'query_annotate'}</option> ";
+$top_text .= "<option value='" . $conf{'cgiRoot'} . "/meta.cgi?$actionurl'>$lang{'query_metadata'}</option> ";
+$top_text .= "<option value='" . $conf{'cgiRoot'} . "/meta-dist.cgi?$actionurl'>$lang{'query_meta-dist'}</option> ";
+$top_text .= "<option value='" . $conf{'cgiRoot'} . "/show_page_dev.cgi?$actionurl&n=1&del=yes'>$lang{'query_delete'}</option> ";
+$top_text .= "<option value='" . $conf{'cgiRoot'} . "/save_hits_choose.cgi?$actionurl'>$lang{'query_save_hits'}</option> ";
 
 $top_text .="</select><br>";
 
@@ -1048,8 +1015,7 @@ for (my $i = 0; $i < $nr_result; $i++) {
 	    # Output of the aligned regions. handling tags etc.
 	    # (does not actually print, but adds to the "$target_line" variable,
 	    # which will be printed later).
-	    my ($print) = Glossa::print_tokens($al, \@atts, $a, $i);
-	    $target_line .= $print . "<br>";		
+	    my ($print) = print_tokens_target($al, $attribute_type), "<br>";
 
 	    $target_line .= "</td></tr>";
 	    
@@ -1104,18 +1070,18 @@ for (my $i = 0; $i < $nr_result; $i++) {
 	}
 
 
-	my ($print) = Glossa::print_tokens($res_l,\@atts, $base_corpus, $i);
+	my ($print) = print_tokens($res_l, $attribute_type);
  	$source_line .= $print;
 	if ($context_type eq "chars") {$source_line.="</td><td>"; }
  	$source_line .= "<b> &nbsp;";
 
-	my ($print,$delayedprint) = Glossa::print_tokens($ord,\@atts, $base_corpus, $i,"match");
+	my ($print,$delayedprint) = print_tokens($ord, $attribute_type);
  	$source_line .= $print;
 	$delayedprint_all .= $delayedprint;
 
  	$source_line .= " &nbsp;</b>";
  	if ($context_type eq "chars") { $source_line.="</td><td>"; }
-	my ($print) = Glossa::print_tokens($res_r,\@atts, $base_corpus, $i);
+	my ($print) = print_tokens($res_r, $attribute_type);
 	$source_line .= $print;
  	$source_line .= "</td></tr>";
 
@@ -1156,7 +1122,7 @@ print "<br><br><br><br><br><br><br><br><br>";
 # For each unique tag, create a div that can be "floated" 
 # over the appropriate tokens.
 while (my ($id, $tags) = each %tags) {
-    print "<div id=\"$id\" class=\"tag\">$tags</div>";
+    print "\n<div id=\"$id\" class=\"tag\">$tags</div>";
 }
 
 
@@ -1165,18 +1131,19 @@ while (my ($id, $tags) = each %tags) {
 
 my $max;
 if ($hits == $results_max) {
-    $max= " of " . $size;
+    $max= " $lang{'query_hits_of'} " . $size;
 }
+
+my $res_count = "$lang{'query_no_hits'}: ";
+$res_count .= "<b>$hits</b> $max<br>$lang{'query_results_pages'}: ";
 
 # The javscript function (in reslist.js) to display the links to the 
 # results pages (in the "placeholder" span).
-print "<script language=\"javascript\">showList($d_files,'$conf{'query_id'}',$hits,'$CORPUS','$max')</script>";
+print "<script language=\"javascript\">showList($d_files,'$conf{'query_id'}',$hits,'$CORPUS','$max', '$res_count')</script>";
 
 # print page header to file, so that it is accessible for 
 # the other results pages
-print TOP "$lang{'no_hits'}: <b>$hits</b> $max";
-print TOP "<br>\n";
-print TOP "$lang{'results_pages'}: ";
+print TOP $res_count;
 foreach my $i (1..$d_files) {
     my $id = "page_" . $i;
     print TOP " <a id=\"$id\" href=\"$conf{'cgiRoot'}/show_page_dev.cgi?n=$i&query_id=$conf{'query_id'}&corpus=$CORPUS\">$i</a> ";
@@ -1213,6 +1180,86 @@ close DUMP;
 # copy to position for "last query"
 my $dumpfile2 = $conf{'hits_files'} . "/" . $user . ".lastsearch";
 copy($dumpfile, $dumpfile2);
+
+sub print_tokens {
+    
+    my $in = shift;
+    my $atts_index = shift;
+    my @t = split (/ /, $in);
+    my $string  ="";
+    foreach my $t (@t) {
+
+	my (@atts_token) = split(/\//, $t);
+
+	my $token_string = $atts_token[$atts_index];
+	if($token_string eq '__UNDEF__'){ $token_string = "<span style='color: #444; font-style: italic;'>" . $atts_token[0] . "</span>"; }
+	shift @atts_token;
+
+	my $token_atts;
+
+	foreach my $a (@atts) {
+
+	    my $att_token = shift @atts_token;
+	    next if ($att_token eq "_");
+	    next if ($att_token eq "__UNDEF__");
+	    next unless ($att_token);
+	    if ($a =~ m/_/) {
+
+		my $new_a = $multitags{$a}->{$att_token};
+#		print $a, "::", $att_token, "->", $new_a, "<br>";
+		$token_atts .= "<b>_" . $new_a . "_: </b>" . $att_token . "<br>";		
+	    }
+	    else {
+		$token_atts .= "<b>" . $a . ": </b>" . $att_token . "<br>";		
+	    }
+
+	}
+
+	$tag_i++;
+	$string .= sprintf("<span onMouseOver=\"showTag(arguments[0], \'$tag_i\')\" onMouseOut=\"hideTag(\'$tag_i\')\">\n");
+	$string .= sprintf("%s </span>",$token_string); 
+	$tags{$tag_i}=$token_atts;
+	## pling pling
+#	print TEMP "token_atts: $token_atts\n"
+    }
+    return $string;
+    
+}
+
+sub print_tokens_target {
+
+    my $in = shift;
+    my @t = split (/ /, $in);
+
+    foreach my $t (@t) {
+
+	my (@atts_token) = split(/\//, $t);
+	my $token_string = shift @atts_token;
+
+	my $token_atts;
+
+	foreach my $a (@atts) {
+	    my $att_token = shift @atts_token;
+	    next if ($att_token eq "_");
+	    next if ($att_token eq "__UNDEF__");
+	    next unless ($att_token);
+	    if ($a =~ m/_/) {
+
+		my $new_a = $multitags{$a}->{$att_token};
+
+		$token_atts .= "<b>" . $new_a . ": </b>" . $att_token . "<br>";		
+	    } else {
+		$token_atts .= "<b>" . $a . ": </b>" . $att_token . "<br>";		
+	    }
+	}
+
+	$tag_i++;
+	$target_line.=sprintf("<span onMouseOver=\"showTag(arguments[0], \'$tag_i\')\" onMouseOut=\"hideTag(\'$tag_i\')\">\n");
+	$target_line.=sprintf("%s </span>",$token_string); 
+	$tags{$tag_i}=$token_atts;
+
+    }
+}
 
 
 

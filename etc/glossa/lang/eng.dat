@@ -1,0 +1,85 @@
+# Engelska översättningar
+# $Id$
+# från query_dev.cgi
+query_title = Glossa-sökning 
+query_metaquery = Metasök
+query_string = Sökuttryck
+query_action = Åtgärd
+query_count = Räkna
+query_download = Hämta hem
+query_sort = Sortera
+query_collocations = Kollokationer
+query_co-occurrence = Samförekomster
+query_annotate = Annotera
+query_metadata = Metadata
+query_meta-dist = Metadataspridning
+query_delete = Ta bort valda sökträffar
+query_save_hits = Spara sökträffar
+
+# fixme! - används även i javascript wait.js
+query_searching = söker
+
+# fixme! - även i javascript reslist.js
+query_hits_of = av
+query_no_hits = Träffar
+query_results_pages = Resultatsidor
+
+# count_choose.cgi
+count_casesensitive = Case sensitive
+count_create_headings = Create headings
+count_include = Include: 
+count_wordform = Word form
+count_lexeme = Lexeme
+count_postag = POS Tag
+count_maxresults = Max number of results: 
+count_output_format_heading = Output format: 
+count_output_format_html = HTML
+count_output_format_tsv = Tab-separated values
+count_output_format_csv = Comma-separated values
+count_output_format_excel = Excel spreadsheet
+count_output_format_histogram = Histogram 
+count_output_format_histogram_hor = Histogram (horisontal)
+count_output_format_pie = Pie chart
+count_submit_button = Submit
+ 
+# count.cgi
+count_occurrences = Förekomster
+count_string = Sträng
+count_lexical_stats = Lexikal statistik
+count_match = Träff
+
+# sort_choose.cgi
+sort_casesensitive = Case sensitive
+sort_sort_by = Sort by: 
+sort_by_lc = Left context
+sort_by_hit = Match
+sort_by_rc = Right context
+sort_by_sid = Sentence ID
+sort_randomize = randomize
+sort_position_from_hit = Position in context (counting from match)
+sort_features = Features used on tokens: 
+sort_wordform = Word form
+sort_postag = POS tag
+sort_lexeme = Lexeme
+sort_secondary_by = Sort by (secondary):
+
+sort_not_selected = --not selected--
+sort_submit_button = Submit
+sort_reset_button = Reset
+
+# get_hits.cgi
+get_hits_deleting = Deleting: 
+get_hits_renaming = Renaming
+get_hits_to = to
+get_hits_joining = Joining
+get_hits_name = Name
+get_hits_delete = Delete
+get_hits_rename = Rename
+get_hits_add = Add
+get_hits_add_selected_to = Add selected to: 
+get_hits_not_selected = --not selected--
+get_hits_join_results = join results
+
+# meta_save_choose.cgi
+meta_save_submit_button = Submit
+meta_save_no_selection = No selection to save.

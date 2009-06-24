@@ -24,7 +24,8 @@ unless ($base_corpus) { $base_corpus = $corpus }
 
 my $cutoff = CGI::param('cutoff');
 
-my $conf = Glossa::get_conf_file($corpus);
+my $conf_file = "/export/res/lb/glossa/dat/" . $corpus . "/cgi.conf";
+my $conf = Glossa::get_conf_file($corpus, $conf_file);
 my %conf = %$conf;
 
 

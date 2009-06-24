@@ -1,31 +1,35 @@
 #!/usr/bin/perl
+# $Id$
 
 use CGI;
 use Spreadsheet::WriteExcel;
 use GD::Graph::bars;
 use GD::Graph::hbars;
 use GD::Graph::pie;
+
 use lib("/home/httpd/html/glossa/pm");
 use Glossa;
-
-print "Content-type: text/html\n\n";
-
-print "<html><head></head><body>";
-#print "Result: ";
 
 my $query_id = CGI::param('query_id');
 my $user = $ENV{'REMOTE_USER'}; 
 my $corpus = CGI::param('corpus');
-my $conf = Glossa::get_conf_file($corpus);
+
+my $conf_file = "/export/res/lb/glossa/dat/" . $corpus . "/cgi.conf";
+my $conf=Glossa::get_conf_file($corpus, $conf_file);
 my %conf = %$conf;
 
+my $lang=Glossa::get_lang_file($conf{'config_dir'}, $conf{'lang'});
+my %lang = %$lang;
+
 # FIXME: this is a silly way of doing things
-my $conf= $conf{'tmp_dir'} . "/" . $query_id . ".conf"; 
-unless (-e $conf) {
-  $conf{'tmp_dir'} = $conf{'config_dir'}  . "/" . $corpus . "/hits/"  . $user . "/";
+my $query_hits_conf_file = $conf{'tmp_dir'} . "/" . $query_id . ".conf"; 
+unless (-e $query_hits_conf_file) {
+  $conf{'tmp_dir'} = $conf{'hits_files'} . $user . "/";
 }
 
-
+print "Content-type: text/html; charset=$conf{'charset'}\n\n";
+print "<html><head></head><body>";
+#print "Result: ";
 
 my $format = CGI::param('format');
 my $cutoff = CGI::param('cutoff');
@@ -115,7 +119,7 @@ if ($cutoff) {
 if ($format eq "tsv") { 
 
     if (CGI::param('head')) {
-	print OUT "Occurences\tString\n";
+	print OUT "$lang{'count_occurrences'}\t$lang{'count_string'}\n";
     }
     foreach my $e (@list_sorted) {
 	print OUT "$e->[1]\t$e->[0]\n";
@@ -123,7 +127,7 @@ if ($format eq "tsv") {
 }
 elsif ($format eq "csv") {
     if (CGI::param('head')) {
-	print OUT "\"Occurences\",\"String\"\n";
+	print OUT "\"$lang{'count_occurrences'}\"\t\"$lang{'count_string'}\"\n";
     }
     foreach my $e (@list_sorted) {
 	$e->[0] =~ s/\"/\"\"\"/g;
@@ -168,11 +172,11 @@ elsif (($format eq "bars") or ($format eq "pie") or ($format eq "hbars")) {
     if ($format eq "bars") {
 	$graph = GD::Graph::bars->new($graph_width, 400);
 	$graph->set( 
-		     x_label           => 'String',
-		     y_label           => 'Occurences',
+		     x_label           => "$lang{'count_string'}",
+		     y_label           => "$lang{'count_occurrences'}",
 		     y_max_value           => $max_y,
 		     x_labels_vertical => $vertical,
-		     title             => "Lexical Statistics"
+		     title             => "$lang{'count_lexical_stats'}"
 		     ) or die $graph->error;
 
     }
@@ -182,22 +186,18 @@ elsif (($format eq "bars") or ($format eq "pie") or ($format eq "hbars")) {
 	$vertical=0;
 	$graph = GD::Graph::hbars->new(750, $graph_heigth);
 	$graph->set( 
-		     x_label           => 'String',
-		     y_label           => 'Occurences',
+		     x_label           => "$lang{'count_string'}",
+		     y_label           => "$lang{'count_occurrences'}",
 		     y_max_value           => $max_y,
 		     x_labels_vertical => $vertical,
-		     title             => "Lexical Statistics"
+		     title             => "$lang{'count_lexical_stats'}"
 		     ) or die $graph->error;
 
     }
     if ($format eq "pie") {
 	$graph = GD::Graph::pie->new(400, 400);
 	$graph->set( 
-#		     x_label           => 'String',
-#		     y_label           => 'Occurences',
-#		     y_max_value           => $max_y,
-#		     x_labels_vertical => $vertical,
-		     title             => "Lexical Statistics"
+		     title             => "$lang{'count_lexical_stats'}"
 		     ) or die $graph->error;
 
     }
@@ -217,8 +217,8 @@ elsif ($format eq "xls") {
 	my $format = $workbook->add_format(); # Add a format
 	$format->set_bold();
 	$format->set_align('center'); 
-	$worksheet->write(0,0,"Occurences",$format);
-	$worksheet->write(0,1,"String",$format);
+	$worksheet->write(0,0,"$lang{'count_occurrences'}",$format);
+	$worksheet->write(0,1,"$lang{'count_string'}",$format);
 	$j++;
     }
     foreach my $e (@list_sorted) {
@@ -229,7 +229,7 @@ elsif ($format eq "xls") {
 
 }
 elsif ($format eq "html") {
-    print "<table><tr><td><b>occurences</b> &nbsp;</td><td><b>match</b></td></tr>";
+    print "<table><tr><td><b>$lang{'count_occurrences'}</b> &nbsp;</td><td><b>$lang{'count_match'}</b></td></tr>";
     
     foreach my $e (@list_sorted) {
 	print "<tr><td align=\"right\">$e->[1] &nbsp;</td><td><b>$e->[0]</b></td></tr>";

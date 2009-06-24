@@ -1,11 +1,14 @@
 #!/usr/bin/perl
+# $Id$
 
 use DBI;
 use CGI;
 use Data::Dumper;
 use strict;
+
 use lib("/home/httpd/html/glossa/pm");
 use Glossa;
+
 my $user = $ENV{'REMOTE_USER'};
 
 
@@ -20,7 +23,6 @@ print "var widgetContent = new Array();";
 
 # get some form input
 my $corpus = CGI::param('corpus');
-
 my $conf = Glossa::get_conf_file($corpus);
 my %conf = %$conf;
 
@@ -37,9 +39,6 @@ while (my ($k, $v) = each %conf) {
     }
 
 }
-
-
-
 
 my $dsn = "DBI:mysql:database=$conf{'db_name'};host=$conf{'db_host'}";
 my $dbh = DBI->connect($dsn, $conf{'db_uname'}, $conf{'db_pwd'}, {RaiseError => 1})          ||              die $DBI::errstr;

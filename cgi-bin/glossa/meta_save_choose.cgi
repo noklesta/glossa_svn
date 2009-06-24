@@ -1,23 +1,19 @@
 #!/usr/bin/perl
+# $Id$
 
 use CGI;
 use DBI;
+use Data::Dumper;
+use strict;
 
 use lib ('/home/httpd/html/glossa/pm/');
 use Glossa;
-use Data::Dumper;
-use strict;
 
 select(STDOUT);
 $|=1;
 
-print "Content-type: text/html\n\n";
+print "Content-type: text/html; charset=$conf{'charset'}\n\n";
 print "<html><head></head><body>";
-
-
-
-
-
 
 my $cgi = CGI->new;
 # FIXME: this should be done in module
@@ -33,15 +29,14 @@ my $in = Glossa::create_cgi_hash2(\%cgi_hash);
 my %in = %$in;
 
 
-my $CORPUS = $in{'query'}->{'corpus'}->[0];
+my $corpus = $in{'query'}->{'corpus'}->[0];
 my $base_corpus = $in{'phrase'}->{'0'}->{'corpus'}->[0];
 
-
-my $conf = Glossa::get_conf_file($CORPUS);
+my $conf = Glossa::get_conf_file($corpus);
 my %conf = %$conf;
 
-
-
+my $lang=Glossa::get_lang_file($conf{'config_dir'}, $conf{'lang'});
+my %lang = %$lang;
 
 my $dsn = "DBI:mysql:database=$conf{'db_name'};host=$conf{'db_host'}";
 my $dbh = DBI->connect($dsn, $conf{'db_uname'}, $conf{'db_pwd'}, {RaiseError => 0}) || die $DBI::errstr;
@@ -52,7 +47,7 @@ my $format = CGI::param('format');
 my $tablename = $base_corpus . "_lexstat";
 
 
-my ($subcorpus,$sql_query_nl,$texts_allowed,$subcorpus_string) = Glossa::create_tid_list(\%conf, \%in, $CORPUS);
+my ($subcorpus,$sql_query_nl,$texts_allowed,$subcorpus_string) = Glossa::create_tid_list(\%conf, \%in, $corpus);
 
 if ($subcorpus_string) {
 
@@ -72,14 +67,14 @@ if ($subcorpus_string) {
     print "<form action='", $conf{'cgiRoot'}, "/meta_save.cgi' method='get'>\n";
     print "<input type='text' name='subcorpus_name'></input>\n";
     print "<input type='hidden' name='subcorpus_id' value='$fname'></input>\n";
-    print "<input type='hidden' name='corpus' value='$CORPUS'></input>\n";
-    print "<input type='submit'></input>\n";
+    print "<input type='hidden' name='corpus' value='$corpus'></input>\n";
+    print "<input type='submit'>$lang{'meta_save_submit_button'}</input>\n";
     print "</form>";
 
     
 
 }
 else {
-    print "<b>No selection to save.</b>";
+    print "<b>$lang{'meta_save_no_selection'}</b>";
 }
 

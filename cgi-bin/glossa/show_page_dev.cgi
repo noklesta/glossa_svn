@@ -1,17 +1,22 @@
 #!/usr/bin/perl
+# $Id$
 
 use CGI;
 use DBI;
 use Data::Dumper;
+use strict;
+
 use lib("/home/httpd/html/glossa/pm");
 use Glossa;
-use strict;
+
 
 
 # variables $query_id and $corpus ends up on the command line; 
 # must be checked for nastiness (like "taint")
 my $query_id = CGI::param('query_id');
 my $corpus=CGI::param('corpus');
+my $attribute_type=CGI::param('atttype');
+
 unless ($query_id =~ m/^\d+_\d+$/) { die("illegal value") };
 #unless ($corpus =~ m/^[\w|\d|_|-]+$/) { die("illegal value") };
 
@@ -21,12 +26,19 @@ my $hits_name=CGI::param('name');
 
 my $user = $ENV{'REMOTE_USER'}; 
 
-my $conf=Glossa::get_conf_file($corpus);
+my $conf_file = "/export/res/lb/glossa/dat/" . $corpus . "/cgi.conf";
+my $conf=Glossa::get_conf_file($corpus, $conf_file);
 my %conf = %$conf;
+
+my $multitags= Glossa::get_multitags_file($conf{'config_dir'}, $corpus);
+my %multitags = %$multitags;
+
+my $lang=Glossa::get_lang_file($conf{'config_dir'}, $conf{'lang'});
+my %lang = %$lang;
 
 
 print "Content-type: text/html; charset=$conf{'charset'}\n\n";
-print "<html>\n<head><title>Resultater</title><link href=\"", $conf{'htmlRoot'}, "/html/tags.css\" rel=\"stylesheet\" type=\"text/css\"></link>";
+print "<html>\n<head><title>$lang{'query_title'}</title><link href=\"", $conf{'htmlRoot'}, "/html/tags.css\" rel=\"stylesheet\" type=\"text/css\"></link>";
 print "<script language=\"JavaScript\" src=\"", $conf{'htmlRoot'}, "/js/showtag.js\"></script></head>\n<body>";
 print "<script language=\"JavaScript\" src=\"", $conf{'htmlRoot'}, "/js/", $corpus, ".conf.js\"></script>";
 
@@ -36,23 +48,19 @@ my $annotation_in_conf_file;
 
 my $context_type;
 my $hlight;
-my $conf= $conf{'tmp_dir'} . "/" . $query_id . ".conf"; 
+my $query_hits_conf_file = $conf{'tmp_dir'} . $query_id . ".conf";
 
 # FIXME: this is a silly way of doing things
-unless (-e $conf) {
-  $conf{'tmp_dir'} = $conf{'config_dir'}  . "/" . $corpus . "/hits/"  . $user . "/";
+unless (-e $query_hits_conf_file) {
+  $conf{'tmp_dir'} = $conf{'hits_files'} . $user . "/";
 }
 
 if ($hits_name) {
-  $conf{'tmp_dir'} = $conf{'config_dir'}  . "/" . $corpus . "/hits/"  . $user . "/";
+  $conf{'tmp_dir'} = $conf{'hits_files'}  . $user . "/";
+  $query_hits_conf_file= $conf{'tmp_dir'} . "/" . $query_id . ".conf"; 
 }
 
-
-$conf= $conf{'tmp_dir'} . "/" . $query_id . ".conf"; 
-
-
-
-open (CONF, "$conf");
+open (CONF, "$query_hits_conf_file");
 while (<CONF>) {
     chomp;
     if (/^context_type=(.*)/) { $context_type=$1 }
@@ -77,26 +85,6 @@ my $annotation_select;
 
 my $dsn = "DBI:mysql:database=$conf{'db_name'};host=$conf{'db_host'}";
 my $dbh = DBI->connect($dsn, $conf{'db_uname'}, $conf{'db_pwd'}, {RaiseError => 1});
-
-
-
-
-
-# read multitag file
-my $file = $conf{'config_dir'} . "/" . $corpus . "/multitags.dat";
-my %multitags;
-open (M, $file);
-while (<M>) {
-    
-    chomp;
-    next if (/^\#/);
-    s/\s*$//;
-    my ($a,$b,$c)=split(/\t/);
-    next unless ($a and $b and $c);
-    $multitags{$a}->{$b}=$c;
-}
-close M;
-
 
 my $atts = $conf{'corpus_attributes'};
 my @atts = split(/ +/, $atts);
@@ -294,13 +282,13 @@ while (<DATA>) {
     if ($context_type eq "chars") { print " align=\"right\"" }
     print ">";
 
-    print_it($res_l);
+    print_it($res_l, $attribute_type);
     if ($context_type eq "chars") { print "</td><td>" }
     print "<b> &nbsp;";
-    print_it($ord);
+    print_it($ord, $attribute_type);
     print " &nbsp;</b>";
     if ($context_type eq "chars") { print "</td><td>" }
-    print_it($res_r);
+    print_it($res_r, $attribute_type);
 
 
     print "</td></tr>";
@@ -341,7 +329,7 @@ while (<DATA>) {
 	print ">";
 
 	print "<font color=\"gray\">";
-	print_it($al);
+	print_it($al, $attribute_type);
 
 	print "<\/font>";
 	print "</td></tr>";
@@ -365,15 +353,24 @@ print "</body></html>";
 
 
 my $tag_i;
+# fixme! - samma som print_tokens i query_dev.cgi ska flyttas till Glossa.pm
 sub print_it {
 
     my $in = shift;
+    my $atts_index = shift;
     my @t = split (/ /, $in);
+
+    my $alert = 0;
 
     foreach my $t (@t) {
 
 	my (@atts_token) = split(/\//, $t);
-	my $token_string = shift @atts_token;
+
+	my $token_string = $atts_token[$atts_index];
+
+	if($token_string eq '__UNDEF__'){ $alert = 1; $token_string = "<span style='color: #444; font-style: italic;'>" . $atts_token[0] . "</span>"; }
+
+	shift @atts_token;
 
 	my $token_atts;
 
@@ -385,8 +382,7 @@ sub print_it {
 	    if ($a =~ m/_/) {
 		my $new_a = $multitags{$a}->{$att_token};
 		$token_atts .= "<b>" . $new_a . ": </b>" . $att_token . "<br>";		
-	    }
-	    else {
+	    } else {
 		$token_atts .= "<b>" . $a . ": </b>" . $att_token . "<br>";		
 	    }
 

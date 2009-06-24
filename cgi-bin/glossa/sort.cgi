@@ -1,4 +1,5 @@
 #!/usr/bin/perl
+# $Id$
 
 use CGI;
 use locale;
@@ -14,19 +15,18 @@ use Glossa;
 my $corpus=CGI::param('corpus');
 my $user = $ENV{'REMOTE_USER'}; 
 my $query_id = CGI::param('query_id');
+
 my $conf=Glossa::get_conf_file($corpus);
 my %conf = %$conf;
 
 # FIXME: this is a silly way of doing things
-my $conf= $conf{'tmp_dir'} . "/" . $query_id . ".conf"; 
-unless (-e $conf) {
-  $conf{'tmp_dir'} = $conf{'config_dir'}  . "/" . $corpus . "/hits/"  . $user . "/";
+my $query_hits_conf_file = $conf{'tmp_dir'} . "/" . $query_id . ".conf"; 
+unless (-e $query_hits_conf_file) {
+  $conf{'tmp_dir'} = $conf{'hits_files'}  . $user . "/";
 }
 
 
-print "Content-type: text/html\n\n";
-
-
+print "Content-type: text/html; charset=$conf{'charset'}\n\n";
 
 my $query_id2 = $query_id."_";
 my @files = <$conf{'tmp_dir'}/$query_id2*>;

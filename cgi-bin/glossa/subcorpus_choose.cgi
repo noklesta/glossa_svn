@@ -13,13 +13,13 @@ print "<html><head></head><body>";
 
 
 my $corpus = CGI::param('corpus');
-my $conf=Glossa::get_conf_file($corpus);
+my $conf_file = "/export/res/lb/glossa/dat/" . $corpus . "/cgi.conf";
+my $conf = Glossa::get_conf_file($corpus, $conf_file);
 my %conf = %$conf;
 
 my $subcorp_dir = $conf{'subcorp_files'};
 
 my $user = $ENV{'REMOTE_USER'};
-
 $subcorp_dir = $subcorp_dir . "/" . $user;
 
 my @files = <$subcorp_dir/*.dat>;

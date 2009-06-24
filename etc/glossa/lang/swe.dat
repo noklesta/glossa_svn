@@ -1,0 +1,85 @@
+# Svenska översättningar
+# $Id$
+# från query_dev.cgi
+query_title = Glossa-sökning 
+query_metaquery = Metasök
+query_string = Sökuttryck
+query_action = Åtgärd
+query_count = Räkna
+query_download = Hämta hem
+query_sort = Sortera
+query_collocations = Kollokationer
+query_co-occurrence = Samförekomster
+query_annotate = Annotera
+query_metadata = Metadata
+query_meta-dist = Metadataspridning
+query_delete = Ta bort valda sökträffar
+query_save_hits = Spara sökträffar
+
+# fixme! - används även i javascript wait.js
+query_searching = söker
+
+# fixme! - även i javascript reslist.js
+query_hits_of = av
+query_no_hits = Träffar
+query_results_pages = Resultatsidor
+
+# count_choose.cgi
+count_casesensitive = Storlekskänslig
+count_create_headings = Använd rubriker
+count_include = Inkludera: 
+count_wordform = Ordform
+count_lexeme = Lexem
+count_postag = Ordklasstagg
+count_maxresults = Max antal resultat: 
+count_output_format_heading = Utformat: 
+count_output_format_html = html
+count_output_format_tsv = tabbseparerade värden
+count_output_format_csv = kommaseparerade värden
+count_output_format_excel = Excel-kalkylblad
+count_output_format_histogram = Histogram 
+count_output_format_histogram_hor = Histogram (horisontellt)
+count_output_format_pie = Tårtbitar
+count_submit_button = Generera
+
+# count.cgi
+count_occurrences = Förekomster
+count_string = Sträng
+count_lexical_stats = Lexikal statistik
+count_match = Träff
+
+# sort_choose.cgi
+sort_casesensitive = Storlekskänslig
+sort_sort_by = Sortera efter: 
+sort_by_lc = Vänsterkontext
+sort_by_hit = Träffen
+sort_by_rc = Högerkontext
+sort_by_sid = Menings-id
+sort_randomize = slumpa fram
+sort_position_from_hit = Dokumentordning (räknat från träffen)
+sort_features = Särdrag för tokar: 
+sort_wordform = Ordform
+sort_postag = Ordklasstagg
+sort_lexeme = Lexem
+sort_secondary_by = Sortera (sekundärt) efter:
+
+sort_not_selected = --ej vald--
+sort_submit_button = Sortera
+sort_reset_button = Återställ
+
+# get_hits.cgi
+get_hits_deleting = Tar bort: 
+get_hits_renaming = Byter namn
+get_hits_to = till
+get_hits_joining = Slår ihop
+get_hits_name = Namn
+get_hits_delete = ta bort
+get_hits_rename = Byt namn
+get_hits_add = Lägg till
+get_hits_add_selected_to = Lägg valda till: 
+get_hits_not_selected = --ej vald--
+get_hits_join_results = Slå ihop resultat
+
+# meta_save_choose.cgi
+meta_save_submit_button = Submit
+meta_save_no_selection = No selection to save.

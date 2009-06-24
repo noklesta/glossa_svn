@@ -1,25 +1,19 @@
 #!/usr/bin/perl
+# $Id$
 
 use CGI;
 use DBI;
-use lib ('/home/httpd/html/glossa/pm/');
-use Glossa;
 use Data::Dumper;
 use strict;
 use POSIX qw(locale_h);
+
+use lib ('/home/httpd/html/glossa/pm/');
+use Glossa;
 
 setlocale('LC_TYPE', "norweigan");
 
 select(STDOUT);
 $|=1;
-
-print "Content-type: text/html\n\n";
-print "<html><head></head><body>";
-
-
-
-
-
 
 my $cgi = CGI->new;
 # FIXME: this should be done in module
@@ -38,11 +32,11 @@ my %in = %$in;
 
 my $CORPUS = $in{'query'}->{'corpus'}->[0];
 
-
-
 my $conf = Glossa::get_conf_file($CORPUS);
 my %conf = %$conf;
 
+print "Content-type: text/html; charset=$conf{'charset'}\n\n";
+print "<html><head></head><body>";
 
 
 my $dsn = "DBI:mysql:database=$conf{'db_name'};host=$conf{'db_host'}";
@@ -192,7 +186,7 @@ while (my ($k, $v) = each %stats) {
     my @list_sorted = sort {$a->[0] cmp $b->[0]} @list;
 
     foreach my $entry (@list_sorted) {
-	my $pct = ($entry->[1]/$total)*100;
+	my $pct = $total > 0 ? ($entry->[1]/$total)*100 : 0;
 	$pct = sprintf("%.1f", $pct);
 	print "<tr><td width=200>" . $entry->[0] . "</td><td>" . $entry->[1] . "</td><td>" . $pct . "</td></tr>\n";
     }

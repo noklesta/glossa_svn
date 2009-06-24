@@ -1,4 +1,5 @@
 package Glossa;
+# $Id$
 
 use warnings;
 use strict;
@@ -8,37 +9,94 @@ use base qw{ Exporter };
 use Data::Dumper;
 use DBI;
 
-our $VERSION   = '0.1';
-our @EXPORT_OK = qw{ get_conf_file print_token print_token_target create_tid_list get_metadata_feat };
+our $VERSION   = '0.2';
+# fixme! - flytta hit print_tokens och print_tokens_target (print_it)
+our @EXPORT_OK = qw{ get_conf_file get_multitags_file get_lang_file print_tokens print_tokens_target create_tid_list get_metadata_feat };
  
 sub get_conf_file {
 
     my $corpus = shift;
-    my $conf_file = shift;
+    my $config_dat_file = shift;
 
     my %conf;
 
     unless ($corpus) { $corpus = "test" }
 
     # read configuration file
-    unless ($conf_file) {
-	$conf_file = "/hf/omilia/site/glossa-0.7/dat/" . $corpus . "/cgi.conf";
+    unless ($config_dat_file) {
+	$config_dat_file = "/etc/glossa/dat/" . $corpus . "/cgi.conf";
     }
 
 
-    open (CONF, $conf_file);
+    open (CONF, $config_dat_file);
     while (<CONF>) {
 	chomp;
-	next if (/^#/);
+	next if (/^#/ || /^$/);
 	s/\s*$//;
 	my ($k,$v)=split(/\s*=\s*/);
 	$conf{$k}=$v;
     }
     close CONF;
-    
+    ## Set query id
+    # This id is used to identify the files resulting from a query, so 
+    # they can be processed by other functions (collocations, annotation etc.)
+    my $starttime = time();
+    my $rand = int(rand 100000);
+    $conf{'query_id'} = $starttime . "_" . $rand;
+
+    #print "ID: $conf{'query_id'}<br>";
+
     return \%conf;
 
 }
+
+sub get_lang_file {
+    # language locale file
+    my $config_dir = shift;
+    my $lang_locale = shift;
+
+    my $lang_file = $config_dir . "/lang/" . $lang_locale . ".dat";
+
+    # read configuration file
+    unless ($lang_file) {
+	$lang_file = "/etc/glossa/lang/eng.dat";
+    }
+
+    my %lang;
+    open (LANG, $lang_file);
+    while (<LANG>) {
+	chomp;
+	next if (/^#/ || /^$/);
+	s/\s*$//;
+	my ($k,$v) = split(/\s*=\s*/);
+	$lang{$k} = $v;
+    }
+    close LANG;
+    
+    return \%lang;
+}
+
+sub get_multitags_file {
+    # multitag file
+    my $config_dir = shift;
+    my $corpus = shift;
+
+    my $multitags_file = $config_dir . "/" . $corpus . "/multitags.dat";
+    my %multitags;
+    open (M, $multitags_file);
+    while (<M>) {
+	chomp;
+	next if (/^#/ || /^$/);
+	s/\s*$//;
+	my ($a,$b,$c)=split(/\t/);
+	next unless ($a and $b and $c);
+	$multitags{$a}->{$b}=$c;
+    }
+    close M;
+
+    return \%multitags;
+}
+
 sub create_cgi_hash0 {
     #FIXED (joel 20071221) uses hash_string to recursively build perl code, then evals it.. or so we thought:-/
     my $cgi_hash=shift;
@@ -54,7 +112,8 @@ sub create_cgi_hash0 {
     }
     return (\%in);
 }
-sub hash_string{
+
+sub hash_string {
     my $array = shift;
     my $val = shift;
     my @arr = @$array;
@@ -89,14 +148,7 @@ sub create_cgi_hash2 {
 	    $in{$prm[0]}->{$prm[1]}->{$prm[2]}=\@vals;	    
 	}
 	elsif (@prm == 4) {
-	    
-#	    print "0 $prm[0]<br>";
-#	    print "1 $prm[1]<br>";
-#	    print "2 $prm[2]<br>";
-#	    print "3 $prm[3]<br>";
-#	    print join(" ", @vals), "<br>";
-#	    print "<br>";
-	    $in{$prm[0]}->{$prm[1]}->{$prm[2]}->{$prm[3]}=\@vals;	    
+	    $in{$prm[0]}->{$prm[1]}->{$prm[2]}->{$prm[3]}=\@vals;
 	}
     }
     return (\%in);
@@ -147,7 +199,7 @@ sub create_cgi_hash {
 	    $in{$prm[0]}->{$prm[1]}->{$prm[2]}=\@vals;	    
 	}
 	elsif (@prm == 4) {
-	    $in{$prm[0]}->{$prm[1]}->{$prm[2]}->{$prm[3]}=\@vals;	    
+	    $in{$prm[0]}->{$prm[1]}->{$prm[2]}->{$prm[3]}=\@vals;
 	}
 	
     }
@@ -200,14 +252,10 @@ sub create_tid_list {
     }
 
     my $base_corpus = shift;
-
+    $base_corpus = "" if (!defined $base_corpus);
 
 
     # initialize MySQL
-#my $dsn = "DBI:mysql:database=glossa;host=omilia.uio.no";
-
-#my $dbh = DBI->connect($dsn, "glossa_reader", "tuba");
-
     my $dsn = "DBI:mysql:database=$conf{'db_name'};host=$conf{'db_host'}";
     my $dbh = DBI->connect($dsn, $conf{'db_uname'}, $conf{'db_pwd'}, {RaiseError => 1});
 
@@ -322,8 +370,8 @@ sub create_tid_list {
    # korpusene?
 #    foreach my $corpusname ((keys %aligned_corpora), (keys %aligned_corpora_opt), $base_corpus) {
     foreach my $corpusname ($base_corpus) {
-	my ($a,$lang)= split(/_/, $corpusname);
-	next unless (($a eq 'OMC3') or ($a eq 'OMC4'));
+	my ($a,$lang) = split(/_/, $corpusname);
+	next unless ((defined $a) and (($a eq 'OMC3') or ($a eq 'OMC4')));
 	if ($lang) {
 	    $lang=lc($lang);
 	    push @lang_restr, "$text_table_name.lang='$lang'";
@@ -365,7 +413,7 @@ sub create_tid_list {
     
 
     
-    my $sql_query;
+    my $sql_query = "";
     if ((@all_restr > 0) or (@lang_restr > 0)) {
 	$sql_query = " WHERE " . join(" AND ", @all_restr);
     }
@@ -506,7 +554,7 @@ Glossa
 
 =head1 VERSION
 
-Version 0.1
+Version 0.2
 
 
 =head1 SYNOPSIS
@@ -516,15 +564,21 @@ Version 0.1
 
 =head2 get_conf_file()
 
+=head2 get_multitags_file()
+
+=head2 get_lang_file()
+
 =head1 AUTHOR
 
 Lars Nygaard, C<< <lars.nygaard@inl.uio.no> >>
+Anders Noklestad, C<< <anders.noklestad@iln.uio.no> >>
+Leif-Jöran Olsson, C<< <leif-joran.olsson@svenska.gu.se> >>
 
 =head1 BUGS
 
 =head1 COPYRIGHT & LICENSE
 
-Copyright 2006 Lars Nygaard, all rights reserved.
+Copyright 2006-2009 Glossa partners.
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.

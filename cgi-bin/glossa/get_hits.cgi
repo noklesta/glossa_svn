@@ -1,4 +1,5 @@
 #!/usr/bin/perl
+# $Id$
 
 use CGI;
 use strict;
@@ -8,17 +9,21 @@ use Glossa;
 select(STDOUT);
 $|=1;
 
-print "Content-type: text/html\n\n";
-
 my $corpus=CGI::param('corpus');
 my $user = $ENV{'REMOTE_USER'}; 
  
 my $conf = Glossa::get_conf_file($corpus);
 my %conf = %$conf;
 
+my $lang=Glossa::get_lang_file($conf{'config_dir'}, $conf{'lang'});
+my %lang = %$lang;
+
+print "Content-type: text/html; charset=$conf{'charset'}\n\n";
+
 print "<script language=\"JavaScript\" src=\"", $conf{'htmlRoot'}, "/js/misc.js\"></script>";
 
-my $hits_dir = $conf{'config_dir'} . "/" . $corpus . "/hits/" . $user . "/";
+# fixme! - I agree this is stupid/ljo
+my $hits_dir = $conf{'hits_files'} . $user . "/";
 
 
 
@@ -31,8 +36,8 @@ if ($action eq 'delete') {
     my $for_deletion = CGI::param('for_deletion');
 
 
-    print "DELETING: $for_deletion<br>";
-
+    print "$lang{'get_hits_deleting'} $for_deletion<br>";
+    # fixme! - flytta till Glossa.pm och refaktorisera
     foreach $conf (@confs) {
 	open (CONF, $conf);
 	while (<CONF>) {
@@ -52,12 +57,13 @@ if ($action eq 'rename') {
     my $newname = CGI::param('newname');
     my $for_renaming = CGI::param('for_renaming');    
 
-    print "RENAMING $for_renaming to $newname<br>";
+    print "$lang{'get_hits_renaming'} $for_renaming $lang{'get_hits_to'} $newname<br>";
 
+    # fixme! - Flytta till Glossa.pm och refaktorisera
     foreach my $conf (@confs) {
 
 	my $rename;
-
+	
 	my $newconf = $conf . ".new";
 	open (NEWCONF, ">$newconf");
 	
@@ -86,9 +92,9 @@ if ($action eq 'join') {
     my $join_to = CGI::param('join_to');
     my @join = CGI::param('join_name');    
 
-    print "joining ";
+    print "$lang{'get_hits_joining'} ";
     print join("|",@join);
-    print " to $join_to<br>";
+    print " $lang{'get_hits_to'} $join_to<br>";
 
     foreach my $conf (@confs) {
 	
@@ -121,7 +127,7 @@ if ($action eq 'join') {
 	    my $newfilename = $query_id . "_" . $no . ".dat";
 	    print "cp $file $newfilename<br>";
 	    `cp $file $newfilename`;
-	    print TOP "<a id='page_8' href='http://omilia.uio.no/cgi-bin/glossa//show_page_dev.cgi?n=", $no, "&query_id=", $query_id_short, "&corpus=bokmal'>", $no, "</a>";
+	    print TOP "<a id='page_8' href='$conf{'cgiRoot'}/show_page_dev.cgi?n=", $no, "&query_id=", $query_id_short, "&corpus=$corpus'>", $no, "</a>";
 	}
     }
 
@@ -130,8 +136,8 @@ if ($action eq 'join') {
 my @confs = <$hits_dir/*.conf>;
 
 
-print "<form action='http://omilia.uio.no/cgi-bin/glossa/get_hits.cgi' method='GET'><table border=1>";
-print "<td>name</th><th>delete</th><th>rename</th><th>add</th>";
+print "<form action='$conf{'cgiRoot'}/get_hits.cgi' method='GET'><table border=1>";
+print "<td>$lang{'get_hits_name'}</th><th>$lang{'get_hits_delete'}</th><th>$lang{'get_hits_rename'}</th><th>$lang{'get_hits_add'}</th>";
 
 print "<input type='hidden' value='join' name='action'></input>";
 print "<input type='hidden' value='$corpus' name='corpus'></input>";
@@ -162,14 +168,14 @@ foreach my $conf (@confs) {
 
 print "</table>"; 
 
-print "<br>add selected to: <select name='join_to'>";
-print "<option></option>";
+print "<br>$lang{'get_hits_add_selected_to'} <select name='join_to'>";
+print "<option>$lang{'get_hits_not_selected'}</option>";    
 foreach my $name (@names) {
     print "<option value='$name'>$name</option>";
 }
 print "</select> ";
 
-print "<input type='submit' value='join results'></input>";
+print "<input type='submit' value='$lang{'get_hits_join_results'}'></input>";
 
 print "</form>";
 print "</body></html>";
