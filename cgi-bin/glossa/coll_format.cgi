@@ -9,13 +9,19 @@ use GD::Graph::pie;
 use GD::Text;
 use Data::Dumper;
 use Encode;
+
 use lib("/home/httpd/html/glossa/pm");
 use Glossa;
 
-print "Content-type: text/html\n\n";
+my $conf = Glossa::get_conf_file($corpus);
+my %conf = %$conf;
 
-print "<html><head></head><body>";
+# language locale file
+my $lang = Glossa::get_lang_file($conf{'config_dir'}, $conf{'lang'});
+my %lang = %$lang;
 
+print "Content-type: text/html; charset=$conf{'charset'}\n\n";
+print "<html><head><title>$lang{'coll2_title'}</title></head><body>";
 
 # variable "$query_id" ends up on the command line; 
 # must be checked for nastiness (like "taint")

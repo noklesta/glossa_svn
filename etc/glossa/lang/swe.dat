@@ -2,9 +2,11 @@
 # $Id$
 # från query_dev.cgi
 query_title = Glossa-sökning 
+query_no_access = Du har inte tillgång till denna korpusresurs.
 query_metaquery = Metasök
 query_string = Sökuttryck
 query_action = Åtgärd
+query_not_selected = --ej vald--
 query_count = Räkna
 query_download = Hämta hem
 query_sort = Sortera
@@ -81,5 +83,53 @@ get_hits_not_selected = --ej vald--
 get_hits_join_results = Slå ihop resultat
 
 # meta_save_choose.cgi
-meta_save_submit_button = Submit
-meta_save_no_selection = No selection to save.
+meta_save_submit_button = Spara
+meta_save_no_selection = Inget urval att spara.
+
+# coll_choose.cgi
+coll_choose_title = Kollokationer
+coll_choose_casesensitive = Storlekskänslig
+coll_choose_casesensitive_colon = Storlekskänslig:
+coll_choose_never = Aldrig
+coll_choose_always = Alltid
+coll_choose_on_proper_names = För egennamn
+coll_choose_global_stats = Global lexikal statistik (endast bigram)
+coll_choose_collocates = Vad som samförekommer:
+coll_choose_wordform = Ordform
+coll_choose_lexeme = Lexem
+coll_choose_postag = Ordklasstagg
+coll_choose_context = Kontext:
+coll_choose_bigram = bigram
+coll_choose_statistical_measure = Statistiskt mått:
+coll_choose_freq = Frekvens
+coll_choose_dice = Dice-koefficient
+coll_choose_leftfisher = Fishers exact test - left sided
+coll_choose_rightfisher = Fishers exact test - right sided
+coll_choose_llratio = Log-sannolikhetskvot
+coll_choose_tmi = Mutual Information
+coll_choose_pmi = Pointwise Mutual Information
+coll_choose_odds = Odds kvot
+coll_choose_phi = Fi-koefficient
+coll_choose_tscore = T-mått
+coll_choose_x2 = Pearsons ki-tvåtest
+coll_choose_window_size = Fönsterstorlek:
+coll_choose_trigram = trigram
+coll_choose_cutoff = Gränsvärde:
+coll_choose_cut_max = Max antal resultat:
+coll_choose_cut_min = Minsta associationsvärde:
+coll_choose_cut_occur = Minsta antal förekomster:
+coll_choose_collo_filter = Samförekomstfilter:
+coll_choose_reset_button = Återställ
+coll_choose_submit_button = Räkna ut
+
+# coll2.cgi
+coll2_title = Kollokationsstatistik
+coll2_change_format_to = Byt format till: 
+coll2_not_selected = --ej vald--
+coll2_left_context = Vänsterkontext
+coll2_middle_context = Mellankontext
+coll2_right_context = Högerkontext
+coll2_ngram = n-gram
+coll2_rank = rank
+coll2_am = AM
+coll2_occur = förekomster

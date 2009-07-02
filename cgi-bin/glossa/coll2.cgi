@@ -1,21 +1,26 @@
 #!/usr/bin/perl
+# $Id$
 
 use CGI;
 use DBI;
-use lib("/home/httpd/html/glossa/pm");
-use Glossa;
 use Spreadsheet::WriteExcel;
 use Data::Dumper;
 
+use lib("/home/httpd/html/glossa/pm");
+use Glossa;
 
 
 select(STDOUT);
 $|=1;
 
-print "Content-type: text/html; charset=$conf{'charset'}\n\n";
-print "<html><head></head><body>";
+# fixme! - ta bort sökvägsglobben!
+# bin-path till config bin_dir
+# Beroenden:
+# Text::NSP
+# count.pl
+# statistic.pl
 
-$ENV{'PATH'} = "/usr/etc/yp:/etc/yp:/local/sbin:/bin:/usr/bin:/usr/ucb:/etc:/usr/etc:/sbin:/usr/sbin:/usr/kerberos/bin:/usr/local/bin:/bin:/usr/bin:/usr/X11R6/bin:/local/X11R6/bin:/usr/bin/X11:/usr/ccs/bin:/local/bin:/local/etc/bin:/usr/bsd:/local/etc:/local/gnu/bin:/site/share/perl5/5.8.8/Text/NSP/Measures/2D/Dice:/site/share/perl5/5.8.8/Text/NSP/Measures/2D:/site/share/perl5/5.8.8/Text/NSP/Measures:/site/share/perl5/5.8.8/Text/NSP:/site/share/perl5/5.8.8/Text:/site/share/perl5/5.8.8";
+$ENV{'PATH'} = "/usr/etc/yp:/etc/yp:/local/sbin:/bin:/usr/bin:/usr/ucb:/etc:/usr/etc:/sbin:/usr/sbin:/usr/kerberos/bin:/usr/local/bin:/bin:/usr/bin:/usr/X11R6/bin:/local/X11R6/bin:/usr/bin/X11:/usr/ccs/bin:/local/bin:/local/etc/bin:/usr/bsd:/local/etc:/local/gnu/bin:/site/share/perl5/5.8.8/Text/NSP/Measures/2D/Dice:/site/share/perl5/5.8.8/Text/NSP/Measures/2D:/site/share/perl5/5.8.8/Text/NSP/Measures:/site/share/perl5/5.8.8/Text/NSP:/site/share/perl5/5.8.8/Text:/site/share/perl5/5.8.8:/usr/local/lib/perl5/site_perl/5.10.0/Text/NSP/Measures:/usr/local/lib/glossa/bin/pm";
 
 #print "<pre>";
 #print Dumper $ENV{'PATH'};
@@ -33,17 +38,19 @@ my $globalstats = CGI::param('globalstats');
 my $conf = Glossa::get_conf_file($corpus);
 my %conf = %$conf;
 
+# language locale file
+my $lang = Glossa::get_lang_file($conf{'config_dir'}, $conf{'lang'});
+my %lang = %$lang;
+
+
+print "Content-type: text/html; charset=$conf{'charset'}\n\n";
+print "<html><head><title>$lang{'coll2_title'}</title></head><body>";
 
 # FIXME: this is a silly way of doing things
-my $conf= $conf{'tmp_dir'} . "/" . $query_id . ".conf"; 
-unless (-e $conf) {
-  $conf{'tmp_dir'} = $conf{'config_dir'}  . "/" . $corpus . "/hits/"  . $user . "/";
+my $query_hits_conf_file = $conf{'tmp_dir'} . "/" . $query_id . ".conf"; 
+unless (-e $query_hits_conf_file) {
+  $conf{'tmp_dir'} = $conf{'hits_files'} . $user . "/";
 }
-$conf= $conf{'tmp_dir'} . "/" . $query_id . ".conf"; 
-
-
-
-
 
 # variables "$query_id", "$window", and "$ngram" ends up on the command line; 
 # must be checked for nastiness (like "taint")
@@ -59,11 +66,7 @@ unless ($ngram =~ m/^\d+$/) { die("illegal value") };
 unless ($lib =~ m/^\w+\d*$/) { die("illegal value") };
 unless ($lib3 =~ m/^\w+\d*$/) { die("illegal value") };
 
-
-
 my $opts_n = "--ngram " . $ngram;
-
-
 
 my $opts_w = "--window " . $window;
 if ($ngram eq "3") { 
@@ -71,20 +74,13 @@ if ($ngram eq "3") {
     $lib = $lib3;
 }
 
-
-
-
-
-
-
 my $dsn = "DBI:mysql:database=$conf{'db_name'};host=$conf{'db_host'}";
 my $dbh = DBI->connect($dsn, $conf{'db_uname'}, $conf{'db_pwd'}, {RaiseError => 1});
 
-
-
+# fixme! - refaktorisera, jämför count.cgi
 print "<form action=\"", $conf{'cgiRoot'}, "/coll_format.cgi\" method=\"GET\">";
 print "<input type=\"hidden\" name=\"query_id\" value=\"$query_id\"></input>";
-print "Change format to: <select name=\"format\"><option value=\"\">&nbsp;</option><option value=\"tsv\">Tab separated values</option><option value=\"csv\">Comma separated values</option><option value=\"xls\">Excel spreadsheet</option><option value=\"bars\">Histogram</option><option value=\"hbars\">Histogram (horisontal)</option></select>&nbsp;&nbsp;&nbsp;<input type=\"submit\"></input><br><br>";
+print "$lang{'coll2_change_format_to'} <select name=\"format\"><option value=\"\">$lang{'coll2_not_selected'}</option><option value=\"tsv\">$lang{'count_output_format_tsv'}</option><option value=\"csv\">$lang{'count_output_format_csv'}</option><option value=\"xls\">$lang{'count_output_format_excel'}</option><option value=\"bars\">$lang{'count_output_format_histogram'}</option><option value=\"hbars\">$lang{'count_output_format_histogram_hor'}</option></select>&nbsp;&nbsp;&nbsp;<input type=\"submit\" value=\"$lang{'coll2_submit_button'}\"></input><br><br>";
 
 
 
@@ -181,10 +177,12 @@ my $cnt = $output;
 $cnt =~ s/tocnt$/cnt/;
 
 
-
+# fixme! - använd File
 `rm -f $cnt`;
 
-`count.pl --newLine --token $conf{'config_dir'}/token.regexp $opts_n $opts_w $cnt $output`;
+# fixme! - kolla om regexp-filerna finns.
+# fixa kodning för count.pl blir ascii ut nu.
+`$conf{'bin_dir'}count.pl --newLine --token $conf{'config_dir'}/token.regexp $opts_n $opts_w $cnt $output`;
 
 
 $/="\n";
@@ -212,37 +210,38 @@ if ($globalstats and ($ngram == 2)) {
 	    }
 	}
     }
-
+    # fixme! - använd File
     `cp $cnt2 $cnt`;
 
 }
 
 my $stat = $cnt;
 $stat .= ".stat";
-
+# fixme! - använd File
 `rm -f $stat`;
 
 if ($lib eq "freq") {
+    # fixme! - använd File
     `cp $cnt $stat`;
 }
 else {
 
-#    my $r = `statistic.pl $opts_n $lib $stat $cnt`;
+#    my $r = `$conf{'bin_dir'}statistic.pl $opts_n $lib $stat $cnt`;
 #    print "$r";
-    system("statistic.pl $opts_n $lib $stat $cnt");
-#    print "statistic.pl $opts_n $lib $stat $cnt<br>";
+    system("$conf{'bin_dir'}statistic.pl $opts_n $lib $stat $cnt");
+#    print "$conf{'bin_dir'}statistic.pl $opts_n $lib $stat $cnt<br>";
 
 }
 
 print "<table border=1>";
 if ($ngram eq "2") {
-    print "<tr><td><b>Left context</td><td><b>Right context</td></tr><tr>";
+    print "<tr><td><b>$lang{'coll2_left_context'}</td><td><b>$lang{'coll2_right_context'}</td></tr><tr>";
 }
 else {
-    print "<tr><td><b>Left context</td><td><b>Middle context</td><td><b>Right context</td></tr><tr>";
+    print "<tr><td><b>$lang{'coll2_left_context'}</td><td><b>$lang{'coll2_middle_context'}</td><td><b>$lang{'coll2_right_context'}</td></tr><tr>";
 }
 print " <tr><td valign=\"top\">";
-print "<table><tr><td><b>ngram</b></td><td><b>rank</b></td><td><b>AM</b></td><td><b>occ</b></td></tr>";
+print "<table><tr><td><b>$lang{'coll2_ngram'}</b></td><td><b>$lang{'coll2_rank'}</b></td><td><b>$lang{'coll2_am'}</b></td><td><b>$lang{'coll2_occur'}</b></td></tr>";
 
 my $cut_max = CGI::param('cut_max');
 my $cut_min = CGI::param('cut_min');
@@ -316,7 +315,7 @@ if ($ngram eq "2") {
 
     print "</table>";
     print "<td valign=\"top\">";
-    print "<table><tr><td><b>ngram</b></td><td><b>rank</b></td><td><b>AM</b></td><td><b>occ</b></td></tr>";
+    print "<table><tr><td><b>$lang{'coll2_ngram'}</b></td><td><b>$lang{'coll2_rank'}</b></td><td><b>$lang{'coll2_am'}</b></td><td><b>$lang{'coll2_occur'}</b></td></tr>";
     print $right;
     print "</table>";
     print "</td></tr></table>";
@@ -325,11 +324,11 @@ if ($ngram eq "2") {
 else {
 
     print "</table>";
-    print "<td valign=\"top\"><table><tr><td><b>ngram</b></td><td><b>rank</b></td><td><b>AM</b></td><td><b>occ</b></td></tr>";
+    print "<td valign=\"top\"><table><tr><td><b>$lang{'coll2_ngram'}</b></td><td><b>$lang{'coll2_rank'}</b></td><td><b>$lang{'coll2_am'}</b></td><td><b>$lang{'coll2_occur'}</b></td></tr>";
     print $middle;
     print "</table>";
     print "<td valign=\"top\">";
-    print "<table><tr><td><b>ngram</b></td><td><b>rank</b></td><td><b>AM</b></td><td><b>occ</b></td></tr>";
+    print "<table><tr><td><b>$lang{'coll2_ngram'}</b></td><td><b>$lang{'coll2_rank'}</b></td><td><b>$lang{'coll2_am'}</b></td><td><b>$lang{'coll2_occur'}</b></td></tr>";
     print $right;
     print "</table>";
     print "</td></tr></table>";

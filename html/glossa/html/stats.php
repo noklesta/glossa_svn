@@ -3,13 +3,13 @@
 
 
  <meta http-equiv="Content-Type" content="text/html;charset=iso-8859-1" >
- <link rel="stylesheet" type="text/css" href="http://corp.hum.sdu.dk/glossa/html/CE.css">
+ <link rel="stylesheet" type="text/css" href="/glossa/html/CE.css">
 
 
 <?php
   // ** initialize Glossa ** //  
-  $htmlRoot = 'http://omilia.uio.no/glossa/';
-  $cgiRoot = 'http://omilia.uio.no/cgi-bin/glossa/';
+  $htmlRoot = '/glossa/';
+  $cgiRoot = '/cgi-bin/glossa/';
   $corpus = $_GET['corpus'];
   $subcorpus = $_GET['subcorpus'];
   include("glossa.inc");
@@ -39,7 +39,7 @@ echo "<input type=\"hidden\" name=\"corpus\" value=\""; echo $_GET['corpus']; ec
 echo "<input type=\"hidden\" name=\"base_corpus\" value=\""; echo $_GET['base_corpus']; echo "\" />";
 
  ?> 
-
+# fixme! - lokalisering kvar. /ljo
 <b>include:</b><br> 
 <input type="checkbox" name="include_form" />word form </br> 
 <input type="checkbox" name="include_lemma" checked />lemma form </br> 

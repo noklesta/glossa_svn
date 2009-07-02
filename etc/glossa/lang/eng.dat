@@ -2,9 +2,11 @@
 # $Id$
 # från query_dev.cgi
 query_title = Glossa-sökning 
+query_no_access = You do not have access to this corpus.
 query_metaquery = Metasök
 query_string = Sökuttryck
 query_action = Åtgärd
+query_not_selected = --not selected--
 query_count = Räkna
 query_download = Hämta hem
 query_sort = Sortera
@@ -83,3 +85,52 @@ get_hits_join_results = join results
 # meta_save_choose.cgi
 meta_save_submit_button = Submit
 meta_save_no_selection = No selection to save.
+
+# coll_choose.cgi
+coll_choose_title = Collocations
+coll_choose_casesensitive = Case sensitive
+coll_choose_casesensitive_colon = Case sensitive:
+coll_choose_never = Never
+coll_choose_always = Always
+coll_choose_on_proper_names = On proper names
+coll_choose_global_stats = Use global lexical statistics (only bigrams)
+coll_choose_collocates = Collocates:
+coll_choose_wordform = Word form
+coll_choose_lexeme = Lexeme
+coll_choose_postag = POS tag
+coll_choose_context = Context:
+coll_choose_bigram = bigram
+coll_choose_statistical_measure = Statistical measure:
+coll_choose_freq = Frequency
+coll_choose_dice = Dice Coefficient
+coll_choose_leftfisher = Fishers exact test - left sided
+coll_choose_rightfisher = Fishers exact test - right sided
+coll_choose_llratio = Log-likelihood ratio
+coll_choose_tmi = Mutual Information
+coll_choose_pmi = Pointwise Mutual Information
+coll_choose_odds = Odds Ratio
+coll_choose_phi = Phi Coefficient
+coll_choose_tscore = T-score
+coll_choose_x2 = Pearson's Chi Squared Test
+coll_choose_window_size = Window size:
+coll_choose_trigram = trigram
+coll_choose_cutoff = Cutoff:
+coll_choose_cut_max = Maximum number of results: 
+coll_choose_cut_min = Minimum association value:
+coll_choose_cut_occur = Minimum no of occurences:
+coll_choose_collo_filter = Collocate filter:
+coll_choose_reset_button = Reset
+coll_choose_submit_button = Submit
+
+# coll2.cgi
+coll2_title = Collocation statistics
+coll2_change_format_to = Change format to: 
+coll2_not_selected = --not selected--
+coll2_left_context = Left context
+coll2_middle_context = Middle context
+coll2_right_context = Right context
+coll2_ngram = ngram
+coll2_rank = rank
+coll2_am = AM
+coll2_occur = occ
+

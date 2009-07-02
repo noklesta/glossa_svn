@@ -158,7 +158,7 @@ if ($conf{'groupfile'}) {
 	}
     }
     unless ($allowed_users{$user}) {
-	die("You do not have access to this corpus.");
+	die("$lang{'query_no_access'}");
     }
 }
 
@@ -721,7 +721,7 @@ my $actionurl =
 # Create a select widget. The onchange event redirects to the selected url. (The onclick event sets 
 # the selected value to 0, ensureing that even when selecting the same action twice 
 # the "onchange" event will still fire.) 
-$top_text .= "$lang{'query_action'}: <select id='actionselect' onClick=\"this.options.selectedIndex=0\" onChange=\"window.location.href=(this.options[this.selectedIndex].value)\"><option></option>";
+$top_text .= "$lang{'query_action'}: <select id='actionselect' onClick=\"this.options.selectedIndex=0\" onChange=\"window.location.href=(this.options[this.selectedIndex].value)\"><option>$lang{'query_not_selected'}</option>";
 $top_text .= "<option value='" . $conf{'cgiRoot'} . "/count_choose.cgi?$actionurl'>$lang{'query_count'}</option> ";
 $top_text .= "<option value='" . $conf{'cgiRoot'} . "/download_choose.cgi?$actionurl'>$lang{'query_download'}</option> ";
 $top_text .= "<option value='" . $conf{'cgiRoot'} . "/sort_choose.cgi?$actionurl'>$lang{'query_sort'}</option> ";

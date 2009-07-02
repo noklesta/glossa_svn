@@ -10,6 +10,8 @@
   // ** initialize Glossa ** //  
   $htmlRoot = 'http://omilia.uio.no/glossa/';
   $cgiRoot = 'http://omilia.uio.no/cgi-bin/glossa/';
+  #$favicon = 'http://omilia.uio.no/favicon.ico';
+  $favicon = 'http://spraakbanken.gu.se/favicon.ico';
   $corpus = $_GET['corpus'];
   $uilang = $_GET['uilang'];
   $def_base_corpus = strtoupper($corpus);
@@ -24,7 +26,7 @@ if(!$uilang){
 
 
   
- <link rel="shortcut icon" href="http://omilia.uio.no/img/favicon.ico" type="image/ico" />
+ <link rel="shortcut icon" href="<?php echo $favicon ?>" type="image/ico" />
  <link rel="stylesheet" type="text/css" href="<?php echo $htmlRoot ?>/html/CE.css">
 
 <?php printJsHead();   // ** Glossa ** //   ?>
@@ -107,7 +109,10 @@ elseif ( $_GET['corpus'] == 'euro_news_fr2' ) {
 elseif ( $_GET['corpus'] == 'usenet' ) {
   echo "<script language='javascript' src='" . $htmlRoot . "/js/usenet.js'></script>";
 }
-
+elseif ( $_GET['corpus'] == 'konkplus' ) {
+  echo "<script language='javascript' src='" . $htmlRoot . "/js/konkplus_swe.js'></script>";
+  echo "<script language='javascript' src='" . $htmlRoot . "/js/konkplus_eng.js'></script>";
+}
 
 ?>
 
@@ -275,7 +280,9 @@ elseif ( $_GET['corpus'] == 'euro_news_fr2' ) {
 elseif ( $_GET['corpus'] == 'usenet' ) {
   include("usenet.inc");
 }
-
+elseif ( $_GET['corpus'] == 'konkplus' ) {
+  include("konkplus.inc");
+}
 ?>
 
 
@@ -294,6 +301,10 @@ elseif ( $_GET['corpus'] == 'usenet' ) {
  $lang['no']['show_texts']='Vis tekster'; 
  $lang['no']['save_subcorpus']='Lagre subkorpus'; 
  $lang['no']['choose_subcorpus']='Velg subkorpus'; 
+
+ $lang['swe']['show_texts']='Visa text'; 
+ $lang['swe']['save_subcorpus']='Spara delkorpus'; 
+ $lang['swe']['choose_subcorpus']='Välj delkorpus'; 
 
 ?>
 <input type="button" id="show_texts" onClick="setAction('<?php echo $cgiRoot ?>/meta_direct.cgi');" value="<?php echo $lang['no']['show_texts'] ?>" /><br><br>
@@ -397,6 +408,10 @@ elseif ( $_GET['corpus'] == 'snakkis' ) {
 elseif ( $_GET['corpus'] == 'nota' ) {
   include("nota_cred.inc");
 }
+
+elseif ( $_GET['corpus'] == 'konkplus' ) {
+  include("konkplus_cred.inc");
+}
 ?>
 
 </td>
@@ -406,7 +421,7 @@ elseif ( $_GET['corpus'] == 'nota' ) {
 <script language="javascript">
 setFocus();
 <?php
- if($corpus == 'nota'){
+ if($corpus == 'nota' || $corpus == 'konkplus'){
      ?>
  toggleLang();
      <?php
