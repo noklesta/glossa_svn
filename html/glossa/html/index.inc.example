@@ -1,0 +1,6 @@
+<?php
+  // ** initialize Glossa ** //  
+$htmlRoot = 'http://url.for.htdocs/glossa';
+$cgiRoot = 'http://url.for.cgi-bin/glossa';
+$favicon = 'http://favicon.location/favicon.ico';
+?>

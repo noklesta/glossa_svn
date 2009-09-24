@@ -6,10 +6,7 @@
 
 <?php
   // ** initialize Glossa ** //  
-  $htmlRoot = 'http://isissb.spraakdata.gu.se/glossa/';
-  $cgiRoot = 'http://isissb.spraakdata.gu.se/cgi-bin/glossa/';
-  #$favicon = 'http://omilia.uio.no/favicon.ico';
-  $favicon = 'http://spraakbanken.gu.se/favicon.ico';
+include("index.inc");
   $corpus = $_GET['corpus'];
   $corpus = ereg_replace("[^A-Za-z0-9]", "", $corpus); # for safety
   $def_base_corpus = strtoupper($corpus);
