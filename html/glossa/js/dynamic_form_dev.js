@@ -302,13 +302,13 @@ function changeMenu (row,languageName) {
 }
 
 
-
 function ReloadMenu(language) {
 
     delete Menu[language];
     delete Menu['PLAINMENU'];
     delete Menu['KONKPLUS'];
     //reloadMenuPlain();
+    //only the appropriate function definition is loaded.
     reloadMenu();
 
     

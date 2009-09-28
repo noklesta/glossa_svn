@@ -106,7 +106,6 @@ function toggleSelectAll (truefalse) {
 }
 
 function submitForm() {
-
          var w = 630, h = 1200;
          if (window.screen) {
                w = window.screen.availWidth;
@@ -123,8 +122,6 @@ function submitForm() {
 }
 
 function submitFormSets(newValue) {
-
-
     actionWidget = document.getElementById('actionWidget');
     actionWidget.value=newValue;
     document.forms[0].submit();

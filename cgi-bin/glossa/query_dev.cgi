@@ -45,6 +45,7 @@ my $test = 0;
 
 my $attribute_type = $cgi->param('atttype');
 
+
 my %cgi_hash;
 my @prms = $cgi->param();
 foreach my $p (@prms) {
@@ -82,10 +83,31 @@ my $display_struct = CGI::param('structDisplay');
 
 # main configuration file
 #my $conf_file = $ROOT . "/" . $CORPUS . "/cgi.conf";
-my $conf_file = "/export/res/lb/glossa/dat/" . $CORPUS . "/cgi.conf";
+my %paths;
+open(PATHS, "paths.conf");
+while( <PATHS> ){
+    /([^\s]+)\s(.+)/;
+    $paths{ $1 } = $2;
+}
+my $conf_file = $paths{"conf"} . $CORPUS . "/cgi.conf";
+=end
+open (CHECK, ">>/hf/foni/home/joeljp/check.txt");
+print CHECK "\n================================\n";
+print CHECK "($conf_file)\n";
+close CHECK;
+=cut
+#my $conf_file = "/export/res/lb/glossa/dat/" . $CORPUS . "/cgi.conf";
 my $conf = Glossa::get_conf_file($CORPUS, $conf_file);
 my %conf = %$conf;
 
+=start
+open (CHECK, ">/hf/foni/home/joeljp/check.txt");
+foreach my $key (keys %conf){
+    print CHECK $key . " - " . $conf{$key} . "\n";
+    
+}
+close (CHECK);
+=cut
 ## postprocessing of configuration
 my %atts_hide;
 foreach my $a (split(/ +/, $conf{'corpus_attributes_hide'})) {

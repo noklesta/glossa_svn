@@ -12,7 +12,11 @@ use DBI;
 our $VERSION   = '0.2';
 # fixme! - flytta hit print_tokens och print_tokens_target (print_it)
 our @EXPORT_OK = qw{ get_conf_file get_multitags_file get_lang_file print_tokens print_tokens_target create_tid_list get_metadata_feat };
- 
+
+
+my $multiple = 0;
+
+
 sub get_conf_file {
 
     my $corpus = shift;
@@ -29,14 +33,21 @@ sub get_conf_file {
 
 
     open (CONF, $config_dat_file);
+#    open (CHECK, ">>/hf/foni/home/joeljp/check.txt");
+#    print CHECK "[$config_dat_file]\n--------------------------------------\n";
+
     while (<CONF>) {
 	chomp;
 	next if (/^#/ || /^$/);
 	s/\s*$//;
 	my ($k,$v)=split(/\s*=\s*/);
 	$conf{$k}=$v;
+#	print CHECK "$k\t->\t$v\n";
     }
     close CONF;
+    if (defined($conf{'bounds_type'}) and $conf{'bounds_type'} eq 'multiple') {	$multiple++ }
+
+#    close (CHECK);
     ## Set query id
     # This id is used to identify the files resulting from a query, so 
     # they can be processed by other functions (collocations, annotation etc.)
@@ -397,7 +408,7 @@ sub create_tid_list {
     # for UPUS, NOTA etc.
     #if ($conf{'bounds_type'} eq 'multiple') {
     # [AN 08.12.07]
-    if (defined($conf{'bounds_type'}) and $conf{'bounds_type'} eq 'multiple') {
+    if ($multiple) {
         $select= " $text_table_name.tid,$text_table_name.bounds";
     }
 
@@ -429,8 +440,30 @@ sub create_tid_list {
     }
 
     
-    $sql_query = "SELECT distinct $select FROM $from" . $sql_query . " order by $text_table_name.startpos;"; 
-   
+    $sql_query = "SELECT distinct $select FROM $from" . $sql_query . " order by $text_table_name."; 
+
+
+    my $order_by_column = "startpos";
+
+    # introduce Speech Corpus variable to handle all these exceptions..
+
+
+    if ($multiple) {
+	$order_by_column = "bounds";
+	#$sql_query .= " order by $text_table_name.startpos;" ;
+    }
+
+    $sql_query .= $order_by_column.";" ;
+
+=start
+    open (CHECK, ">/hf/foni/home/joeljp/check.txt");
+    foreach my $key (keys %conf){
+	print CHECK $key . " - " . $conf{$key} . "\n";
+
+    }
+    print CHECK "$CORPUS - $sql_query";
+    close (CHECK);
+=cut
 
     my $dumpstring;
     my @dumpstring_ary;
@@ -448,8 +481,7 @@ sub create_tid_list {
 	# for UPUS, NOTA etc.
 	#if ($conf{'bounds_type'} eq 'multiple') {
 	# [AN 08.12.07]
-	if (defined($conf{'bounds_type'}) and 
-	    $conf{'bounds_type'} eq 'multiple') {
+	if ($multiple) {
 	    
 	    my @bounds = split(/\t/, $s);
 	    foreach my $b (@bounds) {
@@ -470,7 +502,7 @@ sub create_tid_list {
     # for UPUS, NOTA etc.
     #if ($conf{'bounds_type'} eq 'multiple') {
     # [AN 08.07]
-    if (defined($conf{'bounds_type'}) and $conf{'bounds_type'} eq 'multiple') {
+    if ($multiple) {
 #	my @dumpstring_ary_sorted = sort { $a <=> $b } @dumpstring_ary;
 	$dumpstring = join("\n", @dumpstring_ary);
     }
