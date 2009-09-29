@@ -13,9 +13,7 @@ our $VERSION   = '0.2';
 # fixme! - flytta hit print_tokens och print_tokens_target (print_it)
 our @EXPORT_OK = qw{ get_conf_file get_multitags_file get_lang_file print_tokens print_tokens_target create_tid_list get_metadata_feat };
 
-
 my $multiple = 0;
-
 
 sub get_conf_file {
 
@@ -33,6 +31,7 @@ sub get_conf_file {
 
 
     open (CONF, $config_dat_file);
+
 #    open (CHECK, ">>/hf/foni/home/joeljp/check.txt");
 #    print CHECK "[$config_dat_file]\n--------------------------------------\n";
 
