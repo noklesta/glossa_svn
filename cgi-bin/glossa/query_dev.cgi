@@ -137,6 +137,15 @@ div.inspect{
 </style>
 STYLE
 print "$style\n</head>\n<body>\n";
+if($speech_corpus){
+    print "  <div id=\"inspector\" class=\"inspect\">\n" .
+	"    <iframe frameborder='0' width='100%' height='100%' id=\"movie_frame\"></iframe>\n" .
+	"    <div style=\"position: relative; left: 980px; top: -290px; cursor: pointer\" onclick=\"document.getElementById('inspector').style.display='none';\">\n" .
+	"      <img alt=\"[x]\" src=\"" . $conf{'htmlRoot'}  . "html/img/close.png\" />\n" . 
+	"    </div>\n" .
+	"  </div>\n<br />\n";
+}
+
 print "<div style='display:none' id='tagwidget' class='tag'></div>";
 
 # FIXME: temporary message
@@ -306,6 +315,9 @@ foreach my $row (@$phrases) {
 	    if ($cat eq 'w') {
 		if ($val eq 'lemma') {
 		    $string_class = "lemma";
+		}
+		if ($val eq 'phon') {
+		    $string_class = "phon";
 		}
 		elsif ($val eq 'lex') {
 		    $string_class = "lex";
@@ -534,6 +546,18 @@ if ($debug) {
 # The subcorpus information (allowed token spans) is stored by the module in a .dump file
 # with the rest of the files pertaining to the query.
 my ($subcorpus,$sql_query_nl,$list) = Glossa::create_tid_list(\%conf, \%in, $CORPUS, \%aligned_corpora, \%aligned_corpora_opt, $base_corpus);
+
+my %list = %$list;
+my %video_stars;
+if ($speech_corpus){
+    my $sth = $dbh->prepare( "SELECT tid FROM " . uc ( $CORPUS ) . "author where video = 'Y';");
+    $sth->execute  ||  print TEMP "Error fetching data: $DBI::errstr";
+    while (my ($v) = $sth->fetchrow_array) {
+	$video_stars{ucfirst $v} = 1;
+    }
+}
+my @infs = keys %list;
+my $infs = @infs;
 
 
 
