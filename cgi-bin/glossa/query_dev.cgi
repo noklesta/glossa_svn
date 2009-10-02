@@ -137,6 +137,7 @@ div.inspect{
 </style>
 STYLE
 print "$style\n</head>\n<body>\n";
+
 if($speech_corpus){
     print "  <div id=\"inspector\" class=\"inspect\">\n" .
 	"    <iframe frameborder='0' width='100%' height='100%' id=\"movie_frame\"></iframe>\n" .
@@ -560,7 +561,6 @@ my @infs = keys %list;
 my $infs = @infs;
 
 
-
 # print natural language version
 if ($sql_query_nl) {
     print "$lang{'query_metaquery'}: $sql_query_nl<br>";
@@ -642,7 +642,7 @@ elsif ($results_max) {
 # specify name of context ("s" is default)
 # FIXME: should be in config file
 my $sentence_context;
-if (($CORPUS eq 'nota') or ($CORPUS eq 'upus') or ($CORPUS eq 'taus')) {
+if ($speech_corpus) {
     $sentence_context='who';
 }
 else {
@@ -711,8 +711,25 @@ my @result;
 if ($result) {
 @result = @$result;
 } 
-else {
-    print "<b>-- no hits --</b><br><br>";
+else {    
+#added...
+    my $str;
+
+    while ( $cqp_query_source2print =~ s/\(([\w]+)\=//  ){
+
+	next unless $1 !~ /word/;
+	$str .= $1 . ", ";
+
+    }
+    $str =~ s/, $//; 
+    my $more = "";
+
+    if($str){ $more = $lang{'missing_tag'} . " " . $str . "."; }
+
+    print "<b> $lang{'zero_hits'} $more</b><br><br>";
+# ...to here
+
+#    print "<b>-- no hits --</b><br><br>";
 }
 
 if (@token_freq > 1) {
@@ -874,6 +891,8 @@ for (my $i = 0; $i < $nr_result; $i++) {
 	next if (($CORPUS eq 'omc4') and ($a eq 'text_id'));
 	next if (($CORPUS eq 'upus') and ($a eq 'text_id'));
 	next if (($CORPUS eq 'upus') and ($a eq 's_id'));
+	next if (($CORPUS eq 'upus2') and ($a eq 'text_id'));
+	next if (($CORPUS eq 'upus2') and ($a eq 's_id'));
 
 	# the right way ...
 	$sts{$a} = $m->{'data'}->{$a};
@@ -888,10 +907,10 @@ for (my $i = 0; $i < $nr_result; $i++) {
 	}
 
 	# temporary fix for NOTA
-	if ((($CORPUS eq 'nota') or ($CORPUS eq 'upus') or ($CORPUS eq 'taus')) and ($a eq 'who_name')) {
+	if ($speech_corpus and ($a eq 'who_name')) {
 	    $sts{'text_id'} = $m->{'data'}->{$a};
 	}
-	if ((($CORPUS eq 'nota') or ($CORPUS eq 'upus') or ($CORPUS eq 'taus')) and ($a eq 'who_line_key')) {
+	if ($speech_corpus and ($a eq 'who_line_key')) {
 	    $sts{'s_id'} = $m->{'data'}->{$a};
 	}
 
@@ -1005,6 +1024,7 @@ for (my $i = 0; $i < $nr_result; $i++) {
 	# FIXME: should be correct in db
 	$lang =~ s/omc3_//;
 	$lang =~ s/omc4_//;
+	$lang =~ s/run_//;
 
 	# FIXME: should be general
 	if ($CORPUS eq 'samno') {
@@ -1098,6 +1118,71 @@ for (my $i = 0; $i < $nr_result; $i++) {
 	while (my ($k,$v)=each %sts) {
 	    $sts_url .= "&" . $k . "=" . $v;
 	}
+	my $identifier = $sts{'s_id'};
+	if($speech_corpus){$identifier = $sts{text_id};}
+	$source_line=sprintf("<tr bgcolor=\"#ffffff\">\n<td colspan=\"2\" height=\"10\">\n</td>\n</tr>\n<tr>\n<td>\n<nobr>\n");
+	if($speech_corpus){
+	    $source_line.=sprintf("<font size=\"-2\">\n<a href=\"#\" onClick=\"window.open('$conf{'htmlRoot'}/html/profile.php?tid=$identifier&corpus=$CORPUS',");
+	    $source_line.=sprintf("'mywindow','height=300,width=600,status,scrollbars,resizable');\"><img src='$conf{'htmlRoot'}/html/img/i.gif' alt='i' / border='0'></a> \n&nbsp;</font>\n");
+	}
+
+	else
+	{
+	    $source_line.=sprintf("<font size=\"-2\">\n<a href=\"#\" onClick=\"window.open('$conf{'cgiRoot'}/show_context.cgi$sts_url&cs=3',");
+	    $source_line.=sprintf("'mywindow','height=500,width=650,status,scrollbars,resizable');\">$identifier</a> \n&nbsp;</font>\n");
+	}
+
+
+	if ($speech_corpus) {
+	    if($video_stars{ucfirst $identifier}){
+		$source_line.=sprintf("<font size=\"-2\">\n<a href=\"#\" onClick=\"document.getElementById('inspector').style.display='block';document.getElementById('movie_frame').src = 'http://foni.uio.no/glossa/html/expand.php$ex_url&video=1';\">\n");
+		$source_line.=sprintf("<img style='border-style:none' src='$conf{'htmlRoot'}html/img/mov.gif'>\n</a> \n&nbsp;</font>");
+	    }
+		$source_line.=sprintf("<font size=\"-2\">\n<a href=\"#\" onClick=\"document.getElementById('inspector').style.display='block';document.getElementById('movie_frame').src = 'http://foni.uio.no/glossa/html/expand.php$ex_url&video=0';\">\n");
+	    $source_line.=sprintf("<img style='border-style:none' src='$conf{'htmlRoot'}html/img/sound.gif'>\n</a> \n&nbsp;</font>");
+
+	    $source_line.="<strong>" . $sts{"text_id"} . "</strong>&nbsp;";
+
+
+	}
+	if(!($speech_corpus and ($display_struct =~ /text\.tid/))){
+	    $source_line.="<i>" . $sts{$display_struct} . "</i>";
+	}
+	$source_line.=sprintf("</nobr>\n</td>\n<td");
+	if ($context_type eq "chars") { $source_line.=sprintf(" align=\"right\""); }
+	$source_line.=sprintf(">\n");
+
+	foreach my $a ($res_l, $res_r, $ord) {
+            # temporary fixes (should be cleverer in corpus) ...
+            $a =~ s/'/$apostr/g; #'
+             $a =~ s/\&amp;quot;/\&quot;/g;
+	}
+
+	
+	$source_line .= print_tokens($res_l, $attribute_type);
+	if ($context_type eq "chars") {$source_line.=sprintf("</td><td>"); }
+	$source_line.=sprintf("<b> &nbsp;");
+	$source_line .= print_tokens($ord, $attribute_type);
+	$source_line.=sprintf(" &nbsp;</b>");
+	if ($context_type eq "chars") { $source_line.=sprintf("</td><td>"); }
+	$source_line .= print_tokens($res_r, $attribute_type);
+	$source_line.=sprintf("</td></tr>");
+
+
+
+
+
+    }
+=start
+
+    if ($hits < $results_page) {
+
+	my $ex_url = "?corpus=" . $in{'query'}->{'corpus'}->[0] . "&line_key=" . $sts{'who_line_key'} . "&size=1&nested=0";
+
+	my $sts_url = "?corpus=" . $in{'query'}->{'corpus'}->[0] . "&subcorpus=" . $base_corpus;
+	while (my ($k,$v)=each %sts) {
+	    $sts_url .= "&" . $k . "=" . $v;
+	}
 
 	$source_line="<tr bgcolor=\"#ffffff\"><td colspan=\"2\" height=\"10\"></td></tr><tr><td><nobr>";
 	$source_line.="<font size=\"-2\"><a href=\"#\" onClick=\"window.open('$conf{'cgiRoot'}/show_context.cgi$sts_url&cs=3',";
@@ -1107,9 +1192,9 @@ for (my $i = 0; $i < $nr_result; $i++) {
 
 	if ($CORPUS eq 'nota' or $CORPUS eq 'upus') {
 	    $source_line.="<font size=\"-2\"><a href=\"#\" onClick=\"window.open('http://omilia.uio.no/cgi-bin/glossa/expand.pl$ex_url&video=0',";
-	    $source_line.="'mywindow','height=400,width=1000,status,scrollbars,resizable,screenX=0,screenY=5');\"><img style='border-style:none' src='http://omilia.uio.no/glossa/html/img/mov.gif'></a> \n&nbsp;</font>";
+	    $source_line.="'mywindow','height=400,width=1000,status,scrollbars,resizable,screenX=0,screenY=5');\"><img style='border-style:none' src='$conf{'htmlRoot'}/html/img/mov.gif'></a> \n&nbsp;</font>";
 	    $source_line.="<font size=\"-2\"><a href=\"#\" onClick=\"window.open('http://omilia.uio.no/cgi-bin/glossa/expand.pl$ex_url&video=audio',";
-	    $source_line.="'mywindow','height=400,width=1000,status,scrollbars,resizable,screenX=0,screenY=5');\"><img style='border-style:none' src='http://omilia.uio.no/glossa/html/img/sound.gif'></a> \n&nbsp;</font>";
+	    $source_line.="'mywindow','height=400,width=1000,status,scrollbars,resizable,screenX=0,screenY=5');\"><img style='border-style:none' src='$conf{'htmlRoot'}/html/img/sound.gif'></a> \n&nbsp;</font>";
 
 	}
 	$source_line.="<i>" . $sts{$display_struct} . "</i>";
@@ -1145,7 +1230,7 @@ for (my $i = 0; $i < $nr_result; $i++) {
 
     }
 
-
+=cut
     print $source_line;
     print $target_line;
 
@@ -1158,6 +1243,7 @@ for (my $i = 0; $i < $nr_result; $i++) {
 
     
 }
+
 
 print "</table>";
 
