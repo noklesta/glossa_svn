@@ -471,7 +471,7 @@ sub create_tid_list {
 
     my %texts_allowed;
 
-#    print "SQL: $sql_query<br>";
+    print "SQL: $sql_query<br>";
     my $sth = $dbh->prepare($sql_query);
     $sth->execute  || die "Error fetching data: $DBI::errstr";
     while (my ($tid,$s,$e) = $sth->fetchrow_array) {

@@ -190,7 +190,7 @@ function writeWidgetToken(row) {
 
 	tableId="tokenrow_"+row;
 	var tableRow = document.getElementById(tableId);
-	alert(tableRow.id);
+	//	alert(tableRow.id);
  	var tableCell = tableRow.rows[0].insertCell(col);
 
 

@@ -1,11 +1,17 @@
 /* $Id$ */
+
+
+var lang = strings[language];
+
 var Html = lang['query_searching'];
+
 var i = 0;
 var Finished = 0;
 
 Print();
 
 function Print() {
+
 	setTimeout("doIt()", 500);
 }
 

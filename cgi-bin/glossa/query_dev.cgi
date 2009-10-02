@@ -45,7 +45,6 @@ my $test = 0;
 
 my $attribute_type = $cgi->param('atttype');
 
-
 my %cgi_hash;
 my @prms = $cgi->param();
 foreach my $p (@prms) {
@@ -90,24 +89,16 @@ while( <PATHS> ){
     $paths{ $1 } = $2;
 }
 my $conf_file = $paths{"conf"} . $CORPUS . "/cgi.conf";
-=end
-open (CHECK, ">>/hf/foni/home/joeljp/check.txt");
-print CHECK "\n================================\n";
-print CHECK "($conf_file)\n";
-close CHECK;
-=cut
+
 #my $conf_file = "/export/res/lb/glossa/dat/" . $CORPUS . "/cgi.conf";
+
 my $conf = Glossa::get_conf_file($CORPUS, $conf_file);
 my %conf = %$conf;
 
-=start
-open (CHECK, ">/hf/foni/home/joeljp/check.txt");
-foreach my $key (keys %conf){
-    print CHECK $key . " - " . $conf{$key} . "\n";
-    
-}
-close (CHECK);
-=cut
+my $corpus_mode = $conf{'corpus_mode'};
+my $speech_corpus = 0;
+if( $corpus_mode eq 'speech'){ $speech_corpus = 1 }
+
 ## postprocessing of configuration
 my %atts_hide;
 foreach my $a (split(/ +/, $conf{'corpus_attributes_hide'})) {
@@ -129,8 +120,7 @@ my %lang = %$lang;
 
 ## start the HTTP session and HTML file
 print "Content-type: text/html; charset=$conf{'charset'}\n\n";
-print "<html><head><link rel=\"shortcut icon\" href=\"$conf{'favicon'}\" type=\"image/ico\" />\n<title>$lang{'query_title'}</title><link href=\"", $conf{'htmlRoot'}, "/html/tags.css\" rel=\"stylesheet\" type=\"text/css\"></link></head><body>";
-
+print "<html><head><link rel=\"shortcut icon\" href=\"$conf{'favicon'}\" type=\"image/ico\" />\n<title>$lang{'query_title'}</title><link href=\"", $conf{'htmlRoot'}, "/html/tags.css\" rel=\"stylesheet\" type=\"text/css\"></link>\n<script language=\"JavaScript\">var language = \"" . $conf{'lang'} . "\";</script></head><body>";
 print "<div style='display:none' id='tagwidget' class='tag'></div>";
 
 # FIXME: temporary message
@@ -404,6 +394,7 @@ foreach my $row (@$phrases) {
 
        # for each token, there follows an "interval"
 	# (i.e. how many unspecified tokens may follow)
+	
 	my $min = $token->{'intmin'}->[0];
 	my $max = $token->{'intmax'}->[0];
 
@@ -557,6 +548,7 @@ my $top_text = "$lang{'query_string'}: <b>\"$cqp_query_source2print\"</b><br>";
 
 # start waiting ticker
 print "<div id='waiting'>$lang{'query_searching'}</div>";
+print "<script language=\"JavaScript\" src=\"", $conf{'htmlRoot'}, "/js/language.js\"></script>";
 print "<script language=\"JavaScript\" src=\"", $conf{'htmlRoot'}, "/js/wait.js\"></script>";
 print "<script language=\"JavaScript\" src=\"", $conf{'htmlRoot'}, "/js/", $CORPUS, ".conf.js\"></script>";
 
@@ -783,7 +775,7 @@ print "<span id=\"placeholder\"></span>";
 
 my $results_page = $in{'query'}->{'results'}->{'page'}->[0];
 my $link_structure = $conf{'link_structure'};
-my $hits;
+my $hits = 0;
 
 my $c; my $d_files=1;
 
@@ -1158,10 +1150,10 @@ if ($hits == $results_max) {
 
 my $res_count = "$lang{'query_no_hits'}: ";
 $res_count .= "<b>$hits</b> $max<br>$lang{'query_results_pages'}: ";
-
 # The javscript function (in reslist.js) to display the links to the 
 # results pages (in the "placeholder" span).
-print "<script language=\"javascript\">showList($d_files,'$conf{'query_id'}',$hits,'$CORPUS','$max', '$res_count')</script>";
+
+print "<script language=\"javascript\">showList($d_files,\'$conf{'query_id'}\',$hits,'$CORPUS','$max', '$res_count');</script>";
 
 # print page header to file, so that it is accessible for 
 # the other results pages
