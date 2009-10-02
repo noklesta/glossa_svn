@@ -120,7 +120,23 @@ my %lang = %$lang;
 
 ## start the HTTP session and HTML file
 print "Content-type: text/html; charset=$conf{'charset'}\n\n";
-print "<html><head><link rel=\"shortcut icon\" href=\"$conf{'favicon'}\" type=\"image/ico\" />\n<title>$lang{'query_title'}</title><link href=\"", $conf{'htmlRoot'}, "/html/tags.css\" rel=\"stylesheet\" type=\"text/css\"></link>\n<script language=\"JavaScript\">var language = \"" . $conf{'lang'} . "\";</script></head><body>";
+print "<html><head><link rel=\"shortcut icon\" href=\"$conf{'favicon'}\" type=\"image/ico\" />\n<title>$lang{'query_title'}</title><link href=\"", $conf{'htmlRoot'}, "/html/tags.css\" rel=\"stylesheet\" type=\"text/css\"></link>\n<script language=\"JavaScript\">var language = \"" . $conf{'lang'} . "\";</script>";
+my $style = <<STYLE;
+<style>
+div.inspect{
+
+	top: 0px;
+	left:0px;
+	padding: 5px;
+	border: 0px solid #000;
+	background: #fff;
+	width: 1000px;
+        height: 280px;
+	display: none;
+}
+</style>
+STYLE
+print "$style\n</head>\n<body>\n";
 print "<div style='display:none' id='tagwidget' class='tag'></div>";
 
 # FIXME: temporary message
