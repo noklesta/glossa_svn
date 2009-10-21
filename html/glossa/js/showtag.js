@@ -1,56 +1,35 @@
-var tags = Array();
 
 
+// if( myReference.captureEvents ) {
+    //myReference was obtained as in the section on DHTML
+    //non IE
+//    if( Event.MOUSEMOVE ) {
+        //NS 4, NS 6, Mozilla 0.9.x
+//        myReference.captureEvents( Event.MOUSEMOVE );
+//    }
+//}
+//myReference.onmousemove = alertCoord;
 
-function hideTag(tagId, depId, walignId) {
-    var tagWidget=document.getElementById('tagwidget');  	
-    tagWidget.style.display = "none"; 
+//function showTag() {
+//alert ("jadda")
+//}
 
-  var walignToken = document.getElementById(walignId); // FIXME: should be list
-  if (walignToken) {
-    walignToken.style.backgroundColor='white';
-  }
+function hideTag(tagId) {
 
-  var depToken = document.getElementById(depId);
-  if (depToken) {
-    depToken.style.backgroundColor='white';
-  }
+    var styleObject = getStyleObject(tagId);
+        styleObject.display = "none"; 
 
 }
 
-function showTag(e, tagId, depId, walignId, Type) {
-
-
-
-     if (Type == 'match') {
-//       alert(walignId);
-     }
-
-  var walignToken = document.getElementById(walignId); // FIXME: should be list
-  if (walignToken) {
-     if (Type == 'match') {
-       walignToken.style.color='black';
-       walignToken.style.fontWeight='bold';
-     }
-     else {
-       walignToken.style.backgroundColor='red';
-     }
-  }
-
-  var depToken = document.getElementById(depId);
-  if (depToken) {
-     if (Type == 'match') {
-       depToken.style.color='blue';
-     }
-     else {
-       depToken.style.backgroundColor='green';
-     }
-  }
+function showTag(e, tagId) {
 
   if( !e ) {
+
     if( window.event ) {
+      //DOM
       e = window.event;
     } else {
+      //TOTAL FAILURE, WE HAVE NO WAY OF REFERENCING THE EVENT
       return;
     }
   }
@@ -79,20 +58,47 @@ function showTag(e, tagId, depId, walignId, Type) {
         }
       }
     } else {
+      //TOTAL FAILURE, WE HAVE NO WAY OF OBTAINING THE
+      //MOUSE COORDINATES
       return;
     }
   }
-
-
-
-  var html=tags[tagId];
-  var tagWidget=document.getElementById('tagwidget');  	
-  tagWidget.innerHTML=html;
-  tagWidget.style.display="block";
-
-  tagWidget.style.top=ycoord+7;
-  tagWidget.style.left=xcoord;
-
-
+  changeObjectVisibility(tagId, xcoord, ycoord)
+  //window.alert('Mouse coordinates are ('+xcoord+','+ycoord+')');
 }
 
+function getStyleObject(objectId) {
+  // checkW3C DOM, then MSIE 4, then NN 4.
+  //
+  if(document.getElementById && document.getElementById(objectId)) {
+	return document.getElementById(objectId).style;
+   }
+   else if (document.all && document.all(objectId)) {
+	return document.all(objectId).style;
+   }
+   else if (document.layers && document.layers[objectId]) {
+	return document.layers[objectId];
+   } else {
+	return false;
+   }
+}
+
+function changeObjectVisibility(objectId, xcoord, ycoord) {
+//	window.alert('Mouse coordinates are ('+xcoord+','+ycoord+')');
+
+	//alert(xcoord "+", ycoord)
+    // first get a reference to the cross-browser style object
+    // and make sure the object exists
+    var styleObject = getStyleObject(objectId);
+    if(styleObject) {
+	styleObject.display = "block";
+	ycoord = ycoord + 7
+	styleObject.top = ycoord;
+	styleObject.left = xcoord;
+
+	return true;
+    } else {
+	// we couldn't find the object, so we can't change its visibility
+	return false;
+    }
+}

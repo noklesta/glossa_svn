@@ -32,9 +32,9 @@ sub get_conf_file {
 
     open (CONF, $config_dat_file);
 
-#    open (CHECK, ">>/hf/foni/home/joeljp/check.txt");
-#    print CHECK "[$config_dat_file]\n--------------------------------------\n";
-
+    open (CHECK, ">>/hf/foni/home/joeljp/check.txt");
+    print CHECK "[$config_dat_file]\n--------------------------------------\n";
+    close(CHECK);
     while (<CONF>) {
 	chomp;
 	next if (/^#/ || /^$/);
@@ -471,7 +471,7 @@ sub create_tid_list {
 
     my %texts_allowed;
 
-    print "SQL: $sql_query<br>";
+#    print "SQL::: $sql_query<br>";
     my $sth = $dbh->prepare($sql_query);
     $sth->execute  || die "Error fetching data: $DBI::errstr";
     while (my ($tid,$s,$e) = $sth->fetchrow_array) {

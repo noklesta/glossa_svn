@@ -1135,10 +1135,10 @@ for (my $i = 0; $i < $nr_result; $i++) {
 
 	if ($speech_corpus) {
 	    if($video_stars{ucfirst $identifier}){
-		$source_line.=sprintf("<font size=\"-2\">\n<a href=\"#\" onClick=\"document.getElementById('inspector').style.display='block';document.getElementById('movie_frame').src = 'http://foni.uio.no/glossa/html/expand.php$ex_url&video=1';\">\n");
+		$source_line.=sprintf("<font size=\"-2\">\n<a href=\"#\" onClick=\"document.getElementById('inspector').style.display='block';document.getElementById('movie_frame').src = '" . $conf{'htmlRoot'} . "html/expand.php$ex_url&video=1';\">\n");
 		$source_line.=sprintf("<img style='border-style:none' src='$conf{'htmlRoot'}html/img/mov.gif'>\n</a> \n&nbsp;</font>");
 	    }
-		$source_line.=sprintf("<font size=\"-2\">\n<a href=\"#\" onClick=\"document.getElementById('inspector').style.display='block';document.getElementById('movie_frame').src = 'http://foni.uio.no/glossa/html/expand.php$ex_url&video=0';\">\n");
+		$source_line.=sprintf("<font size=\"-2\">\n<a href=\"#\" onClick=\"document.getElementById('inspector').style.display='block';document.getElementById('movie_frame').src = '" . $conf{'htmlRoot'} ."html/expand.php$ex_url&video=0';\">\n");
 	    $source_line.=sprintf("<img style='border-style:none' src='$conf{'htmlRoot'}html/img/sound.gif'>\n</a> \n&nbsp;</font>");
 
 	    $source_line.="<strong>" . $sts{"text_id"} . "</strong>&nbsp;";
