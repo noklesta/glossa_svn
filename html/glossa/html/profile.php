@@ -81,7 +81,8 @@ $texts["no"]["sorry"] = "<h4>Beklager, ingen opplysninger om informant <i>%s</i>
 $tid  = $_GET['tid'];
 $corpus  = $_GET['corpus'];
 
-$conf = "/hf/foni/tekstlab/glossa-0.7/dat/$corpus/cgi.conf";
+//$conf = "/hf/foni/tekstlab/glossa-0.7/dat/$corpus/cgi.conf";
+$conf = $configdir . $corpus ."/cgi.conf";
 
 $file = fopen($conf, "r") or exit ("Kan ikke åpne konfigurasjonsfila: $conf");
 
