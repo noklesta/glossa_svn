@@ -34,7 +34,7 @@ if($corpus == 'scandiasyn'){ $uilang = 'en'; }
 
 ?>
  <!--<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.7.0/build/reset/reset-min.css">-->
- <link rel="shortcut icon" href="http://omilia.uio.no/img/favicon.ico" type="image/ico" />
+ <link rel="shortcut icon" href="<?php echo $favicon; ?>" type="image/ico" />
  <link rel="stylesheet" type="text/css" href="<?php echo $htmlRoot ?>/html/CE.css">
 
 <?php printJsHead();   // ** Glossa ** //   ?>

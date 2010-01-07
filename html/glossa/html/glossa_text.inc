@@ -1,13 +1,8 @@
 <!-- $Id$ -->
   <td>
 <script language="javascript">
-
-
-  if (conf['type']=='multilingual') {
-
 document.write("<input id='addRowsButton' type='button' value='add phrase' onClick='writeWidgetTokenRow()'></input>");
 document.write("<input id='delRowsButton' type='button' value='delete phrase' onClick='delWidgetTokenRow()' disabled></input>");
-   }
 </script>
   </td>
  </tr>
