@@ -45,6 +45,11 @@ my $test = 0;
 
 my $attribute_type = $cgi->param('atttype');
 
+# for multiple-attribute display
+my $multiple_attribute_display = 0;
+if($attribute_type eq 'x'){$multiple_attribute_display = 2; $attribute_type = 0;}
+
+
 my %cgi_hash;
 my @prms = $cgi->param();
 foreach my $p (@prms) {
@@ -121,6 +126,26 @@ my %lang = %$lang;
 ## start the HTTP session and HTML file
 print "Content-type: text/html; charset=$conf{'charset'}\n\n";
 print "<html><head><link rel=\"shortcut icon\" href=\"$conf{'favicon'}\" type=\"image/ico\" />\n<title>$lang{'query_title'}</title><link href=\"", $conf{'htmlRoot'}, "/html/tags.css\" rel=\"stylesheet\" type=\"text/css\"></link>\n<script language=\"JavaScript\">var language = \"" . $conf{'lang'} . "\";</script>";
+my $googletrans = <<STOP;
+<script type="text/javascript" src="http://www.google.com/jsapi"></script>
+<script type="text/javascript">
+google.load("language", "1");
+function translate(node, text) {
+  google.language.detect(text, function(result) {
+    if (!result.error && result.language) {
+      google.language.translate(text, result.language, "en",
+                                function(result) {
+        if (result.translation) {
+	    node.innerHTML = result.translation;
+	    node.innerHTML += " <font size='-2'>(google)</font>"; //"&nbsp;<img src='http://tekstlab.uio.no/glossa/html/img/google-g-icon-16.png'>";
+        }
+        else{ node.innerHTML = 'No translation available' }
+      });
+    }
+  });
+}
+</script>
+STOP
 my $style = <<STYLE;
 <style>
 div.inspect{
@@ -136,6 +161,7 @@ div.inspect{
 }
 </style>
 STYLE
+print "\n$googletrans\n\n";
 print "$style\n</head>\n<body>\n";
 
 if($speech_corpus){
@@ -778,6 +804,26 @@ close CONF;
 # Javascript programs used in displaying results.
 print "<script language=\"JavaScript\" src=\"", $conf{'htmlRoot'}, "/js/reslist.js\"></script>";
 print "<script language=\"JavaScript\" src=\"", $conf{'htmlRoot'}, "/js/showtag.js\"></script></head>\n<body>";
+my $googletrans = <<STOP;
+<script type="text/javascript" src="http://www.google.com/jsapi"></script>
+<script type="text/javascript">
+google.load("language", "1");
+function translate(node, text) {
+  google.language.detect(text, function(result) {
+    if (!result.error && result.language) {
+      google.language.translate(text, result.language, "en",
+                                function(result) {
+        if (result.translation) {
+	    node.innerHTML = result.translation;
+	    node.innerHTML += " <font size='-2'>(google)</font>"; //"&nbsp;<img src='http://tekstlab.uio.no/glossa/html/img/google-g-icon-16.png'>";
+        }
+        else{ node.innerHTML = 'No translation available' }
+      });
+    }
+  });
+}
+</script>
+STOP
 
 
 ## links to subsidiary scripts
@@ -1169,7 +1215,28 @@ for (my $i = 0; $i < $nr_result; $i++) {
 	$source_line.=sprintf("</td></tr>");
 
 
+	if($multiple_attribute_display){
+	    $source_line .= "<tr><td></td><td>";
+	    $source_line .= print_tokens($res_l, 2);
+	    if ($context_type eq "chars") {$source_line.=sprintf("</td><td>"); }
+	    $source_line.=sprintf("<b> &nbsp;");
+	    $source_line .= print_tokens($ord, 2);
+	    $source_line.=sprintf(" &nbsp;</b>");
+	    if ($context_type eq "chars") { $source_line.=sprintf("</td><td>"); }
+	    $source_line .= print_tokens($res_r, 2);
+	    $source_line.=sprintf("</td></tr>");
 
+	    $source_line .= "<tr><td></td><td></td></tr>";
+	}
+
+	if($speech_corpus){
+	    my $orig = get_first($res_l) . "<b>" . get_first($ord) . "</b>" . get_first($res_r);
+	    $orig =~ s/"/_/g;
+	    $source_line .= "<tr><td></td><td>";
+	    $source_line .= "<div><span onclick=\"translate(this.parentNode, '$orig');\" style='font-size:small;cursor:pointer;'>[translate]</span></div>";
+	    $source_line.=sprintf("</td></tr>");
+	    $source_line .= "<tr><td></td><td></td></tr>";
+	}
 
 
     }
@@ -1279,14 +1346,17 @@ $res_count .= "<b>$hits</b> $max<br>$lang{'query_results_pages'}: ";
 # The javscript function (in reslist.js) to display the links to the 
 # results pages (in the "placeholder" span).
 
-print "<script language=\"javascript\">showList($d_files,\'$conf{'query_id'}\',$hits,'$CORPUS','$max', '$res_count');</script>";
+if($multiple_attribute_display){$attribute_type = 'x'}
+
+#print "<script language=\"javascript\">showList($d_files,\'$conf{'query_id'}\',$hits,'$CORPUS','$max', '$res_count');</script>";
+print "<script language=\"javascript\">showList($d_files,\'$conf{'query_id'}\',$hits,'$CORPUS','$max', '$res_count', '$attribute_type')</script>\n";
 
 # print page header to file, so that it is accessible for 
 # the other results pages
 print TOP $res_count;
 foreach my $i (1..$d_files) {
     my $id = "page_" . $i;
-    print TOP " <a id=\"$id\" href=\"$conf{'cgiRoot'}/show_page_dev.cgi?n=$i&query_id=$conf{'query_id'}&corpus=$CORPUS\">$i</a> ";
+    print TOP " <a id=\"$id\" href=\"$conf{'cgiRoot'}/show_page_dev.cgi?n=$i&query_id=$conf{'query_id'}&corpus=$CORPUS&atttype=$attribute_type\">$i</a> ";
 }
 print "</body></html>\n";
 
@@ -1321,6 +1391,13 @@ close DUMP;
 my $dumpfile2 = $conf{'hits_files'} . "/" . $user . ".lastsearch";
 copy($dumpfile, $dumpfile2);
 
+sub get_first{
+
+    my $line = shift;
+    $line =~ s/\/[^ ]+//g;
+    return $line;
+
+}
 sub print_tokens {
     
     my $in = shift;

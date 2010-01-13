@@ -95,6 +95,7 @@ table.res{
 
   // INIT
 
+include("index.inc");
 
 $texts["no"]["tit"] = "<h4>Informasjon om informant <i>%s</i> i %skorpuset</h4>\n";
 $texts["en"]["tit"] = "<h4>Informant details for <i>%s</i> in the %s corpus</h4>\n";
@@ -144,6 +145,8 @@ foreach (array_keys($_POST) as $key) {
 }
 
 $conf = "/hf/foni/tekstlab/glossa-0.7/dat/$corpus/cgi.conf";
+
+$conf = $configdir . $corpus ."/cgi.conf";
 #$conf = "cgi.conf";
 
 $file = fopen($conf, "r") or exit ("Kan ikke åpne konfigurasjonsfila: $conf");
@@ -164,8 +167,8 @@ $user = $conf_array["db_uname"];
 $pass = $conf_array["db_pwd"];
 $dbhost = $conf_array["db_host"];
 
-$meta = $conf_array["meta_text"];
-$alias = $conf_array["meta_text_alias"];
+$meta = $conf_array["meta_author"];
+$alias = $conf_array["meta_author_alias"];
 
 $meta_string = preg_replace ( "/ /", ",", $meta );
 $meta = split(" ", $meta);
@@ -174,7 +177,7 @@ $alias = split("\t", $alias);
 
 $table = strtoupper($corpus)."author";
 
-$session = mysql_connect ($dbhost, $user, $pass)
+$session = mysql_connect ($dbhost . ':/var/lib/mysql/mysql.sock', $user, $pass)
   or die ('I cannot connect to the database (' . $dbhost . ')  because: '
              . mysql_error());
 

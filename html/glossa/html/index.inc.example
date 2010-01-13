@@ -1,5 +1,6 @@
 <?php
   // ** initialize Glossa ** //  
+$configdir = '/path/to/config/directory/';
 $htmlRoot = 'http://url.for.htdocs/glossa';
 $cgiRoot = 'http://url.for.cgi-bin/glossa';
 $favicon = 'http://favicon.location/favicon.ico';

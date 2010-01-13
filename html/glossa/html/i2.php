@@ -36,6 +36,7 @@ if($corpus == 'scandiasyn'){ $uilang = 'en'; }
  <!--<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.7.0/build/reset/reset-min.css">-->
  <link rel="shortcut icon" href="<?php echo $favicon; ?>" type="image/ico" />
  <link rel="stylesheet" type="text/css" href="<?php echo $htmlRoot ?>/html/CE.css">
+ <script type="text/javascript" src="http://www.google.com/jsapi"></script>
 
 <?php printJsHead();   // ** Glossa ** //   ?>
 
@@ -199,12 +200,18 @@ elseif ( $_GET['corpus'] == 'latvian' ) {
  }
  ?>
 </td>
- <td width='40%'>
-
- </td>
- </tr>
+<td width='10%'></td>
+<td align='right'>translations&nbsp;</td>
+<td>
+ <div id="branding">
+   <script type="text/javascript">
+      google.load('language', "1");
+   </script>
+   <script>google.language.getBranding('branding');</script>
+ </div>
+</td>
+</tr>
 </table>
-
 </div>
 
  <table>

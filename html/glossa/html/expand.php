@@ -1,6 +1,6 @@
 <?php
   // INIT
-
+include("index.inc");
 $id  = $_GET['line_key']; // the sql-table key for the segment returned by CQP
 $size = $_GET['size']; // context width
 $video = $_GET['video'];
@@ -19,8 +19,9 @@ $corpus = $_GET['corpus'];
 
 #if  ($corpus == 'demo'){ $corpus = 'nota'; }
 
-$conf = "/hf/foni/tekstlab/glossa-0.7/dat/$corpus/cgi.conf";
-$conf = "cgi.conf";
+//$conf = "/hf/foni/tekstlab/glossa-0.7/dat/$corpus/cgi.conf";
+//$conf = "cgi.conf";
+$conf = $configdir . $corpus ."/cgi.conf";
 
 $file = fopen($conf, "r") or exit ("Kan ikke åpne konfigurasjonsfila: $conf");
 

@@ -5,17 +5,18 @@ use CGI;
 use DBI;
 use Data::Dumper;
 use strict;
-
 use lib("/home/httpd/html/glossa/pm");
 use Glossa;
-
-
 
 # variables $query_id and $corpus ends up on the command line; 
 # must be checked for nastiness (like "taint")
 my $query_id = CGI::param('query_id');
 my $corpus=CGI::param('corpus');
 my $attribute_type=CGI::param('atttype');
+
+# for multiple-attribute display
+my $multiple_attribute_display = 0;
+if($attribute_type eq 'x'){$multiple_attribute_display = 2; $attribute_type = 0;}
 
 unless ($query_id =~ m/^\d+_\d+$/) { die("illegal value") };
 #unless ($corpus =~ m/^[\w|\d|_|-]+$/) { die("illegal value") };
@@ -26,9 +27,80 @@ my $hits_name=CGI::param('name');
 
 my $user = $ENV{'REMOTE_USER'}; 
 
-my $conf_file = "/export/res/lb/glossa/dat/" . $corpus . "/cgi.conf";
+#my $conf_file = "/export/res/lb/glossa/dat/" . $corpus . "/cgi.conf";
+# removed the above, as the location of the cgi.conf file is now in path.conf
+my %paths;
+open(PATHS, "paths.conf");
+while( <PATHS> ){
+    /([^\s]+)\s(.+)/;
+    $paths{ $1 } = $2;
+}
+my $conf_file = $paths{"conf"} . $corpus . "/cgi.conf";
+
 my $conf=Glossa::get_conf_file($corpus, $conf_file);
 my %conf = %$conf;
+
+my $corpus_mode = $conf{'corpus_mode'};
+
+my $speech_corpus = 0;
+
+if($corpus_mode eq 'speech'){
+    $speech_corpus = 1;
+}
+my $googletrans = <<STOP;
+<script type="text/javascript" src="http://www.google.com/jsapi"></script>
+<script type="text/javascript">
+
+google.load("language", "1");
+
+function translate(node, text) {
+  google.language.detect(text, function(result) {
+    if (!result.error && result.language) {
+      google.language.translate(text, result.language, "en",
+                                function(result) {
+        if (result.translation) {
+	    node.innerHTML = result.translation;
+	    node.innerHTML += " <font size='-2'>(google)</font>"; //"&nbsp;<img src='http://tekstlab.uio.no/glossa/html/img/google-g-icon-16.png'>";
+        }
+        else{ node.innerHTML = 'No translation available' }
+      });
+    }
+  });
+}
+
+
+function translate2(text) {
+  google.language.detect(text, function(result) {
+   if (!result.error && result.language) {
+      google.language.translate(text, result.language, "en",
+                                function(result) {
+        if (result.translation) {
+          return result.translation;
+        }
+	return "No translation available.";
+      });
+    }
+  });
+}
+</script>
+STOP
+
+my $style = <<STYLE;
+<style>
+div.inspect{
+
+	top: 0px;
+	left:0px;
+	padding: 5px;
+	border: 0px solid #000;
+	background: #ddd;
+	width: 975px;
+        height: 270px;
+	display: none;
+}
+</style>
+STYLE
+
 
 my $multitags= Glossa::get_multitags_file($conf{'config_dir'}, $corpus);
 my %multitags = %$multitags;
@@ -41,6 +113,38 @@ print "Content-type: text/html; charset=$conf{'charset'}\n\n";
 print "<html>\n<head><title>$lang{'query_title'}</title><link href=\"", $conf{'htmlRoot'}, "/html/tags.css\" rel=\"stylesheet\" type=\"text/css\"></link>";
 print "<script language=\"JavaScript\" src=\"", $conf{'htmlRoot'}, "/js/showtag.js\"></script></head>\n<body>";
 print "<script language=\"JavaScript\" src=\"", $conf{'htmlRoot'}, "/js/", $corpus, ".conf.js\"></script>";
+print "\n$googletrans\n\n";
+print $style, "\n</head>\n<body>\n";
+
+print <<SCRIPT;
+<script type="text/javascript">
+function selectAll(Direction)  {
+  var chBoxes=document.getElementsByName("delete");
+  for(i=0;i<chBoxes.length;i++) {
+
+    if (Direction) {
+        chBoxes[i].checked=0;
+    }
+    else {
+        chBoxes[i].checked=1;
+    };
+
+  }
+}
+</script>
+SCRIPT
+
+
+if($speech_corpus){
+
+print "  <div id=\"inspector\" class=\"inspect\">\n" .
+      "    <iframe frameborder='0' width='100%' height='100%' id=\"movie_frame\"></iframe>\n" .
+      "    <div style=\"position: relative; left: 960px; top: -15px; cursor: pointer\" onclick=\"document.getElementById('inspector').style.display='none';\">\n" .
+      "      <img alt=\"[x]\" src=\"" . $conf{'htmlRoot'}  . "html/img/close.png\" />\n" . 
+      "    </div>\n" .
+      "  </div>\n<br />\n";
+
+}
 
 
 my $set_id = CGI::param('set');
@@ -196,9 +300,25 @@ open (DATA, "$filename");
 my %tags;
 
 
-print "<table border=0>";
+print "<table border='0'>";
  
 $/="\n\n\n";
+
+my %video_stars;
+
+if ($speech_corpus){
+
+    my $sth = $dbh->prepare( "SELECT tid FROM " . uc ( $corpus ) . "author where video = 'Y';");
+    
+    $sth->execute  ||  print TEMP "Error fetching data: $DBI::errstr";
+    
+    while (my ($v) = $sth->fetchrow_array) {
+
+	$video_stars{$v} = 1;
+	
+    }
+
+}
 
 while (<DATA>) {
 
@@ -259,7 +379,32 @@ while (<DATA>) {
     if ($del) {
 	print "<input type='checkbox' name='delete' value='$s_id' />";
     }
+    my $identifier = $s_id;
 
+    if($speech_corpus){$identifier = $sts{text_id};}
+    if($speech_corpus){
+	my $CORPUS = $corpus;
+	print ("<font size=\"-2\">\n<a href=\"#\" onClick=\"window.open('$conf{'htmlRoot'}/html/profile.php?tid=$identifier&corpus=$CORPUS',");
+	print ("'mywindow','height=480,width=600,status,scrollbars,resizable');\"><img src='$conf{'htmlRoot'}/html/img/i.gif' alt='i' / border='0'></a> \n&nbsp;</font>\n");
+    }
+    else
+    {
+	print "<font size=\"-2\"><a href=\"#\" onClick=\"window.open('", $conf{'cgiRoot'}, "/show_context.cgi$sts_url',";
+	print "'mywindow','height=500,width=650,status,scrollbars,resizable');\">$identifier</a> \n&nbsp;</font>";
+    }
+    if($speech_corpus){
+	my $ex_url = "?corpus=" . $corpus . "&line_key=" . $sts{'who_line_key'} . "&size=1&nested=0";
+	my $source_line;
+	if( $video_stars{ $identifier } ){
+	    $source_line.=sprintf("<font size=\"-2\">\n<a href=\"#\" onClick=\"document.getElementById('inspector').style.display='block';document.getElementById('movie_frame').src = '" . $conf{'htmlRoot'}  . "html/expand.php$ex_url&video=1';\">\n");
+	    $source_line.=sprintf("<img style='border-style:none' src='" . $conf{'htmlRoot'} . "html/img/mov.gif'>\n</a> \n&nbsp;</font>");
+	}
+	$source_line.=sprintf("<font size=\"-2\">\n<a href=\"#\" onClick=\"document.getElementById('inspector').style.display='block';document.getElementById('movie_frame').src = '" . $conf{'htmlRoot'}  . "html/expand.php$ex_url&video=0';\">\n");
+	$source_line.=sprintf("<img style='border-style:none' src='" . $conf{'htmlRoot'} . "html/img/sound.gif'>\n</a> \n&nbsp;</font>");
+	$source_line.="<strong>" . $sts{"text_id"} . "</strong>";
+	print $source_line;
+    }
+=end
     print "<font size=\"-2\"><a href=\"#\" onClick=\"window.open('", $conf{'cgiRoot'}, "/show_context.cgi$sts_url',";
     print "'mywindow','height=500,width=650,status,scrollbars,resizable');\">$s_id</a> \n&nbsp;</font>";
 
@@ -277,7 +422,7 @@ while (<DATA>) {
 #	print "'mywindow','height=400,width=1000,status,scrollbars,resizable,screenX=0,screenY=5');\"><img style='border-style:none' src='http://omilia.uio.no/CE2/img/mov.gif'></a> \n&nbsp;</font>";
 
     }
-
+=cut
     print "</nobr></td><td";
     if ($context_type eq "chars") { print " align=\"right\"" }
     print ">";
@@ -292,6 +437,29 @@ while (<DATA>) {
 
 
     print "</td></tr>";
+    if($multiple_attribute_display){
+	print "<tr><td></td><td";
+	if ($context_type eq "chars") { print " align=\"right\"" }
+	print ">";
+
+	print_it($res_l, 2);
+	if ($context_type eq "chars") { print "</td><td>" }
+	print "<b> &nbsp;";
+	print_it($ord, 2);
+	print " &nbsp;</b>";
+	if ($context_type eq "chars") { print "</td><td>" }
+	print_it($res_r, 2);
+	print "</td></tr><tr><td></td><td><br /></td></tr>";###
+    }
+    if($speech_corpus){
+	my $orig = get_first($res_l) . "<b>" . get_first($ord) . "</b>" . get_first($res_r);
+	$orig =~ s/"/_/g;
+	my $source_line .= "<tr><td></td><td colspan='3'>";
+	$source_line .= "<div><span onclick=\"translate(this.parentNode, '$orig');\" style='font-size:small;cursor:pointer;'>[translate]</span></div>";
+	$source_line.=sprintf("</td></tr>");
+	$source_line .= "<tr><td></td><td></td></tr>";
+	print $source_line;
+    }
 
     foreach my $l (@lines) {
 
@@ -353,6 +521,15 @@ print "</body></html>";
 
 
 my $tag_i;
+
+sub get_first{
+
+    my $line = shift;
+    $line =~ s/\/[^ ]+//g;
+    return $line;
+
+}
+
 # fixme! - samma som print_tokens i query_dev.cgi ska flyttas till Glossa.pm
 sub print_it {
 

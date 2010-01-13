@@ -1,8 +1,15 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN"  "http://www.w3.org/TR/REC-html40/strict.dtd">
 <html>
  <head>
-  <script language="JavaScript" src="http://omilia.uio.no/glossa/js/showtag.js"></script>
-  <script language="JavaScript" src="http://omilia.uio.no/glossa/js/AC_QuickTime.js"></script>
+<!--
+  <script language="JavaScript" src="../js/showtag.js"></script>
+  <script language="JavaScript" src="../js/AC_QuickTime.js"></script>
+-->
+  <script language="JavaScript" src="http://www.tekstlab.uio.no/scandiasyn/base/javascripts/coordinates.js"></script>
+  <script language="JavaScript" src="../js/map.js"></script>
+ <!-- <script src="http://maps.google.com/maps?file=api&v=2&key=ABQIAAAABOQZp7gkH59Jdv6kfvOgMRQYPi-Hp0DOMqQTFM9AoSBoOW8SyxSMtSp1H3Novb0kQR0YJOqH2WJ53w&sensor=true" type="text/javascript"></script> -->
+  <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAAaVWyOXil_wBIKCXq_wS0UBR4DJD8zcGKufBGwxJPn5uXqzL8mBR8Ajv0cm2FCxEKxlAqq54IfrFkow&amp;sensor=false.js" type="text/javascript"></script>
+ 
   <link href="http://omilia.uio.no/glossa//html/tags.css" rel="stylesheet" type="text/css"></link>
   <style>
 body {
@@ -66,8 +73,10 @@ table.res{
 }
   </style>
 </head>
-<body>
+<body onunload="GUnload()">
+
 <?php
+include("index.inc");
 
   // INIT
 
@@ -81,7 +90,6 @@ $texts["no"]["sorry"] = "<h4>Beklager, ingen opplysninger om informant <i>%s</i>
 $tid  = $_GET['tid'];
 $corpus  = $_GET['corpus'];
 
-//$conf = "/hf/foni/tekstlab/glossa-0.7/dat/$corpus/cgi.conf";
 $conf = $configdir . $corpus ."/cgi.conf";
 
 $file = fopen($conf, "r") or exit ("Kan ikke åpne konfigurasjonsfila: $conf");
@@ -109,8 +117,8 @@ $user = $conf_array["db_uname"];
 $pass = $conf_array["db_pwd"];
 $dbhost = $conf_array["db_host"];
 
-$meta = $conf_array["meta_text"];
-$alias = $conf_array["meta_text_alias"];
+$meta = $conf_array["meta_author"];
+$alias = $conf_array["meta_author_alias"];
 
 $meta_string = preg_replace ( "/ /", ",", $meta );
 $meta = split("/ /", $meta);
@@ -119,40 +127,64 @@ $alias = split("\t", $alias);
 
 $table = strtoupper($corpus)."author";
 
-$session = mysql_connect ($dbhost, $user, $pass)
-     or die ('I cannot connect to the database because: '
+$session = mysql_connect ($dbhost . ':/var/lib/mysql/mysql.sock', $user, $pass)
+     or die ('I cannot connect to the database using because: '
              . mysql_error());
 
 mysql_select_db ($database, $session);
 
 $profile = "SELECT $meta_string FROM $table WHERE tid = '$tid'";
-
-print "<b>" . $profile . "</b>";
+$loc = "SELECT place FROM $table WHERE tid = '$tid'";
+print "<b>" . $profile . "</b><br /><b>" . $loc . "</b><hr />";
 
 $profile = mysql_query($profile);
 $profile = mysql_fetch_row($profile);
 
+$loc = mysql_query($loc);
+$loc = mysql_fetch_row($loc);
+$loc = $loc[0];
+
 if(!$profile){
-    
-    print "!!!";
+
     printf($texts[$lang]["sorry"], $tid);
 
 }
-
 else{
-    print "<table border='1 ' cellspacing='0'>\n<tr>\n";
-
+    print "<table>\n<tr>\n<td valign='top'>\n";
+    print "<table border='0' cellspacing='0'>\n";
+    $row = 0;
     foreach ($alias as $val){
 
-	print "<td><b>" . ucfirst($val) . "</b></td>\n";
+	print "<tr><td><b>" . ucfirst($val) . "</b></td><td><span id='td" . $row++ . "'></span></td></tr>\n";
 
     }
+    print "</table>\n";
+?>
+    </td>
+    <td>
+    <div id="map_canvas" style="width: 340px; height: 420px"></div>
+    </td>
+    <td valign="top">
+     <div id="zoom" style="display:none;cursor:pointer" onclick="animate();">[+]</div>
+     <div id="out" style="display:none;cursor:pointer" onclick="out();">[-]</div>
+    </td>
+    </tr>
+    </table>
+<?php
+    $row = 0;
+?><script language="javascript"><?php
+    foreach ( $profile as $col ){
+?>
 
-    print "</tr>\n<tr align='left'>\n";
-
+	td = document.getElementById('td<?php echo $row++ ?>');
+        td.innerHTML = '<?php echo $col ?>';
+<?php
+    }
+?></script><?php
+    /*
     $profile = join("</td>\n<td>", $profile);
     print "<td>" . $profile . "</td>\n";
- 
+    */
 /*
 
 foreach ($profile as $value){
@@ -161,8 +193,22 @@ foreach ($profile as $value){
 
 }
 */
-    print "</tr>\n<table>\n";
+//    print "</tr>\n<table>\n";
+ }
+if($loc){
+  $loc = iconv("ISO-8859-1", "UTF-8", $loc);
+?>
+<script language="javascript">
+  var loca = <?php echo "\"$loc\""; ?>;
+  if(coordinates[loca]){
+    document.getElementById("zoom").style.display="block";
+    document.getElementById("out").style.display="block";
+    init();
+    move(loca);
+  }
+</script>
+<?php
 }
 ?>
-<body>
-<html>
+</body>
+</html>
