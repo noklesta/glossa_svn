@@ -4,10 +4,10 @@ use CGI;
 use Spreadsheet::WriteExcel;
 use strict;
 use DBI;
-use lib("/home/httpd/html/glossa/pm");
-use Glossa;
 
+require "use_glossa.pl";
 
+my %glossa_conf = Glossa::get_glossa_conf();
 
 my $case = CGI::param('case');
 
@@ -26,7 +26,7 @@ my $corpus_name = CGI::param('corpus_name');
 my $user = $ENV{'REMOTE_USER'}; 
 
 
-my $conf=Glossa::get_conf_file($corpus_name);
+my $conf = Glossa::get_conf_file($corpus_name, $glossa_conf{'conf'});
 my %conf = %$conf;
 
 # FIXME: this is a silly way of doing things

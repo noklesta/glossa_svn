@@ -3,8 +3,11 @@
 
 use CGI;
 use strict;
-use lib("/home/httpd/html/glossa/pm/");
-use Glossa;
+
+require "use_glossa.pl";
+
+# load main configuration file
+my %glossa_conf = Glossa::get_glossa_conf();
 
 select(STDOUT);
 $|=1;
@@ -12,10 +15,10 @@ $|=1;
 my $corpus=CGI::param('corpus');
 my $user = $ENV{'REMOTE_USER'}; 
  
-my $conf = Glossa::get_conf_file($corpus);
+my $conf = Glossa::get_conf_file($corpus, $glossa_conf{'conf'});
 my %conf = %$conf;
 
-my $lang=Glossa::get_lang_file($conf{'config_dir'}, $conf{'lang'});
+my $lang=Glossa::get_lang_file($glossa_conf{'conf'}, $conf{'lang'});
 my %lang = %$lang;
 
 print "Content-type: text/html; charset=$conf{'charset'}\n\n";

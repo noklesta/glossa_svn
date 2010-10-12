@@ -4,11 +4,9 @@ use CGI;
 use File::Copy;
 use strict;
 
-use lib("/home/httpd/html/glossa/pm");
-use Glossa;
+require "use_glossa.pl";
 
-
-
+my %glossa_conf = Glossa::get_glossa_conf();
 
 select(STDOUT);
 $|=1;
@@ -19,7 +17,7 @@ my $corpus=CGI::param('corpus');
 my $query_id = CGI::param('query_id');
 my $user = $ENV{'REMOTE_USER'}; 
 
-my $conf = Glossa::get_conf_file($corpus);
+my $conf = Glossa::get_conf_file($corpus, $glossa_conf{'conf'});
 my %conf = %$conf;
 
 

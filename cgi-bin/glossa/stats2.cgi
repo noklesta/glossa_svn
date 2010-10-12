@@ -3,8 +3,10 @@
 use CGI;
 use DBI;
 
-use lib ('/home/httpd/html/glossa/pm/');
-use Glossa;
+require "use_glossa.pl";
+
+my %glossa_conf = Glossa::get_glossa_conf();
+
 use Spreadsheet::WriteExcel;
 use Data::Dumper;
 use IO::Zlib;
@@ -24,8 +26,7 @@ unless ($base_corpus) { $base_corpus = $corpus }
 
 my $cutoff = CGI::param('cutoff');
 
-my $conf_file = "/export/res/lb/glossa/dat/" . $corpus . "/cgi.conf";
-my $conf = Glossa::get_conf_file($corpus, $conf_file);
+my $conf = Glossa::get_conf_file($corpus, $glossa_conf{'conf'});
 my %conf = %$conf;
 
 

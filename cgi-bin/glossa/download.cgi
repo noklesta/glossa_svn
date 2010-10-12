@@ -3,11 +3,14 @@
 use CGI;
 use Spreadsheet::WriteExcel;
 use DBI;
-use lib("/home/httpd/html/glossa/pm");
-use Glossa;
+
+require "use_glossa.pl";
+
+# load main configuration file
+my %glossa_conf = Glossa::get_glossa_conf();
 
 my $corpus=CGI::param('corpus');
-my $conf = Glossa::get_conf_file($corpus);
+my $conf = Glossa::get_conf_file($corpus, $glossa_conf{'conf'});
 my %conf = %$conf;
 
 my $user = $ENV{'REMOTE_USER'}; 

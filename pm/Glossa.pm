@@ -15,38 +15,39 @@ our @EXPORT_OK = qw{ get_conf_file get_multitags_file get_lang_file print_tokens
 
 my $multiple = 0;
 
+sub get_glossa_conf {
+		my %paths;
+		open(PATHS, "paths.conf");
+		while( <PATHS> ){
+				/([^\s]+)\s+(.+)/;
+				$paths{ $1 } = $2;
+		}
+		
+		return %paths;
+}
+
 sub get_conf_file {
 
     my $corpus = shift;
-    my $config_dat_file = shift;
+    my $config_dir = shift;
+
+		my $config_dat_file = $config_dir . '/' . $corpus . "/cgi.conf";
 
     my %conf;
 
-    unless ($corpus) { $corpus = "test" }
-
-    # read configuration file
-    unless ($config_dat_file) {
-	$config_dat_file = "/etc/glossa/dat/" . $corpus . "/cgi.conf";
-    }
-
-
     open (CONF, $config_dat_file);
 
-    open (CHECK, ">>/hf/foni/home/joeljp/check.txt");
-    print CHECK "[$config_dat_file]\n--------------------------------------\n";
-    close(CHECK);
     while (<CONF>) {
-	chomp;
-	next if (/^#/ || /^$/);
-	s/\s*$//;
-	my ($k,$v)=split(/\s*=\s*/);
-	$conf{$k}=$v;
-#	print CHECK "$k\t->\t$v\n";
+				chomp;
+				next if (/^#/ || /^$/);
+				s/\s*$//;
+				my ($k,$v)=split(/\s*=\s*/);
+				$conf{$k}=$v;
     }
+
     close CONF;
     if (defined($conf{'bounds_type'}) and $conf{'bounds_type'} eq 'multiple') {	$multiple++ }
-
-#    close (CHECK);
+		
     ## Set query id
     # This id is used to identify the files resulting from a query, so 
     # they can be processed by other functions (collocations, annotation etc.)
@@ -67,20 +68,16 @@ sub get_lang_file {
 
     my $lang_file = $config_dir . "/lang/" . $lang_locale . ".dat";
 
-    # read configuration file
-    unless ($lang_file) {
-	$lang_file = "/etc/glossa/lang/eng.dat";
-    }
-
     my %lang;
     open (LANG, $lang_file);
     while (<LANG>) {
-	chomp;
-	next if (/^#/ || /^$/);
-	s/\s*$//;
-	my ($k,$v) = split(/\s*=\s*/);
-	$lang{$k} = $v;
+				chomp;
+				next if (/^#/ || /^$/);
+				s/\s*$//;
+				my ($k,$v) = split(/\s*=\s*/);
+				$lang{$k} = $v;
     }
+
     close LANG;
     
     return \%lang;

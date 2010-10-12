@@ -3,8 +3,11 @@
 use CGI;
 use File::Copy;
 use strict;
-use lib("/home/httpd/html/glossa/pm");
-use Glossa;
+
+require "use_glossa.pl";
+
+# load main configuration file
+my %glossa_conf = Glossa::get_glossa_conf();
 
 select(STDOUT);
 $|=1;
@@ -13,7 +16,7 @@ print "Content-type: text/html\n\n";
 
 my $corpus=CGI::param('corpus');
 my $user = $ENV{'REMOTE_USER'}; 
-my $conf = Glossa::get_conf_file($corpus);
+my $conf = Glossa::get_conf_file($corpus, $glossa_conf{'conf'});
 
 my %conf = %$conf;
 

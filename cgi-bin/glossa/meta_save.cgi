@@ -3,8 +3,11 @@
 use CGI;
 use strict;
 use File::Copy;
-use lib("/home/httpd/html/glossa/pm");
-use Glossa;
+
+require "use_glossa.pl";
+
+my %glossa_conf = Glossa::get_glossa_conf();
+
 use CGI::Carp qw(fatalsToBrowser);
 
 select(STDOUT);
@@ -20,7 +23,7 @@ my $corpus = CGI::param('corpus');
 my $file = CGI::param('subcorpus_id');
 my $name = CGI::param('subcorpus_name');
 
-my $conf = Glossa::get_conf_file($corpus);
+my $conf = Glossa::get_conf_file($corpus, $glossa_conf{'conf'});
 my %conf = %$conf;
 
 my $new_file_name = $conf{'config_dir'} . "/" . $corpus . "/subcorp/" . $user;

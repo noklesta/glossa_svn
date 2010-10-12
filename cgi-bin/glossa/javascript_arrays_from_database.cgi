@@ -6,11 +6,11 @@ use CGI;
 use Data::Dumper;
 use strict;
 
-use lib("/home/httpd/html/glossa/pm");
-use Glossa;
+require "use_glossa.pl";
+
+my %glossa_conf = Glossa::get_glossa_conf();
 
 my $user = $ENV{'REMOTE_USER'};
-
 
 ##
 ## **  creates the javascript data structures for the widgets in        ** 
@@ -24,15 +24,7 @@ print "var widgetContent = new Array();";
 # get some form input
 my $corpus = CGI::param('corpus');
 
-my %paths;
-open(PATHS, "paths.conf");
-while( <PATHS> ){
-    /([^\s]+)\s(.+)/;
-    $paths{ $1 } = $2;
-}
-my $conf_file = $paths{"conf"} . $corpus . "/cgi.conf";
-
-my $conf = Glossa::get_conf_file($corpus, $conf_file); #need to send path for meta.conf
+my $conf = Glossa::get_conf_file($corpus, $glossa_conf{'conf'}); #need to send path for meta.conf
 my %conf = %$conf;
 
 print "\n\ndisplayContent= new Array();\n";

@@ -2,18 +2,18 @@
 # $Id$
 
 use CGI;
-use lib("/home/httpd/html/glossa/pm");
-use Glossa;
+require "use_glossa.pl";
+
+my %glossa_conf = Glossa::get_glossa_conf();
 
 my $corpus = CGI::param('corpus');
 my $base_corpus = CGI::param('base_corpus');
 
-my $conf_file = "/export/res/lb/glossa/dat/" . $corpus . "/cgi.conf";
-my $conf = Glossa::get_conf_file($corpus, $conf_file);
+my $conf = Glossa::get_conf_file($corpus, $glossa_conf{'conf'});
 my %conf = %$conf;
 
 # language locale file
-my $lang = Glossa::get_lang_file($conf{'config_dir'}, $conf{'lang'});
+my $lang = Glossa::get_lang_file($glossa_conf{'conf'}, $conf{'lang'});
 my %lang = %$lang;
 
 my $query_id = CGI::param('query_id');

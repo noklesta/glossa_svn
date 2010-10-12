@@ -7,20 +7,26 @@ use CGI;
 use POSIX;
 use Data::Dumper;
 use DBI;
-use WebCqp::Query_dev; # this is the modified version of the module
 use File::Copy;
 #use Text::Iconv;
 use Encode;
 
+require "use_glossa.pl";
 
+# load main configuration file
+my %glossa_conf = Glossa::get_glossa_conf();
 
+my $cwb_module;
 
-# if Glossa.pm is not installed in the system directories
-# (you can use this, for example, if you are making changes, 
-# or if you don't have access to the root account)          
-use lib ('/home/httpd/html/glossa/pm/');
+# Load appropriate CWB module according to config
+if ($glossa_conf{'cwb_ver'} == '2') {
+		$cwb_module = "WebCqp/Query_dev.pm";
+}
+else {
+		$cwb_module = "CWB/Web/Query_dev.pm";
+}
 
-use Glossa;
+require $cwb_module;
 
 ##                                        ##
 ##             0. Initialization          ##
@@ -84,20 +90,7 @@ my $display_struct = CGI::param('structDisplay');
 ## read configuration files
 # FIXME: should also be done in module
 # FIXME: standard file format
-
-# main configuration file
-#my $conf_file = $ROOT . "/" . $CORPUS . "/cgi.conf";
-my %paths;
-open(PATHS, "paths.conf");
-while( <PATHS> ){
-    /([^\s]+)\s(.+)/;
-    $paths{ $1 } = $2;
-}
-my $conf_file = $paths{"conf"} . $CORPUS . "/cgi.conf";
-
-#my $conf_file = "/export/res/lb/glossa/dat/" . $CORPUS . "/cgi.conf";
-
-my $conf = Glossa::get_conf_file($CORPUS, $conf_file);
+my $conf = Glossa::get_conf_file($CORPUS, $glossa_conf{"conf"});
 my %conf = %$conf;
 
 my $corpus_mode = $conf{'corpus_mode'};
@@ -187,7 +180,7 @@ $debug = 0;
 
 ## for debugging
 if ($debug) {
-    print "L: $conf_file<br>";
+    # print "L: $conf_file<br>";
     print "<pre>";
     print Dumper %in;
     print "</pre>";
@@ -731,7 +724,7 @@ if ($debug) {
 
 
 # finally, execute the query
-my ($result,$size) = $query->query("$cqp_all");
+my ($result,$size) = $query->query("$cqp_all", $glossa_conf{'cwb_ver'});
 
 my @result;
 if ($result) {

@@ -7,8 +7,9 @@ use Data::Dumper;
 use strict;
 use POSIX qw(locale_h);
 
-use lib ('/home/httpd/html/glossa/pm/');
-use Glossa;
+require "use_glossa.pl";
+
+my %glossa_conf = Glossa::get_glossa_conf();
 
 setlocale('LC_TYPE', "norweigan");
 
@@ -32,7 +33,7 @@ my %in = %$in;
 
 my $CORPUS = $in{'query'}->{'corpus'}->[0];
 
-my $conf = Glossa::get_conf_file($CORPUS);
+my $conf = Glossa::get_conf_file($CORPUS, $glossa_conf{'conf'});
 my %conf = %$conf;
 
 print "Content-type: text/html; charset=$conf{'charset'}\n\n";
