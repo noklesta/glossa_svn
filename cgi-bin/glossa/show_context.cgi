@@ -5,8 +5,11 @@ use DBI;
 
 use Encode;
 use WebCqp::Query_dev;
-use lib("/home/httpd/html/glossa/pm");
-use Glossa;
+
+require "use_glossa.pl";
+
+my %glossa_conf = Glossa::get_glossa_conf();
+
 use Data::Dumper;
 
 # meta
@@ -21,7 +24,7 @@ my $corpus = CGI::param('corpus');
 my $base_corpus=CGI::param('subcorpus');
 
 
-my $conf=Glossa::get_conf_file($corpus);
+my $conf = Glossa::get_conf_file($corpus, $glossa_conf{'conf'});
 my %conf = %$conf;
 
 my $dsn = "DBI:mysql:database=$conf{'db_name'};host=$conf{'db_host'}";

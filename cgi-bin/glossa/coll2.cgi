@@ -6,9 +6,9 @@ use DBI;
 use Spreadsheet::WriteExcel;
 use Data::Dumper;
 
-use lib("/home/httpd/html/glossa/pm");
-use Glossa;
+require "use_glossa.pl";
 
+my %glossa_conf = Glossa::get_glossa_conf();
 
 select(STDOUT);
 $|=1;
@@ -35,11 +35,11 @@ my $user = $ENV{'REMOTE_USER'};
 my $corpus = CGI::param('corpus');
 my $globalstats = CGI::param('globalstats');
 
-my $conf = Glossa::get_conf_file($corpus);
+my $conf = Glossa::get_conf_file($corpus, $glossa_conf{'conf'});
 my %conf = %$conf;
 
 # language locale file
-my $lang = Glossa::get_lang_file($conf{'config_dir'}, $conf{'lang'});
+my $lang = Glossa::get_lang_file($glossa_conf{'conf'}, $conf{'lang'});
 my %lang = %$lang;
 
 

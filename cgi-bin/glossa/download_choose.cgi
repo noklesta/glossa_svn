@@ -1,14 +1,17 @@
 #!/usr/bin/perl
 
 use CGI;
-use lib("/home/httpd/html/glossa/pm");
-use Glossa;
+
+require "use_glossa.pl";
+
+# load main configuration file
+my %glossa_conf = Glossa::get_glossa_conf();
 
 print "Content-type: text/html\n\n";
 
 my $corpus = CGI::param('corpus');
 
-my $conf = Glossa::get_conf_file($corpus);
+my $conf = Glossa::get_conf_file($corpus, $glossa_conf{'conf'});
 my %conf = %$conf;
 
 my $dsn = "DBI:mysql:database=$conf{'db_name'};host=$conf{'db_host'}";

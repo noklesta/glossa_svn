@@ -6,8 +6,9 @@ use DBI;
 use Data::Dumper;
 use strict;
 
-use lib ('/home/httpd/html/glossa/pm/');
-use Glossa;
+require "use_glossa.pl";
+
+my %glossa_conf = Glossa::get_glossa_conf();
 
 select(STDOUT);
 $|=1;
@@ -32,10 +33,10 @@ my %in = %$in;
 my $corpus = $in{'query'}->{'corpus'}->[0];
 my $base_corpus = $in{'phrase'}->{'0'}->{'corpus'}->[0];
 
-my $conf = Glossa::get_conf_file($corpus);
+my $conf = Glossa::get_conf_file($corpus, $glossa_conf{'conf'});
 my %conf = %$conf;
 
-my $lang=Glossa::get_lang_file($conf{'config_dir'}, $conf{'lang'});
+my $lang=Glossa::get_lang_file($glossa_conf{'conf'}, $conf{'lang'});
 my %lang = %$lang;
 
 my $dsn = "DBI:mysql:database=$conf{'db_name'};host=$conf{'db_host'}";

@@ -5,8 +5,10 @@ use CGI;
 use DBI;
 use Data::Dumper;
 use strict;
-use lib("/home/httpd/html/glossa/pm");
-use Glossa;
+
+require "use_glossa.pl";
+
+my %glossa_conf = Glossa::get_glossa_conf();
 
 # variables $query_id and $corpus ends up on the command line; 
 # must be checked for nastiness (like "taint")
@@ -27,17 +29,7 @@ my $hits_name=CGI::param('name');
 
 my $user = $ENV{'REMOTE_USER'}; 
 
-#my $conf_file = "/export/res/lb/glossa/dat/" . $corpus . "/cgi.conf";
-# removed the above, as the location of the cgi.conf file is now in path.conf
-my %paths;
-open(PATHS, "paths.conf");
-while( <PATHS> ){
-    /([^\s]+)\s(.+)/;
-    $paths{ $1 } = $2;
-}
-my $conf_file = $paths{"conf"} . $corpus . "/cgi.conf";
-
-my $conf=Glossa::get_conf_file($corpus, $conf_file);
+my $conf=Glossa::get_conf_file($corpus, $glossa_conf{'conf'});
 my %conf = %$conf;
 
 my $corpus_mode = $conf{'corpus_mode'};
@@ -105,7 +97,7 @@ STYLE
 my $multitags= Glossa::get_multitags_file($conf{'config_dir'}, $corpus);
 my %multitags = %$multitags;
 
-my $lang=Glossa::get_lang_file($conf{'config_dir'}, $conf{'lang'});
+my $lang=Glossa::get_lang_file($glossa_conf{'conf'}, $conf{'lang'});
 my %lang = %$lang;
 
 

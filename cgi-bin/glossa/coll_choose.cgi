@@ -3,8 +3,10 @@
 
 use CGI;
 
-use lib("/home/httpd/html/glossa/pm");
-use Glossa;
+require "use_glossa.pl";
+
+# load main configuration file
+my %glossa_conf = Glossa::get_glossa_conf();
 
 my $query_id = CGI::param('query_id');
 my $db_name = CGI::param('db_name');
@@ -13,11 +15,11 @@ my $base_corpus = CGI::param('base_corpus');
 
 my $ngram = CGI::param('ngram');
 
-my $conf = Glossa::get_conf_file($corpus);
+my $conf = Glossa::get_conf_file($corpus, $glossa_conf{'conf'});
 my %conf = %$conf;
 
 # language locale file
-my $lang = Glossa::get_lang_file($conf{'config_dir'}, $conf{'lang'});
+my $lang = Glossa::get_lang_file($glossa_conf{'conf'}, $conf{'lang'});
 my %lang = %$lang;
 
 

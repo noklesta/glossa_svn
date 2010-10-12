@@ -7,8 +7,10 @@ use strict;
 use CGI;
 use DBI;
 use Data::Dumper;
-use lib("/home/httpd/html/glossa/pm");
-use Glossa;
+
+require "use_glossa.pl";
+
+my %glossa_conf = Glossa::get_glossa_conf();
 
 # get cgi input
 my $cgi = CGI->new;
@@ -16,7 +18,7 @@ my $corpus = CGI::param('corpus');
 my $query_id = CGI::param('query_id');
 
 
-my $conf = Glossa::get_conf_file($corpus);
+my $conf = Glossa::get_conf_file($corpus, $glossa_conf{'conf'});
 my %conf = %$conf;
 
 

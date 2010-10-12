@@ -9,14 +9,15 @@ use locale;
 use POSIX qw(locale_h);
 setlocale(LC_ALL, "norwegian");
 
-use lib("/home/httpd/html/glossa/pm");
-use Glossa;
+require "use_glossa.pl";
+
+my %glossa_conf = Glossa::get_glossa_conf();
 
 my $corpus=CGI::param('corpus');
 my $user = $ENV{'REMOTE_USER'}; 
 my $query_id = CGI::param('query_id');
 
-my $conf=Glossa::get_conf_file($corpus);
+my $conf=Glossa::get_conf_file($corpus, $glossa_conf{'conf'});
 my %conf = %$conf;
 
 # FIXME: this is a silly way of doing things

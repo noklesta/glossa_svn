@@ -16,8 +16,10 @@
 package WebCqp::Query;
 
 use Carp;
-use CQP;
-use CL;
+# use CQP;
+use CWB::CQP;
+# use CL;
+use CWB::CL;
 use HTML::Entities;
 
 
@@ -75,7 +77,7 @@ sub new {
   bless($self, $class);	        # so we can use object methods for initialisation
   $self->{'error_handler'} = undef;
   # spawn CQP server process
-  my $cqp = new CQP;		
+  my $cqp = new CWB::CQP;		
   $self->error("Can't spawn CQP server process.")
     unless defined $cqp;
   $cqp->set_error_handler(sub {}); # ignore CQP error messages (handled by $self->exec())
@@ -96,12 +98,12 @@ sub new {
   # if $Registry is set, change corpus registry before we activate the query corpus
   if (defined $Registry and $Registry ne "") {
     $self->exec("set registry '$Registry';", "Can't change to user-defined registry");
-    $CL::Registry = $Registry;	# we'll also access the corpus through the CL
+    $CWB::CL::Registry = $Registry;	# we'll also access the corpus through the CL
   }
   # activate query corpus
   $self->exec("$corpus;", "Can't activate corpus $corpus");
   $self->{'corpus'} = $corpus;
-  my $ch = new CL::Corpus $corpus; # get CL corpus handle
+  my $ch = new CWB::CL::Corpus $corpus; # get CL corpus handle
   $self->error("Can't open corpus $corpus (CL)")
     unless defined $ch;
   $self->{'ch'} = $ch;
@@ -209,9 +211,12 @@ sub structures {
 # execute query & post-process results; returns list of $line structs
 sub query {
   croak 'Usage: $q->query($command);'
-    unless @_ == 2;
+    unless @_ == 3;
+
   my $self = shift;
   my $query = shift;
+	my $version = shift;
+
   if ($self->{'cut'} > 0) {
     $query =~ s/;\s*$//;	 # remove trailing ';' if present
     if ($self->{'cut'}) {
@@ -222,7 +227,15 @@ sub query {
   $self->exec("set ld '-::-::- ';"); # use left/right match delimiter for splitting
   $self->exec("set rd ' -::-::-';");
   my $cqp = $self->{'cqp'};	 # $query is assumed to be tainted, so we use the CQP->query() method
-  $cqp->query($query);
+
+	# query in CWB 2, exec_query in CWB 3
+	if ($version == '2') {
+			$cqp->query($query);
+	}
+	else {
+			$cqp->exec_query($query);
+	}
+  
   $self->error("Query execution failed because:", $cqp->error_message)
     unless $cqp->status eq 'ok';
   my ($size) = $cqp->exec("size Last");

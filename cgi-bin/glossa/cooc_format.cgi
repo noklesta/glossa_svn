@@ -7,8 +7,8 @@ use GD::Graph::hbars;
 use GD::Graph::pie;
 use Data::Dumper;
 use strict;
-use lib("/home/httpd/html/glossa/pm");
-use Glossa;
+
+require "use_glossa.pl";
 
 print "Content-type: text/html\n\n";
 
