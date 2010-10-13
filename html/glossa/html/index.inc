@@ -18,7 +18,6 @@ while (!feof($fp)) {
 fclose($fp);
 
      // ** initialize Glossa ** //  
-# $configdir = "/home/stinky/glossa/glossa-testcorpus/conf/";
 $configdir = $config_values['conf'];
 $htmlRoot = '/glossa/';
 $cgiRoot = '/cgi-bin/glossa/';
