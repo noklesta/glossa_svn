@@ -2,5 +2,6 @@
 use File::Basename ();
 use lib File::Basename::dirname(__FILE__) . "/../../pm/"; # $paths{"pm_path"};
 use Glossa;
+use Query_dev;
 
 1;

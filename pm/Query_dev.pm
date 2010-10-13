@@ -13,7 +13,7 @@
 #
 
 
-package WebCqp::Query;
+package Query_dev;
 
 use Carp;
 # use CQP;

@@ -16,18 +16,6 @@ require "use_glossa.pl";
 # load main configuration file
 my %glossa_conf = Glossa::get_glossa_conf();
 
-my $cwb_module;
-
-# Load appropriate CWB module according to config
-if ($glossa_conf{'cwb_ver'} == '2') {
-		$cwb_module = "WebCqp/Query_dev.pm";
-}
-else {
-		$cwb_module = "CWB/Web/Query_dev.pm";
-}
-
-require $cwb_module;
-
 ##                                        ##
 ##             0. Initialization          ##
 ##                                        ##
@@ -613,7 +601,7 @@ print "<script language=\"JavaScript\" src=\"", $conf{'htmlRoot'}, "/js/", $CORP
 
 
 # initialize CWB
-$WebCqp::Query::Registry = $conf{'cwb_registry'};
+$Query_dev::Registry = $conf{'cwb_registry'};
 
 # get some CWB parameters
 my $results_max=$in{'query'}->{'results'}->{'max'}->[0];
@@ -621,7 +609,7 @@ my $randomize=$in{'query'}->{'results'}->{'random'}->[0];
 my $fastcut=$in{'query'}->{'results'}->{'fastcut'}->[0];
 
 # initialize CWB query object
-my $query = new WebCqp::Query "$base_corpus";
+my $query = new Query_dev "$base_corpus";
 
 # print errors
 $query->on_error(sub{grep {print "<2>$_</h2>\n"} @_});

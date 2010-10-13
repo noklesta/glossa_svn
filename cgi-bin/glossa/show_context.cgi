@@ -4,7 +4,6 @@ use CGI;
 use DBI;
 
 use Encode;
-use WebCqp::Query_dev;
 
 require "use_glossa.pl";
 
@@ -64,10 +63,10 @@ my $author_table = uc($corpus) . "author";
 my $class_table = uc($corpus) . "class";
 
 
-$WebCqp::Query::Registry = $conf{'cwb_registry'};
+$Query_dev::Registry = $conf{'cwb_registry'};
 
 
-my $query = new WebCqp::Query "$base_corpus";
+my $query = new Query_dev "$base_corpus";
 
 $context_size++;
 
