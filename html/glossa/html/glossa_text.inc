@@ -18,7 +18,7 @@ document.write("<input id='delRowsButton' type='button' value='delete phrase' on
     <tr>
      <td valign="top">
        <input name="query_corpus" type="hidden" value="<?php echo $_GET['corpus'] ?>"></input>
-       <input name="query_root" type="hidden" value="@@query_root@@"></input>
+       <input name="query_root" type="hidden" value="<?php $config_dir ?>"></input>
        <span class="txt">
          <script language="javascript">document.write(strings[language]['regexp'])</script>: <input type="checkbox" name="query_regex"><br>
          <script language="javascript">document.write(strings[language]['search_within'])</script>: <input type="text" size="2" name="query_within" value="s"></input>
