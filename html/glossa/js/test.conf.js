@@ -3,8 +3,8 @@ var languageOpts = new Array;
 
 languageOpts = [['TEST', 'Norwegian','no']];
 
-var htmlRoot = 'http://omilia.uio.no/glossa/';
-var cgiRoot = 'http://omilia.uio.no/cgi-bin/glossa/';
+var htmlRoot = '/glossa/';
+var cgiRoot = '/cgi-bin/glossa/';
 
 
 var conf = new Array;
