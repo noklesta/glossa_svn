@@ -309,7 +309,7 @@ function ReloadMenu(language) {
     delete Menu['KONKPLUS'];
     //reloadMenuPlain();
     //only the appropriate function definition is loaded.
-    reloadMenu();
+    reloadMenuTest();
 
     
     
