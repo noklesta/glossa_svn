@@ -1,6 +1,6 @@
 <?php
 
-$config_file = '../../../cgi-bin/glossa/paths.conf';
+$config_file = '/usr/lib/cgi-bin/glossa/paths.conf';
 $comment = "#";
 
 $fp = fopen($config_file, "r");
