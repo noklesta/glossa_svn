@@ -108,7 +108,17 @@ minimum, however, to get the test corpus running is:
 
 - change the htmlRoot and cgiRoot variables in html/index.php
 - change the htmlRoot and cgiRoot variables in js/test.conf.js
-- create the a cgi.conf file. The following entries should be included and
+- create a cgi.conf file. The cgi.conf file for a corpus should be located in a folder named
+after the corpus, and this folder should be located in the config
+directory. The path to the config directory is given in the file
+cgi-bin/glossa/paths.conf (copy cgi-bin/glossa/paths.conf.example from
+the distribution and edit the first line).
+
+So, if your corpus is called "mycorpus" and the first line of
+cgi-bin/glossa/paths.conf reads "/site/corpora/conf", the cgi.conf
+file for this corpus would be /site/corpora/conf/mycorpus/cgi.conf.
+
+The following entries should be included in cgi.conf and
   adjusted to your setup:
 
  # username, password and database name for the database
